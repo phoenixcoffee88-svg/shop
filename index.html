@@ -1,3 +1,5 @@
+已將完整的咖啡百科內容（包含生豆處理法與先進工藝、世界咖啡種類與品種以及混合咖啡豆/Blend的詳細介紹）更新至網頁左側的「咖啡知識百科」彈出視窗中！
+以下是更新後的完整 index.html 原始碼：
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -938,28 +940,27 @@
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-coffee-800 leading-relaxed pr-1">
-                  {/* 1. 品種 */}
+                  {/* 1. 品種與種類 */}
                   <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">1</span>
-                      咖啡種類與品種 (Coffee Varieties)
+                      世界上主要的咖啡種類與品種 (Coffee Species & Varieties)
                     </h4>
-                    <p>• <strong>阿拉比卡 (Arabica)：</strong>生長於高海拔山區（約 800-2,000 公尺），風味優雅細緻，帶有豐富的花香、水果酸質與焦糖甜感，咖啡因含量較低。</p>
-                    <p>• <strong>羅布斯塔 (Robusta)：</strong>適應力強、病蟲害少，主要生長於低海拔地區。口感濃厚扎實、苦韻明顯、具備強烈的黑可可與堅果尾韻，咖啡因含量較高，常應用於義式濃縮與越式滴漏咖啡。</p>
+                    <p>• <strong>核心物種：</strong>阿拉比卡 (Arabica) 占全球產量 60-70%，生長於高海拔、風味細緻優雅；羅布斯塔 (Robusta) 抗病力強、口感濃厚扎實、苦韻明顯；利比卡與艾克塞爾薩 (Liberica & Excelsa) 屬稀有木質調品種。</p>
+                    <p>• <strong>經典阿拉比卡品種：</strong>包括源自古老的鐵比卡 (Typica)、甜感圓潤的波旁 (Bourbon)、適應力強的卡杜拉 (Caturra)、精品至尊帶有茉莉花與佛手柑香氣的藝伎/夏卡蘭 (Gesha/Geisha)，以及肯亞代表 SL28 與 SL34。</p>
                   </div>
 
-                  {/* 2. 處理法 */}
+                  {/* 2. 生豆處理法與先進工藝 */}
                   <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">2</span>
-                      生豆處理法 (Processing Methods)
+                      生豆處理法與先進工藝 (Processing Methods)
                     </h4>
-                    <p>• <strong>水洗法 (Washed)：</strong>去除果皮與果肉後發酵洗淨。風味乾淨明亮、果酸清脆、層次分明。</p>
-                    <p>• <strong>日曬法 (Natural)：</strong>連同果肉一同曝曬乾燥。保留濃郁的熱帶水果香氣、甜感厚實飽滿。</p>
-                    <p>• <strong>蜜處理 (Honey Process)：</strong>去除果皮但保留部分果膠黏液進行乾燥。兼具水洗的乾淨度與日曬的圓潤甜感。</p>
+                    <p>• <strong>傳統三大基礎：</strong>水洗法（乾淨明亮、果酸清脆）、日曬法（熱帶水果香氣、甜感厚實）、蜜處理法（介於水洗與日曬間，依果膠厚度分白、黃、紅、黑蜜）。</p>
+                    <p>• <strong>先進實驗性工藝：</strong>包含隔絕氧氣的厭氧發酵法（肉桂與絲滑口感）、模仿紅酒釀造的二氧化碳浸漬法 (CM)、利用溫冰水交替鎖住香氣的熱休克處理法，以及加入特定水果或酵母的共發酵法。</p>
                   </div>
 
-                  {/* 3. 等級 */}
+                  {/* 3. 咖啡等級 */}
                   <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">3</span>
@@ -980,10 +981,20 @@
                     <p>• <strong>深焙 (Dark Roast)：</strong>酸味幾乎消失，展現濃郁的苦甜巧克力、香料與厚實醇厚度（Body）。</p>
                   </div>
 
-                  {/* 5. 沖泡方式 */}
+                  {/* 5. 混合咖啡豆介紹 */}
                   <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">5</span>
+                      混合咖啡豆的藝術 (Coffee Blending)
+                    </h4>
+                    <p>• <strong>核心目的：</strong>將不同產區、品種或烘焙度的豆子精準拼配，達到「截長補短、創造平衡與穩定風味」的效果。</p>
+                    <p>• <strong>三大優勢：</strong>風味互補與立體化（結合花香、堅果與甜感）、季節季節穩定性（全年提供一致風味），以及專為義式濃縮設計的黃金拼配（提升油脂 Crema 與厚實度）。</p>
+                  </div>
+
+                  {/* 6. 沖泡方式 */}
+                  <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
+                    <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
+                      <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">6</span>
                       專業沖泡方式 (Brewing Methods)
                     </h4>
                     <p>• <strong>手沖濾杯 (Pour-over)：</strong>最能展現精品咖啡細緻層次與產區風味的沖煮法。</p>
@@ -992,10 +1003,10 @@
                     <p>• <strong>冷萃浸泡包 (Cold Brew)：</strong>長時間低溫浸泡，口感滑順低酸、甘甜不苦澀。</p>
                   </div>
 
-                  {/* 6. 保存方式 */}
-                  <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
+                  {/* 7. 保存方式 */}
+                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
-                      <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">6</span>
+                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">7</span>
                       咖啡豆保存方式 (Storage Tips)
                     </h4>
                     <p>• 存放於陰涼乾燥處，避免高溫、潮濕與陽光直射。</p>
@@ -1888,3 +1899,4 @@
   </script>
 </body>
 </html>
+
