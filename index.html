@@ -143,7 +143,7 @@
     };
 
     const CART_STORAGE_KEY = 'phoenix_cafe_cart_v4';
-    const PRODUCTS_STORAGE_KEY = 'phoenix_cafe_products_v8';
+    const PRODUCTS_STORAGE_KEY = 'phoenix_cafe_products_v9';
     const ORDER_HISTORY_STORAGE_KEY = 'phoenix_cafe_order_history_v4';
     const ADMIN_PASSWORD = '0348246669';
     const SHIPPING_CONFIG = { FREE_THRESHOLD: 500000, FLAT_RATE: 25000 };
@@ -399,6 +399,24 @@
         flavor: '淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富'
       },
       { 
+        id: 'arabica-coldbrew-30', 
+        nameZh: '100% 精品阿拉比卡冷萃咖啡包', 
+        nameVi: 'Cà phê ủ lạnh Arabica 100%', 
+        category: 'coldbrew', 
+        specZh: '30包/袋', 
+        specVi: '30 Gói /Túi', 
+        price: 350000, 
+        type: 'coldbrew', 
+        stock: 20, 
+        threshold: 5, 
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
+        origin: '嚴選單一產區阿拉比卡豆種（Single Origin）',
+        altitude: '高海拔特選產區',
+        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
+        grade: '精品冷萃浸泡包規格',
+        flavor: '淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富'
+      },
+      { 
         id: 'robusta-100-250g', 
         nameZh: '100% 精品羅布斯塔咖啡豆', 
         nameVi: 'Cà phê đặc sản Robusta 100%', 
@@ -417,6 +435,60 @@
         flavor: '醇厚濃郁、帶有黑可可與麥香的獨特風味'
       },
       { 
+        id: 'robusta-100-500g', 
+        nameZh: '100% 精品羅布斯塔咖啡豆', 
+        nameVi: 'Cà phê đặc sản Robusta 100%', 
+        category: 'robusta', 
+        specZh: '500公克', 
+        specVi: '500g', 
+        price: 172000, 
+        type: 'beans', 
+        stock: 25, 
+        threshold: 5, 
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P2.jpg',
+        origin: '精選頂級羅布斯塔莊園，濃郁風土與扎實口感',
+        altitude: '約 800 至 1,200 公尺',
+        process: '傳統日曬與水洗精製',
+        grade: 'Premium Grade 精選級',
+        flavor: '醇厚濃郁、帶有黑可可與麥香的獨特風味'
+      },
+      { 
+        id: 'robusta-coldbrew-10', 
+        nameZh: '100% 精品羅布斯塔冷萃咖啡包', 
+        nameVi: 'Cà phê ủ lạnh Robusta 100%', 
+        category: 'coldbrew', 
+        specZh: '10包/袋', 
+        specVi: '10 Gói /Túi', 
+        price: 100000, 
+        type: 'coldbrew', 
+        stock: 20, 
+        threshold: 5, 
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
+        origin: '嚴選單一產區羅布斯塔豆種（Single Origin）',
+        altitude: '精選優質產區',
+        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
+        grade: '冷萃浸泡包規格',
+        flavor: '口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻'
+      },
+      { 
+        id: 'robusta-coldbrew-30', 
+        nameZh: '100% 精品羅布斯塔冷萃咖啡包', 
+        nameVi: 'Cà phê ủ lạnh Robusta 100%', 
+        category: 'coldbrew', 
+        specZh: '30包/袋', 
+        specVi: '30 Gói /Túi', 
+        price: 250000, 
+        type: 'coldbrew', 
+        stock: 20, 
+        threshold: 5, 
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
+        origin: '嚴選單一產區羅布斯塔豆種（Single Origin）',
+        altitude: '精選優質產區',
+        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
+        grade: '冷萃浸泡包規格',
+        flavor: '口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻'
+      },
+      { 
         id: 'blend-8020-250g', 
         nameZh: '80/20 義式特調咖啡豆', 
         nameVi: 'Cà phê phối trộn Blend 80/20 Espresso', 
@@ -424,6 +496,24 @@
         specZh: '250公克', 
         specVi: '250g', 
         price: 135000, 
+        type: 'beans', 
+        stock: 15, 
+        threshold: 5, 
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P5.jpg',
+        origin: '精選阿拉比卡（80%）與羅布斯塔（20%）黃金比例拼配',
+        altitude: '綜合高海拔與優質莊園產區',
+        process: '水洗與日曬融合處理法',
+        grade: 'Espresso Blend 義式精選級',
+        flavor: '兼具阿拉比卡的優雅香氣與羅布斯塔的豐富油脂、濃厚Crema'
+      },
+      { 
+        id: 'blend-8020-500g', 
+        nameZh: '80/20 義式特調咖啡豆', 
+        nameVi: 'Cà phê phối trộn Blend 80/20 Espresso', 
+        category: 'blend', 
+        specZh: '500公克', 
+        specVi: '500g', 
+        price: 260000, 
         type: 'beans', 
         stock: 15, 
         threshold: 5, 
@@ -458,7 +548,7 @@
       const [isHistoryOpen, setIsHistoryOpen] = useState(false);
       const [isAdminOpen, setIsAdminOpen] = useState(false);
       const [isHistoryPasswordModalOpen, setIsHistoryPasswordModalOpen] = useState(false);
-      const [passwordActionType, setPasswordActionType] = useState('history'); // 'history' or 'admin'
+      const [passwordActionType, setPasswordActionType] = useState('history');
       const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
       const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
       const [activeReceiptOrder, setActiveReceiptOrder] = useState(null);
@@ -527,7 +617,6 @@
 
       return (
         <div className="w-full flex-grow flex flex-col relative">
-          {/* Header Nav */}
           <nav className="sticky top-0 z-35 bg-coffee-900 text-coffee-100 shadow-lg w-full backdrop-blur-md bg-opacity-95 border-b border-coffee-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -545,7 +634,6 @@
                 </div>
               </div>
 
-              {/* Desktop Search Bar */}
               <div className="relative flex-1 max-w-lg hidden md:block">
                 <input
                   type="text"
@@ -557,7 +645,6 @@
                 <Icons.Search className="absolute left-4 top-3.5 h-4 w-4 text-coffee-300" />
               </div>
 
-              {/* Language Switcher & Controls */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={toggleLanguage}
@@ -590,7 +677,6 @@
               </div>
             </div>
 
-            {/* Mobile Search Bar */}
             {isMobileSearchOpen && (
               <div className="md:hidden px-4 pb-4 pt-2 border-t border-coffee-800 bg-coffee-900">
                 <div className="relative">
@@ -608,9 +694,8 @@
             )}
           </nav>
 
-          {/* Floating Customer Service Button (Zalo/WhatsApp) */}
           <a
-            href="https://zalo.me/84348246669"
+            href="https://zalo.me/84789818828"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 border-2 border-white"
@@ -619,9 +704,7 @@
             <Icons.MessageCircle className="h-6 w-6" />
           </a>
 
-          {/* Content Area */}
           <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-            {/* 品牌故事與經營理念專區 */}
             <section className="mb-12 sm:mb-16 bg-gradient-to-br from-white via-coffee-50 to-amber-50/40 rounded-3xl p-6 sm:p-10 border border-coffee-200/70 shadow-sm">
               <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
                 <div className="inline-flex items-center gap-2 bg-coffee-900 text-amber-100 px-4 py-1.5 rounded-full text-xs font-medium tracking-widest uppercase mb-3 shadow-inner">
@@ -667,7 +750,6 @@
               </div>
             </section>
 
-            {/* Category Tabs */}
             <div className="overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-6 sm:mb-10">
               <div className="flex gap-2.5 sm:gap-3 min-w-max pb-1">
                 {Object.keys(t.cats).map(catKey => (
@@ -686,7 +768,6 @@
               </div>
             </div>
 
-            {/* Product Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {filteredProducts.map(product => {
                 const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
@@ -750,7 +831,6 @@
             </div>
           </main>
 
-          {/* Mobile Drawer Navigation */}
           {isMobileMenuOpen && (
             <div className="fixed inset-0 z-50 sm:hidden">
               <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)} />
@@ -802,7 +882,6 @@
             </div>
           )}
 
-          {/* Modals & Drawers */}
           {selectedProduct && (
             <ProductDetailModal
               product={selectedProduct}
@@ -1031,7 +1110,7 @@
 
             <div className="pt-6 border-t border-gray-100 mt-6 flex flex-col gap-2.5">
               <a
-                href={`https://zalo.me/84348246669?text=${zaloText}`}
+                href={`https://zalo.me/84789818828?text=${zaloText}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
@@ -1472,7 +1551,6 @@
                   <input type="text" name="notes" value={formData.notes} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900" />
                 </div>
 
-                {/* Promo Code Input */}
                 <div className="space-y-1.5 pt-2">
                   <label className="block text-xs font-bold text-coffee-800">{t.promoCodeLabel}</label>
                   <div className="flex gap-2">
