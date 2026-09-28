@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -140,6 +139,9 @@
       ),
       Edit: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+      ),
+      GraduationCap: (props) => (
+        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
       )
     };
 
@@ -155,6 +157,7 @@
         history: '歷史訂單',
         adminPanel: '後台商品管理',
         coffeeGuide: '咖啡知識專區',
+        roastTraining: '咖啡烘焙教學',
         cart: '購物車',
         categories: '產品分類',
         price: '售價',
@@ -261,6 +264,7 @@
         history: 'Lịch sử đơn hàng',
         adminPanel: 'Quản lý sản phẩm',
         coffeeGuide: 'Kiến thức cà phê',
+        roastTraining: 'Đào tạo rang cà phê',
         cart: 'Giỏ hàng',
         categories: 'Danh mục sản phẩm',
         price: 'Giá',
@@ -569,6 +573,7 @@
       const [isHistoryOpen, setIsHistoryOpen] = useState(false);
       const [isAdminOpen, setIsAdminOpen] = useState(false);
       const [isGuideOpen, setIsGuideOpen] = useState(false);
+      const [isTrainingOpen, setIsTrainingOpen] = useState(false);
       const [isHistoryPasswordModalOpen, setIsHistoryPasswordModalOpen] = useState(false);
       const [passwordActionType, setPasswordActionType] = useState('history');
       const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -727,7 +732,7 @@
           </a>
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow flex flex-col md:flex-row gap-8 py-6 sm:py-10">
-            {/* 左側導覽列 / 咖啡知識入口 */}
+            {/* 左側導覽列 / 咖啡知識與烘焙教學入口 */}
             <aside className="w-full md:w-64 flex-shrink-0 space-y-6">
               <div className="bg-white p-5 rounded-3xl shadow-sm border border-coffee-200/70 space-y-4">
                 <h3 className="text-sm font-bold font-serif text-coffee-900 uppercase tracking-wider flex items-center gap-2">
@@ -741,6 +746,21 @@
                   className="w-full py-2.5 px-4 bg-coffee-900 hover:bg-coffee-800 text-amber-100 rounded-2xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   <Icons.BookOpen className="h-4 w-4" /> 點擊閱讀咖啡百科
+                </button>
+              </div>
+
+              <div className="bg-white p-5 rounded-3xl shadow-sm border border-coffee-200/70 space-y-4">
+                <h3 className="text-sm font-bold font-serif text-coffee-900 uppercase tracking-wider flex items-center gap-2">
+                  <Icons.GraduationCap className="h-4 w-4 text-amber-800" /> {t.roastTraining}
+                </h3>
+                <p className="text-xs text-coffee-600 leading-relaxed">
+                  專業職人帶領，從生豆物理特性、烘焙機曲線控制到杯測調校完整教學。
+                </p>
+                <button
+                  onClick={() => setIsTrainingOpen(true)}
+                  className="w-full py-2.5 px-4 bg-amber-700 hover:bg-amber-800 text-white rounded-2xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2"
+                >
+                  <Icons.GraduationCap className="h-4 w-4" /> 課程大綱與報名
                 </button>
               </div>
 
@@ -892,6 +912,10 @@
                       <Icons.BookOpen className="h-5 w-5" /> {t.coffeeGuide}
                     </button>
 
+                    <button onClick={() => { setIsMobileMenuOpen(false); setIsTrainingOpen(true); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-amber-800 text-white font-medium text-sm shadow-md">
+                      <Icons.GraduationCap className="h-5 w-5" /> {t.roastTraining}
+                    </button>
+
                     <button onClick={toggleLanguage} className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-coffee-800 text-amber-200 font-medium text-sm border border-coffee-700 shadow-inner">
                       <span className="flex items-center gap-2.5"><Icons.Globe className="h-5 w-5" /> 語言 / Ngôn ngữ</span>
                       <span className="font-bold">{lang === 'zh-TW' ? '繁體中文' : 'Tiếng Việt'}</span>
@@ -939,77 +963,30 @@
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-coffee-800 leading-relaxed pr-1">
-                  {/* 1. 品種與種類 */}
                   <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">1</span>
                       世界上主要的咖啡種類與品種 (Coffee Species & Varieties)
                     </h4>
-                    <p>• <strong>核心物種：</strong>阿拉比卡 (Arabica) 占全球產量 60-70%，生長於高海拔、風味細緻優雅；羅布斯塔 (Robusta) 抗病力強、口感濃厚扎實、苦韻明顯；利比卡與艾克塞爾薩 (Liberica & Excelsa) 屬稀有木質調品種。</p>
-                    <p>• <strong>經典阿拉比卡品種：</strong>包括源自古老的鐵比卡 (Typica)、甜感圓潤的波旁 (Bourbon)、適應力強的卡杜拉 (Caturra)、精品至尊帶有茉莉花與佛手柑香氣的藝伎/夏卡蘭 (Gesha/Geisha)，以及肯亞代表 SL28 與 SL34。</p>
+                    <p>• <strong>核心物種：</strong>阿拉比卡 (Arabica) 占全球產量 60-70%，生長於高海拔、風味細緻優雅；羅布斯塔 (Robusta) 抗病力強、口感濃厚扎實、苦韻明顯。</p>
+                    <p>• <strong>經典阿拉比卡品種：</strong>包括鐵比卡 (Typica)、波旁 (Bourbon)、卡杜拉 (Caturra) 以及帶有茉莉花與佛手柑香氣的藝伎 (Gesha)。</p>
                   </div>
 
-                  {/* 2. 生豆處理法與先進工藝 */}
                   <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">2</span>
                       生豆處理法與先進工藝 (Processing Methods)
                     </h4>
-                    <p>• <strong>傳統三大基礎：</strong>水洗法（乾淨明亮、果酸清脆）、日曬法（熱帶水果香氣、甜感厚實）、蜜處理法（介於水洗與日曬間，依果膠厚度分白、黃、紅、黑蜜）。</p>
-                    <p>• <strong>先進實驗性工藝：</strong>包含隔絕氧氣的厭氧發酵法（肉桂與絲滑口感）、模仿紅酒釀造的二氧化碳浸漬法 (CM)、利用溫冰水交替鎖住香氣的熱休克處理法，以及加入特定水果或酵母的共發酵法。</p>
+                    <p>• <strong>傳統三大基礎：</strong>水洗法（乾淨明亮）、日曬法（熱帶水果香氣）、蜜處理法（甜感厚實）。</p>
+                    <p>• <strong>先進實驗性工藝：</strong>厭氧發酵法、二氧化碳浸漬法 (CM)、熱休克處理法與共發酵法。</p>
                   </div>
 
-                  {/* 3. 咖啡等級 */}
                   <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
                     <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
                       <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">3</span>
-                      咖啡等級劃分 (Coffee Grades)
-                    </h4>
-                    <p>• <strong>精品級 (Specialty Grade)：</strong>SCA 評分達 80 分以上，無明顯瑕疵豆，具備獨特的產區風土特色與乾淨度。</p>
-                    <p>• <strong>商業級 / 精選級 (Commercial / Premium)：</strong>嚴選優質莊園豆，顆粒飽滿、風味穩定，適合日常品飲與特調配方。</p>
-                  </div>
-
-                  {/* 4. 烘焙方式 */}
-                  <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
-                    <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
-                      <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">4</span>
-                      烘焙方式與烘焙度 (Roasting Profiles)
-                    </h4>
-                    <p>• <strong>淺焙 (Light Roast)：</strong>保留最多產區原始果酸與花香，口感明亮清爽。</p>
-                    <p>• <strong>中焙 (Medium Roast)：</strong>酸甜平衡，帶有堅果、焦糖與可可香氣，大眾接受度最高。</p>
-                    <p>• <strong>深焙 (Dark Roast)：</strong>酸味幾乎消失，展現濃郁的苦甜巧克力、香料與厚實醇厚度（Body）。</p>
-                  </div>
-
-                  {/* 5. 混合咖啡豆介紹 */}
-                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
-                    <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
-                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">5</span>
                       混合咖啡豆的藝術 (Coffee Blending)
                     </h4>
-                    <p>• <strong>核心目的：</strong>將不同產區、品種或烘焙度的豆子精準拼配，達到「截長補短、創造平衡與穩定風味」的效果。</p>
-                    <p>• <strong>三大優勢：</strong>風味互補與立體化（結合花香、堅果與甜感）、季節季節穩定性（全年提供一致風味），以及專為義式濃縮設計的黃金拼配（提升油脂 Crema 與厚實度）。</p>
-                  </div>
-
-                  {/* 6. 沖泡方式 */}
-                  <div className="bg-amber-50/50 p-5 rounded-2xl border border-amber-200/60 space-y-2">
-                    <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
-                      <span className="w-6 h-6 bg-amber-800 text-white rounded-full flex items-center justify-center text-xs">6</span>
-                      專業沖泡方式 (Brewing Methods)
-                    </h4>
-                    <p>• <strong>手沖濾杯 (Pour-over)：</strong>最能展現精品咖啡細緻層次與產區風味的沖煮法。</p>
-                    <p>• <strong>義式濃縮 (Espresso)：</strong>高壓快速萃取，油脂（Crema）豐厚，適合製作拿鐵或美式。</p>
-                    <p>• <strong>越南滴漏 (Phin Filter)：</strong>越南傳統金屬濾壺，滴濾出濃郁扎實、搭配煉乳風味絕佳的咖啡。</p>
-                    <p>• <strong>冷萃浸泡包 (Cold Brew)：</strong>長時間低溫浸泡，口感滑順低酸、甘甜不苦澀。</p>
-                  </div>
-
-                  {/* 7. 保存方式 */}
-                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
-                    <h4 className="text-sm sm:text-base font-bold font-serif text-coffee-900 flex items-center gap-2">
-                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">7</span>
-                      咖啡豆保存方式 (Storage Tips)
-                    </h4>
-                    <p>• 存放於陰涼乾燥處，避免高溫、潮濕與陽光直射。</p>
-                    <p>• 建議使用附單向排氣閥的密封罐或原包裝夾鏈袋封存，開封後請盡速飲用完畢以確保香氣新鮮。</p>
+                    <p>• 將不同產區或烘焙度的豆子精準拼配，達到「截長補短、創造平衡與穩定風味」的效果，特別適合製作義式濃縮與醇厚冷萃包。</p>
                   </div>
                 </div>
 
@@ -1020,6 +997,16 @@
                 </div>
               </div>
             </div>
+          )}
+
+          {/* 咖啡烘焙教學與報名頁面 */}
+          {isTrainingOpen && (
+            <TrainingModal
+              isOpen={isTrainingOpen}
+              t={t}
+              lang={lang}
+              onClose={() => setIsTrainingOpen(false)}
+            />
           )}
 
           {selectedProduct && (
@@ -1053,7 +1040,7 @@
               deductStock={deductStock}
               onClose={() => setIsCheckoutOpen(false)}
               cart={cart}
-              clearCart={clearCart}
+              clearCart={clearCard}
               onOpenReceipt={(order) => setActiveReceiptOrder(order)}
             />
           )}
@@ -1104,6 +1091,280 @@
               onClose={() => setActiveReceiptOrder(null)}
             />
           )}
+        </div>
+      );
+    }
+
+    function TrainingModal({ isOpen, t, lang, onClose }) {
+      const [activeTab, setActiveTab] = useState('syllabus'); // 'syllabus' or 'register'
+      const [formData, setFormData] = useState({
+        fullName: '',
+        phone: '',
+        email: '',
+        batch: '2026年10月梯次 (週末班)',
+        experience: '初學者 (零基礎)',
+        notes: ''
+      });
+      const [isSubmitted, setIsSubmitted] = useState(false);
+
+      const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        setIsSubmitted(true);
+      };
+
+      const zaloTrainingText = encodeURIComponent(`🎓 *PHOENIX CAFE - 咖啡烘焙課程報名*
+姓名: ${formData.fullName}
+電話: ${formData.phone}
+信箱: ${formData.email}
+梯次: ${formData.batch}
+經驗: ${formData.experience}
+備註: ${formData.notes || '無'}`);
+
+      if (!isOpen) return null;
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
+          <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[92vh] overflow-y-auto z-10 flex flex-col">
+            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-amber-700 p-2 rounded-xl text-white"><Icons.GraduationCap className="h-6 w-6" /></div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold font-serif text-coffee-900">Phoenix 專業咖啡烘焙實作課程</h3>
+                  <p className="text-xs text-coffee-600">Mastering Coffee Roasting & Bean Science</p>
+                </div>
+              </div>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+            </div>
+
+            {/* 標籤切換 */}
+            <div className="flex gap-2 mb-6 border-b border-coffee-100 pb-3">
+              <button
+                onClick={() => setActiveTab('syllabus')}
+                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+                  activeTab === 'syllabus' ? 'bg-coffee-900 text-amber-100 shadow-md' : 'bg-gray-100 text-coffee-700 hover:bg-gray-200'
+                }`}
+              >
+                📖 詳細課程大綱 (Syllabus)
+              </button>
+              <button
+                onClick={() => setActiveTab('register')}
+                className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
+                  activeTab === 'register' ? 'bg-amber-700 text-white shadow-md' : 'bg-gray-100 text-coffee-700 hover:bg-gray-200'
+                }`}
+              >
+                ✍️ 線上報名填寫 (Register)
+              </button>
+            </div>
+
+            {/* 課程大綱內容 */}
+            {activeTab === 'syllabus' && (
+              <div className="space-y-6 text-xs sm:text-sm text-coffee-800 leading-relaxed overflow-y-auto pr-1">
+                <div className="bg-amber-50/70 p-5 rounded-2xl border border-amber-200 space-y-2">
+                  <h4 className="font-serif font-bold text-base text-amber-900">課程特色與目標</h4>
+                  <p>本課程專為咖啡愛好者、獨立咖啡館創業者及希望深入掌握烘焙技術的學員設計。採用小班制實作教學（每班限額 6 人），由資深烘焙師親自指導，帶領您從生豆物理結構解析、烘焙機機械原理，到火力與風門的精準掌控，完整建立科學化且系統性的烘焙邏輯。</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
+                    <div className="flex items-center gap-2 font-bold font-serif text-coffee-900 text-sm">
+                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">Day 1</span>
+                      生豆基礎與烘焙原理 (Theory & Basics)
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-coffee-700 list-disc list-inside">
+                      <li>咖啡生豆物理特性（水分、密度、硬度與品種關聯）</li>
+                      <li>烘焙機結構、傳導熱與對流熱原理分析</li>
+                      <li>烘焙曲線（Roast Profile）四大階段解析：回溫點、脫水期、梅納反應期、焦糖化期</li>
+                      <li>一爆與二爆的聲音、視覺判定與化學變化</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
+                    <div className="flex items-center gap-2 font-bold font-serif text-coffee-900 text-sm">
+                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">Day 2</span>
+                      火力風門操控與故障排除 (Control & Troubleshooting)
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-coffee-700 list-disc list-inside">
+                      <li>入豆溫與充填量（Batch Size）設定技巧</li>
+                      <li>風門（Airflow）與火力（Gas）的動態微調邏輯</li>
+                      <li>常見烘焙缺陷判斷：焦斑、夾生、翻豆與過度發展</li>
+                      <li>不同處理法（水洗、日曬、厭氧）之對應烘焙策略</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
+                    <div className="flex items-center gap-2 font-bold font-serif text-coffee-900 text-sm">
+                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">Day 3</span>
+                      實機操作與烘焙曲線記錄 (Practical Roasting)
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-coffee-700 list-disc list-inside">
+                      <li>學員實際上機操作半熱風烘焙機</li>
+                      <li>紀錄及分析個人專屬烘焙曲線</li>
+                      <li>淺焙、中焙、深焙實作演練</li>
+                      <li>下豆時機掌握與強制冷卻系統操作</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-coffee-50 p-5 rounded-2xl border border-coffee-200/60 space-y-2">
+                    <div className="flex items-center gap-2 font-bold font-serif text-coffee-900 text-sm">
+                      <span className="w-6 h-6 bg-coffee-900 text-amber-100 rounded-full flex items-center justify-center text-xs">Day 4</span>
+                      杯測品評與風味調校 (Cupping & Evaluation)
+                    </div>
+                    <ul className="space-y-1.5 text-xs text-coffee-700 list-disc list-inside">
+                      <li>SCA 標準杯測方法與風味輪應用</li>
+                      <li>自己烘焙作品的盲測與口感評分</li>
+                      <li>如何透過杯測結果修正下次烘焙曲線</li>
+                      <li>結業頒發 Phoenix 專業烘焙證書與豆子帶回</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-coffee-900 text-amber-100 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div>
+                    <h5 className="font-bold text-base">課程費用與梯次資訊</h5>
+                    <p className="text-xs text-coffee-200 mt-0.5">學費：3,500,000 VND / 人（含教材、生豆耗材、專用杯測工具及結業證書）</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab('register')}
+                    className="px-6 py-3 bg-amber-700 hover:bg-amber-600 text-white font-bold rounded-xl text-xs whitespace-nowrap shadow-md transition-all"
+                  >
+                    立即前往報名
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* 報名表填寫 */}
+            {activeTab === 'register' && (
+              <div className="overflow-y-auto pr-1">
+                {isSubmitted ? (
+                  <div className="py-10 text-center space-y-4">
+                    <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner border border-green-200">
+                      <Icons.CheckCircle className="h-10 w-10 animate-bounce" />
+                    </div>
+                    <h3 className="text-xl font-bold font-serif text-coffee-900">報名表單已成功送出！</h3>
+                    <p className="text-xs sm:text-sm text-coffee-600">我們已收到您的報名資訊，將有專人透過電話或 Zalo 與您聯繫確認繳費與上課細節。</p>
+                    
+                    <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                      <a
+                        href={`https://zalo.me/84789818828?text=${zaloTrainingText}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-2xl shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
+                      >
+                        <Icons.MessageCircle className="h-4 w-4" /> 一鍵發送至 Zalo 客服確認
+                      </a>
+                      <button
+                        onClick={onClose}
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-2xl text-xs sm:text-sm transition-colors"
+                      >
+                        關閉視窗
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="bg-amber-50/50 p-4 rounded-2xl border border-amber-200 text-xs text-amber-900 mb-4">
+                      請填寫以下報名表單，送出後可一鍵傳送至 Zalo 客服加快審核流程。每班僅限 6 人，額滿為止！
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-bold text-coffee-800">姓名 *</label>
+                        <input
+                          type="text"
+                          name="fullName"
+                          required
+                          value={formData.fullName}
+                          onChange={handleChange}
+                          placeholder="請輸入您的全名"
+                          className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-bold text-coffee-800">聯絡電話 *</label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          required
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder="例如: 0912345678"
+                          className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="block text-xs font-bold text-coffee-800">電子信箱 (Email)</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="name@example.com"
+                          className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-bold text-coffee-800">希望上課梯次 *</label>
+                        <select
+                          name="batch"
+                          value={formData.batch}
+                          onChange={handleChange}
+                          className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 font-bold"
+                        >
+                          <option value="2026年10月梯次 (週末班)">2026年10月梯次 (週末班)</option>
+                          <option value="2026年11月梯次 (平日班)">2026年11月梯次 (平日班)</option>
+                          <option value="2026年12月梯次 (密集班)">2026年12月梯次 (密集班)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-xs font-bold text-coffee-800">咖啡烘焙經驗</label>
+                      <select
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleChange}
+                        className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600 font-bold"
+                      >
+                        <option value="初學者 (零基礎)">初學者 (零基礎)</option>
+                        <option value="略懂沖煮/未碰過烘焙機">略懂沖煮 / 未碰過烘焙機</option>
+                        <option value="具備基本烘焙經驗">具備基本烘焙經驗</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-xs font-bold text-coffee-800">備註說明 (選填)</label>
+                      <textarea
+                        name="notes"
+                        rows="2"
+                        value={formData.notes}
+                        onChange={handleChange}
+                        placeholder="是否有特殊飲食習慣或希望加強學習的單元？"
+                        className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-600"
+                      />
+                    </div>
+
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        className="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
+                      >
+                        <Icons.Send className="h-4 w-4" /> 確認提交報名表單
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       );
     }
@@ -1898,4 +2159,3 @@
   </script>
 </body>
 </html>
-
