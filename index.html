@@ -98,9 +98,6 @@
       Globe: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
       ),
-      Truck: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-      ),
       Send: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
       ),
@@ -191,7 +188,7 @@
         notes: '備註 (可選)',
         paymentMethod: '付款方式',
         cod: '貨到付款 (COD)',
-        bank: '銀行轉帳 (Bank Transfer)',
+        bank: '銀行轉帳 (Bank Transfer - Vietcombank QR)',
         momo: '電子錢包 (MoMo / ZaloPay)',
         promoCodeLabel: '優惠折扣碼 (輸入 PHOENIX10 享9折)',
         applyPromo: '套用',
@@ -296,7 +293,7 @@
         notes: 'Ghi chú (Không bắt buộc)',
         paymentMethod: 'Phương thức thanh toán',
         cod: 'Thanh toán khi nhận hàng (COD)',
-        bank: 'Chuyển khoản ngân hàng (Bank Transfer)',
+        bank: 'Chuyển khoản ngân hàng (Bank Transfer - Vietcombank QR)',
         momo: 'Ví điện tử (MoMo / ZaloPay)',
         promoCodeLabel: 'Mã giảm giá (Nhập PHOENIX10 giảm 10%)',
         applyPromo: 'Áp dụng',
@@ -713,7 +710,7 @@
           </nav>
 
           <a
-            href="https://zalo.me/84348246669"
+            href="https://zalo.me/84789818828"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 border-2 border-white"
@@ -1483,13 +1480,14 @@
     }
 
     function CheckoutModal({ isOpen, onClose, cart, clearCart, products, deductStock, t, lang, onOpenReceipt }) {
-      const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '', paymentMethod: 'COD' });
+      const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '', paymentMethod: 'Bank Transfer' });
       const [promoCode, setPromoCode] = useState('');
       const [discountRate, setDiscountRate] = useState(0);
       const [promoMessage, setPromoMessage] = useState('');
       const [isSubmitting, setIsSubmitting] = useState(false);
       const [isSuccess, setIsSuccess] = useState(false);
       const [lastCreatedOrder, setLastCreatedOrder] = useState(null);
+      const [tempOrderId] = useState(() => `${new Date().getFullYear()}${Math.random().toString(36).substring(2, 6).toUpperCase()}`);
 
       const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
       const discount = Math.round(subtotal * discountRate);
@@ -1497,6 +1495,14 @@
       const isFreeShipping = discountedSubtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || discountedSubtotal === 0;
       const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
       const grandTotal = discountedSubtotal + shippingFee;
+
+      // 生成 Vietcombank 動態 QR Code URL (透過 VietQR API: 970436 是 Vietcombank BIN)
+      const vietcombankQRUrl = useMemo(() => {
+        const accountNo = '0121000852742';
+        const accountName = 'MIU KIM PHUONG';
+        const addInfo = `PHOENIX ${tempOrderId}`;
+        return `https://img.vietqr.io/image/970436-${accountNo}-compact2.png?amount=${grandTotal}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(accountName)}`;
+      }, [grandTotal, tempOrderId]);
 
       const handleApplyPromo = () => {
         if (promoCode.trim().toUpperCase() === 'PHOENIX10') {
@@ -1514,8 +1520,7 @@
         e.preventDefault();
         setIsSubmitting(true);
 
-        const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-        const orderId = `${new Date().getFullYear()}${randomSuffix}`;
+        const orderId = tempOrderId;
         const orderDate = new Date().toLocaleString();
 
         const itemsSummary = cart.map(item => 
@@ -1628,11 +1633,30 @@
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-coffee-800">{t.paymentMethod}</label>
                   <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 font-bold">
-                    <option value="COD">{t.cod}</option>
                     <option value="Bank Transfer">{t.bank}</option>
+                    <option value="COD">{t.cod}</option>
                     <option value="MoMo / ZaloPay">{t.momo}</option>
                   </select>
                 </div>
+
+                {/* 自動產生 Vietcombank 付款 QR Code 區塊 */}
+                {formData.paymentMethod === 'Bank Transfer' && (
+                  <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 text-center space-y-3">
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span>
+                      <span className="text-xs font-bold text-amber-900">Vietcombank 自動付款 QR Code</span>
+                    </div>
+                    <div className="bg-white p-3 rounded-xl inline-block shadow-sm border border-amber-100">
+                      <img src={vietcombankQRUrl} alt="Vietcombank QR" className="w-48 h-auto mx-auto object-contain rounded" />
+                    </div>
+                    <div className="text-[11px] text-coffee-700 space-y-0.5">
+                      <p><strong>戶名 (Tên):</strong> MIU KIM PHUONG</p>
+                      <p><strong>帳號 (STK):</strong> 0121000852742 (PGD Trảng Bom)</p>
+                      <p><strong>金額 (Số tiền):</strong> <span className="text-red-600 font-bold">{grandTotal.toLocaleString()} VND</span></p>
+                      <p><strong>內文 (Nội dung):</strong> PHOENIX {tempOrderId}</p>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-coffee-800">{t.notes}</label>
