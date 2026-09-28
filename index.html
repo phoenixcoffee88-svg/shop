@@ -143,7 +143,7 @@
     };
 
     const CART_STORAGE_KEY = 'phoenix_cafe_cart_v4';
-    const PRODUCTS_STORAGE_KEY = 'phoenix_cafe_products_v9';
+    const PRODUCTS_STORAGE_KEY = 'phoenix_cafe_products_v10';
     const ORDER_HISTORY_STORAGE_KEY = 'phoenix_cafe_order_history_v4';
     const ADMIN_PASSWORD = '0348246669';
     const SHIPPING_CONFIG = { FREE_THRESHOLD: 500000, FLAT_RATE: 25000 };
@@ -219,7 +219,16 @@
         passwordError: '密碼錯誤，請重新輸入',
         passwordSubmit: '確認送出',
         adminTitle: '商品管理後台',
-        addProduct: '新增商品',
+        addProductBtn: '+ 新增產品',
+        addProductTitle: '新增一項新產品',
+        productNameZh: '中文品名',
+        productNameVi: '越文品名',
+        categorySelect: '產品分類',
+        specZhInput: '中文規格 (例: 250公克)',
+        priceInput: '售價 (VND)',
+        stockInput: '初始庫存',
+        imageUrlInput: '圖片網址 (URL)',
+        saveNewProduct: '確認新增產品',
         saveChanges: '儲存變更',
         delete: '刪除',
         brandStoryTitle: '品牌故事與經營理念',
@@ -315,7 +324,16 @@
         passwordError: 'Mật khẩu sai, vui lòng thử lại',
         passwordSubmit: 'Xác nhận',
         adminTitle: 'Quản lý sản phẩm hệ thống',
-        addProduct: 'Thêm sản phẩm mới',
+        addProductBtn: '+ Thêm sản phẩm',
+        addProductTitle: 'Thêm sản phẩm mới',
+        productNameZh: 'Tên tiếng Trung',
+        productNameVi: 'Tên tiếng Việt',
+        categorySelect: 'Danh mục',
+        specZhInput: 'Quy cách (VD: 250g)',
+        priceInput: 'Giá (VND)',
+        stockInput: 'Tồn kho',
+        imageUrlInput: 'Link ảnh (URL)',
+        saveNewProduct: 'Lưu sản phẩm mới',
         saveChanges: 'Lưu thay đổi',
         delete: 'Xóa',
         brandStoryTitle: 'Câu chuyện thương hiệu & Triết lý kinh doanh',
@@ -695,7 +713,7 @@
           </nav>
 
           <a
-            href="https://zalo.me/84348246669"
+            href="https://zalo.me/84789818828"
             target="_blank"
             rel="noopener noreferrer"
             className="fixed bottom-6 right-6 z-40 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-110 border-2 border-white"
@@ -970,6 +988,23 @@
 
     function AdminProductsModal({ isOpen, products, setProducts, t, lang, onClose }) {
       const [editList, setEditList] = useState(products);
+      const [showAddForm, setShowAddForm] = useState(false);
+      const [newProduct, setNewProduct] = useState({
+        nameZh: '',
+        nameVi: '',
+        category: 'arabica',
+        specZh: '250公克',
+        specVi: '250g',
+        price: 150000,
+        stock: 20,
+        type: 'beans',
+        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P1.jpg',
+        origin: '精選優質產區',
+        altitude: '高海拔',
+        process: '水洗',
+        grade: 'Grade 1',
+        flavor: '香醇濃郁'
+      });
 
       const handlePriceChange = (id, newPrice) => {
         setEditList(prev => prev.map(p => p.id === id ? { ...p, price: Number(newPrice) } : p));
@@ -985,9 +1020,33 @@
         }
       };
 
+      const handleAddProductSubmit = (e) => {
+        e.preventDefault();
+        const id = 'custom-' + Date.now();
+        const createdProduct = { ...newProduct, id };
+        setEditList([createdProduct, ...editList]);
+        setShowAddForm(false);
+        setNewProduct({
+          nameZh: '',
+          nameVi: '',
+          category: 'arabica',
+          specZh: '250公克',
+          specVi: '250g',
+          price: 150000,
+          stock: 20,
+          type: 'beans',
+          image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P1.jpg',
+          origin: '精選優質產區',
+          altitude: '高海拔',
+          process: '水洗',
+          grade: 'Grade 1',
+          flavor: '香醇濃郁'
+        });
+      };
+
       const handleSave = () => {
         setProducts(editList);
-        alert('商品資料已更新儲存！');
+        alert('商品資料與新增項目已更新儲存！');
         onClose();
       };
 
@@ -999,8 +1058,37 @@
           <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 flex flex-col">
             <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
               <h3 className="text-lg font-bold font-serif text-coffee-900 flex items-center gap-2"><Icons.Edit className="h-5 w-5" /> {t.adminTitle}</h3>
-              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setShowAddForm(!showAddForm)} className="px-3.5 py-1.5 bg-amber-700 text-white rounded-xl text-xs font-bold hover:bg-amber-800 transition-colors shadow-sm">
+                  {t.addProductBtn}
+                </button>
+                <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              </div>
             </div>
+
+            {showAddForm && (
+              <form onSubmit={handleAddProductSubmit} className="mb-6 p-4 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-3">
+                <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider">{t.addProductTitle}</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input type="text" placeholder={t.productNameZh} required value={newProduct.nameZh} onChange={(e) => setNewProduct({...newProduct, nameZh: e.target.value})} className="bg-white border rounded-xl p-2.5 text-xs font-medium" />
+                  <input type="text" placeholder={t.productNameVi} required value={newProduct.nameVi} onChange={(e) => setNewProduct({...newProduct, nameVi: e.target.value})} className="bg-white border rounded-xl p-2.5 text-xs font-medium" />
+                  <select value={newProduct.category} onChange={(e) => setNewProduct({...newProduct, category: e.target.value, type: e.target.value === 'coldbrew' ? 'coldbrew' : 'beans'})} className="bg-white border rounded-xl p-2.5 text-xs font-medium">
+                    <option value="arabica">{t.cats.arabica}</option>
+                    <option value="robusta">{t.cats.robusta}</option>
+                    <option value="blend">{t.cats.blend}</option>
+                    <option value="coldbrew">{t.cats.coldbrew}</option>
+                  </select>
+                  <input type="text" placeholder={t.specZhInput} required value={newProduct.specZh} onChange={(e) => setNewProduct({...newProduct, specZh: e.target.value, specVi: e.target.value})} className="bg-white border rounded-xl p-2.5 text-xs font-medium" />
+                  <input type="number" placeholder={t.priceInput} required value={newProduct.price} onChange={(e) => setNewProduct({...newProduct, price: Number(e.target.value)})} className="bg-white border rounded-xl p-2.5 text-xs font-medium" />
+                  <input type="number" placeholder={t.stockInput} required value={newProduct.stock} onChange={(e) => setNewProduct({...newProduct, stock: Number(e.target.value)})} className="bg-white border rounded-xl p-2.5 text-xs font-medium" />
+                  <input type="text" placeholder={t.imageUrlInput} required value={newProduct.image} onChange={(e) => setNewProduct({...newProduct, image: e.target.value})} className="bg-white border rounded-xl p-2.5 text-xs font-medium sm:col-span-2" />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button type="button" onClick={() => setShowAddForm(false)} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-xs font-bold">取消</button>
+                  <button type="submit" className="px-4 py-2 bg-coffee-900 text-white rounded-xl text-xs font-bold">{t.saveNewProduct}</button>
+                </div>
+              </form>
+            )}
 
             <div className="flex-1 overflow-y-auto space-y-3 pr-1">
               {editList.map(prod => {
@@ -1110,7 +1198,7 @@
 
             <div className="pt-6 border-t border-gray-100 mt-6 flex flex-col gap-2.5">
               <a
-                href={`https://zalo.me/84348246669?text=${zaloText}`}
+                href={`https://zalo.me/84789818828?text=${zaloText}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
