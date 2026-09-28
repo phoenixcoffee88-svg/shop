@@ -1722,7 +1722,8 @@
           name: productName,
           spec: specText,
           grind: selectedGrind,
-          grindLabel: grindObj.label
+          grindLabel: grindObj.label,
+          unitPrice: currentUnitPrice
         });
         onClose();
       };
@@ -1733,240 +1734,224 @@
           <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 space-y-5 max-h-[92vh] overflow-y-auto z-10">
             <button onClick={onClose} className="absolute right-4 top-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
 
-            <div>
-              <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60 uppercase tracking-wider">{specText}</span>
-              <h2 className="text-xl sm:text-2xl font-bold font-serif text-coffee-900 mt-2">{productName}</h2>
-              <p className="text-xs text-coffee-600/80 italic mt-0.5">{productSubName}</p>
-            </div>
-
-            <div className="flex items-baseline justify-between bg-coffee-50/80 p-4 rounded-2xl border border-coffee-100">
-              <div className="flex items-baseline gap-2.5 flex-wrap">
-                <span className="text-xl sm:text-2xl font-extrabold text-coffee-900">{currentUnitPrice.toLocaleString()} VND</span>
+            <div className="flex gap-4 items-center">
+              <img src={product.image} alt={productName} className="w-20 h-20 rounded-2xl object-cover border shadow-sm" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600'; }} />
+              <div>
+                <span className="text-xs bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full font-bold">{specText}</span>
+                <h3 className="text-lg font-bold font-serif text-coffee-900 mt-1">{productName}</h3>
+                <p className="text-xs text-coffee-600/80 italic">{productSubName}</p>
               </div>
             </div>
 
-            {isBeanProduct ? (
-              <div className="bg-coffee-50 border border-coffee-200/60 rounded-2xl p-4 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-coffee-900 font-serif">
-                  <Icons.Coffee className="h-4 w-4 text-coffee-800 flex-shrink-0" />
-                  <span>{t.coffeeDetailTitle}</span>
+            <div className="space-y-4 pt-2 text-xs sm:text-sm">
+              {isBeanProduct ? (
+                <div className="space-y-2">
+                  <label className="block font-bold text-coffee-900">{t.grindSize}</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {Object.keys(t.grindOptions).filter(k => k !== 'coldbrew').map(key => {
+                      const opt = t.grindOptions[key];
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setSelectedGrind(key)}
+                          className={`p-3 rounded-2xl border text-left transition-all ${selectedGrind === key ? 'border-coffee-900 bg-coffee-900 text-amber-100 shadow-md font-bold' : 'border-gray-200 hover:bg-gray-50 text-coffee-800'}`}
+                        >
+                          <div className="font-bold text-xs">{opt.label}</div>
+                          <div className="text-[10px] opacity-80 mt-0.5">{opt.detail}</div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• <strong className="font-semibold text-coffee-900">{t.origin}：</strong>{product.origin}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.altitude}：</strong>{product.altitude}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.process}：</strong>{product.process}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.grade}：</strong>{product.grade}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.flavor}：</strong>{product.flavor}</p>
+              ) : (
+                <div className="bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80 space-y-1.5">
+                  <h4 className="font-bold text-amber-900 text-xs sm:text-sm flex items-center gap-1.5">
+                    <Icons.Sparkles className="h-4 w-4" /> {t.coldbrewDetailTitle}
+                  </h4>
+                  <p className="text-xs text-coffee-700">• {t.coldbrewFeature1}</p>
+                  <p className="text-xs text-coffee-700">• {t.coldbrewFeature2}</p>
                 </div>
-              </div>
-            ) : (
-              <div className="bg-amber-50/70 border border-amber-200/70 rounded-2xl p-4 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900 font-serif">
-                  <Icons.Package className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                  <span>{t.coldbrewDetailTitle}</span>
-                </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• {t.coldbrewFeature1}</p>
-                  <p>• {t.coldbrewFeature2}</p>
-                  <p className="pt-1 text-amber-900 font-semibold">• <strong className="font-semibold">{t.flavor}：</strong>{product.flavor}</p>
-                </div>
-              </div>
-            )}
+              )}
 
-            <div className="bg-amber-50/50 border border-amber-200/60 rounded-2xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900">
-                <Icons.ShieldCheck className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                <span>{t.safetyInfoTitle}</span>
+              <div className="bg-coffee-50 p-4 rounded-2xl border border-coffee-200/60 space-y-1.5 text-xs text-coffee-800">
+                <h4 className="font-bold font-serif text-coffee-900 text-sm mb-1">{t.coffeeDetailTitle}</h4>
+                <p><strong>{t.origin}:</strong> {product.origin}</p>
+                <p><strong>{t.altitude}:</strong> {product.altitude}</p>
+                <p><strong>{t.process}:</strong> {product.process}</p>
+                <p><strong>{t.grade}:</strong> {product.grade}</p>
+                <p><strong>{t.flavor}:</strong> {product.flavor}</p>
               </div>
-              <div className="space-y-1 text-xs text-coffee-800/90 leading-relaxed">
-                <p>• {t.safetyStorage}</p>
-                <p>• {t.safetyCert}</p>
-                <p>• {t.safetyUsage}</p>
+
+              <div className="bg-white p-4 rounded-2xl border border-gray-200 space-y-2 text-[11px] text-gray-600">
+                <h5 className="font-bold text-coffee-900">{t.safetyInfoTitle}</h5>
+                <p>{t.safetyStorage}</p>
+                <p>{t.safetyCert}</p>
+                <p>{t.safetyUsage}</p>
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <span className="font-bold text-coffee-900">{t.quantity}</span>
+                <div className="flex items-center gap-3 bg-gray-100 rounded-2xl p-1 border">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 rounded-xl bg-white shadow-sm hover:bg-gray-50"><Icons.Minus className="h-4 w-4" /></button>
+                  <span className="font-bold text-sm w-8 text-center">{quantity}</span>
+                  <button onClick={() => setQuantity(Math.min(maxStock, quantity + 1))} className="p-2 rounded-xl bg-white shadow-sm hover:bg-gray-50"><Icons.Plus className="h-4 w-4" /></button>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={handleAdd}
+                  className="w-full bg-coffee-900 hover:bg-coffee-800 text-amber-50 font-bold py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <Icons.ShoppingBag className="h-4 w-4" /> {t.addToCart} — {(currentUnitPrice * quantity).toLocaleString()} VND
+                </button>
               </div>
             </div>
-
-            {isBeanProduct ? (
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold uppercase text-coffee-800 flex items-center gap-1.5 tracking-wider"><Icons.Settings className="h-4 w-4" /> {t.grindSize}</label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  {['beans', 'phin', 'espresso', 'pour_over'].map(key => (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedGrind(key)}
-                      className={`p-3 rounded-2xl text-left border transition-all ${
-                        selectedGrind === key 
-                          ? 'bg-coffee-900 text-white border-coffee-900 shadow-md ring-2 ring-coffee-900/20' 
-                          : 'bg-white text-coffee-800 border-coffee-200 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="text-xs font-bold">{t.grindOptions[key].label}</div>
-                      <div className="text-[10px] opacity-75 mt-0.5">{t.grindOptions[key].detail}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="p-3.5 bg-coffee-50 rounded-2xl text-xs text-coffee-800 border border-coffee-200/60 font-medium">
-                {t.coldbrewNotice}
-              </div>
-            )}
-
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs sm:text-sm font-bold text-coffee-900">{t.quantity}</span>
-              <div className="flex items-center rounded-2xl border border-coffee-300 bg-white p-1.5 shadow-sm">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-1.5 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Minus className="h-4 w-4" /></button>
-                <span className="w-9 text-center text-sm font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(q => Math.min(maxStock, q + 1))} className="p-1.5 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Plus className="h-4 w-4" /></button>
-              </div>
-            </div>
-
-            <button onClick={handleAdd} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
-              <Icons.ShoppingBag className="h-4 w-4" /> {t.addToCart} • {(currentUnitPrice * quantity).toLocaleString()} VND
-            </button>
           </div>
         </div>
       );
     }
 
-    function CartDrawer({ isOpen, onClose, cart, updateQuantity, onOpenCheckout, t }) {
-      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    function CartDrawer({ isOpen, lang, t, onClose, cart, updateQuantity, onOpenCheckout }) {
+      const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+      const isFreeShipping = subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD;
+      const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
+      const grandTotal = subtotal + shippingFee;
 
       if (!isOpen) return null;
 
       return (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="absolute inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-md bg-white text-coffee-900 shadow-2xl flex flex-col border-l border-coffee-200">
-              <div className="p-5 sm:p-6 bg-coffee-900 text-coffee-100 flex items-center justify-between">
-                <h2 className="text-base sm:text-xl font-bold flex items-center gap-2.5 font-serif"><Icons.ShoppingBag className="h-5 w-5 text-amber-200" /> {t.cart}</h2>
-                <button onClick={onClose} className="p-2 hover:bg-coffee-800 rounded-full transition-colors text-coffee-200 hover:text-white"><Icons.X className="h-6 w-6" /></button>
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
+          <div className="relative w-full max-w-md bg-white shadow-2xl flex flex-col h-full z-10 border-l border-coffee-200">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-coffee-900 text-coffee-100">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-coffee-800 p-2 rounded-xl"><Icons.ShoppingBag className="h-5 w-5 text-amber-200" /></div>
+                <h3 className="font-bold font-serif text-base">{t.cart}</h3>
               </div>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-coffee-800 transition-colors"><Icons.X className="h-5 w-5" /></button>
+            </div>
 
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5">
-                {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-coffee-600 space-y-2">
-                    <div className="bg-coffee-100 p-4 rounded-full text-coffee-400">
-                      <Icons.ShoppingBag className="h-8 w-8" />
-                    </div>
-                    <p className="text-sm font-medium">{t.emptyCart}</p>
-                  </div>
-                ) : (
-                  cart.map(item => (
-                    <div key={item.cartKey} className="p-4 bg-coffee-50/50 rounded-2xl shadow-sm border border-coffee-200/60 space-y-3">
-                      <div className="flex items-start gap-3.5">
-                        <img 
-                          src={item.image} 
-                          alt={item.name} 
-                          onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600'; }}
-                          className="w-16 h-16 object-cover rounded-2xl flex-shrink-0 shadow-sm border border-coffee-200/50" 
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-coffee-900 text-xs sm:text-sm truncate">{item.name}</h4>
-                          <p className="text-[11px] text-coffee-600 truncate mt-0.5">{item.spec} | {item.grindLabel}</p>
-                          <div className="mt-1 flex items-center gap-2">
-                            <span className="text-xs font-bold text-coffee-800">{item.price.toLocaleString()} VND</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2.5 border-t border-coffee-200/40">
-                        <div className="flex items-center gap-2 bg-white rounded-xl border border-coffee-200 p-1 shadow-sm">
-                          <button onClick={() => updateQuantity(item.cartKey, -1)} className="p-1 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Minus className="h-3.5 w-3.5" /></button>
-                          <span className="text-xs font-bold w-6 text-center">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.cartKey, 1)} className="p-1 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Plus className="h-3.5 w-3.5" /></button>
-                        </div>
-                        <div className="text-right font-bold text-xs text-coffee-900">{(item.price * item.quantity).toLocaleString()} VND</div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {cart.length > 0 && (
-                <div className="p-5 sm:p-6 bg-coffee-50 border-t border-coffee-200 space-y-4">
-                  <div className="space-y-1.5 text-xs sm:text-sm text-coffee-700">
-                    <div className="flex justify-between"><span>{t.subtotal}</span><span>{subtotal.toLocaleString()} VND</span></div>
-                    <div className="flex justify-between font-bold text-base text-coffee-900 pt-3 border-t border-coffee-200">
-                      <span>{t.total}</span><span className="text-lg text-amber-800">{subtotal.toLocaleString()} VND</span>
-                    </div>
-                  </div>
-
-                  <button onClick={onOpenCheckout} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm transition-all">
-                    <Icons.Send className="h-4 w-4" /> {t.checkout}
-                  </button>
+            <div className="p-4 bg-amber-50/80 border-b border-amber-200/60">
+              {isFreeShipping ? (
+                <div className="text-xs font-bold text-green-700 flex items-center gap-1.5"><Icons.CheckCircle className="h-4 w-4" /> {t.freeShippingReached}</div>
+              ) : (
+                <div className="text-xs font-medium text-amber-900">
+                  {t.freeShippingShort} <span className="font-extrabold text-amber-800">{(SHIPPING_CONFIG.FREE_THRESHOLD - subtotal).toLocaleString()} VND</span> {t.freeShippingGoal}
                 </div>
               )}
+              <div className="w-full bg-gray-200 h-2 rounded-full mt-2 overflow-hidden">
+                <div className="bg-amber-700 h-full transition-all duration-500" style={{ width: `${Math.min(100, (subtotal / SHIPPING_CONFIG.FREE_THRESHOLD) * 100)}%` }} />
+              </div>
             </div>
+
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {cart.length === 0 ? (
+                <div className="py-20 text-center space-y-3 text-gray-400">
+                  <Icons.ShoppingBag className="h-12 w-12 mx-auto stroke-1 opacity-50" />
+                  <p className="text-sm font-medium">{t.emptyCart}</p>
+                </div>
+              ) : (
+                cart.map(item => (
+                  <div key={item.cartKey} className="flex gap-3 p-3.5 bg-coffee-50/70 rounded-2xl border border-coffee-200/60 items-center">
+                    <img src={item.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover border" onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600'; }} />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-bold font-serif text-coffee-900 truncate">{item.name} ({item.spec})</h4>
+                      <p className="text-[10px] text-coffee-600 mt-0.5">{item.grindLabel}</p>
+                      <div className="text-xs font-extrabold text-coffee-900 mt-1">{(item.unitPrice * item.quantity).toLocaleString()} VND</div>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <div className="flex items-center gap-1.5 bg-white rounded-xl p-1 border">
+                        <button onClick={() => updateQuantity(item.cartKey, -1)} className="p-1 rounded-lg hover:bg-gray-100"><Icons.Minus className="h-3 w-3" /></button>
+                        <span className="text-xs font-bold w-5 text-center">{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.cartKey, 1)} className="p-1 rounded-lg hover:bg-gray-100"><Icons.Plus className="h-3 w-3" /></button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="p-5 border-t border-gray-100 bg-white space-y-3 shadow-lg">
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex justify-between text-gray-600"><span>{t.subtotal}:</span><span>{subtotal.toLocaleString()} VND</span></div>
+                  <div className="flex justify-between text-gray-600"><span>{t.shippingFee}:</span><span>{shippingFee === 0 ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
+                  <div className="flex justify-between font-bold text-base text-coffee-900 pt-2 border-t">
+                    <span>{t.total}:</span>
+                    <span className="text-amber-800">{grandTotal.toLocaleString()} VND</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={onOpenCheckout}
+                  className="w-full bg-coffee-900 hover:bg-coffee-800 text-amber-50 font-bold py-3.5 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
+                >
+                  <Icons.ShoppingBag className="h-4 w-4" /> {t.checkout}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       );
     }
 
-    function CheckoutModal({ isOpen, onClose, cart, clearCart, products, deductStock, t, lang, onOpenReceipt }) {
-      const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '', paymentMethod: 'Bank Transfer' });
-      const [promoCode, setPromoCode] = useState('');
-      const [discountRate, setDiscountRate] = useState(0);
+    function CheckoutModal({ isOpen, lang, t, products, deductStock, onClose, cart, clearCart, onOpenReceipt }) {
+      const [formData, setFormData] = useState({
+        fullName: '',
+        phone: '',
+        address: '',
+        notes: '',
+        paymentMethod: 'cod',
+        promoCode: ''
+      });
+      const [discountPercent, setDiscountPercent] = useState(0);
       const [promoMessage, setPromoMessage] = useState('');
       const [isSubmitting, setIsSubmitting] = useState(false);
-      const [isSuccess, setIsSuccess] = useState(false);
-      const [lastCreatedOrder, setLastCreatedOrder] = useState(null);
-      const [tempOrderId] = useState(() => `${new Date().getFullYear()}${Math.random().toString(36).substring(2, 6).toUpperCase()}`);
 
-      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const discount = Math.round(subtotal * discountRate);
-      const discountedSubtotal = subtotal - discount;
-      const isFreeShipping = discountedSubtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || discountedSubtotal === 0;
+      const subtotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+      const isFreeShipping = subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD;
       const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
-      const grandTotal = discountedSubtotal + shippingFee;
-
-      const vietcombankQRUrl = useMemo(() => {
-        const accountNo = '0121000852742';
-        const accountName = 'MIU KIM PHUONG';
-        const addInfo = `PHOENIX ${tempOrderId}`;
-        return `https://img.vietqr.io/image/970436-${accountNo}-compact2.png?amount=${grandTotal}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(accountName)}`;
-      }, [grandTotal, tempOrderId]);
+      const discountAmount = Math.round(subtotal * discountPercent);
+      const grandTotal = Math.max(0, subtotal - discountAmount) + shippingFee;
 
       const handleApplyPromo = () => {
-        if (promoCode.trim().toUpperCase() === 'PHOENIX10') {
-          setDiscountRate(0.1);
+        if (formData.promoCode.trim().toUpperCase() === 'PHOENIX10') {
+          setDiscountPercent(0.1);
           setPromoMessage(t.promoApplied);
         } else {
-          setDiscountRate(0);
+          setDiscountPercent(0);
           setPromoMessage(t.promoInvalid);
         }
       };
 
-      const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+      const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
 
       const handleSubmitOrder = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
-        const orderId = tempOrderId;
+        const orderId = 'PHOENIX-' + Date.now().toString().slice(-6);
         const orderDate = new Date().toLocaleString();
 
-        const itemsSummary = cart.map(item => 
-          `- ${item.name} (${item.spec}) [${item.grindLabel}] x ${item.quantity} ＝ ${(item.price * item.quantity).toLocaleString()} VND`
-        ).join('\n');
+        const paymentName = formData.paymentMethod === 'cod' ? t.cod : formData.paymentMethod === 'bank' ? t.bank : t.momo;
 
-        const orderRecord = {
+        const orderItemsSummary = cart.map(i => `${i.name} (${i.spec}) [${i.grindLabel}] x ${i.quantity} = ${(i.unitPrice * i.quantity).toLocaleString()} VND`).join('\n');
+
+        const orderData = {
           id: orderId,
           date: orderDate,
           customerName: formData.fullName,
           phone: formData.phone,
           address: formData.address,
           notes: formData.notes,
-          paymentMethod: formData.paymentMethod,
-          items: cart.map(item => ({
-            name: item.name,
-            spec: item.spec,
-            grindLabel: item.grindLabel,
-            quantity: item.quantity,
-            unitPrice: item.price
-          })),
+          paymentMethod: paymentName,
+          items: cart,
           subtotal,
-          discount,
+          discount: discountAmount,
           shippingFee,
           grandTotal
         };
@@ -1985,28 +1970,42 @@
               phone: formData.phone,
               address: formData.address,
               notes: formData.notes || '無',
-              paymentMethod: formData.paymentMethod,
-              orderItems: itemsSummary,
+              paymentMethod: paymentName,
+              orderItems: orderItemsSummary,
               subtotal,
-              discount,
+              discount: discountAmount,
               shippingFee,
               grandTotal
             })
           });
 
+          // 扣除庫存
           deductStock(cart);
-          const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
-          localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify([orderRecord, ...history]));
 
-          setLastCreatedOrder(orderRecord);
-          setIsSubmitting(false);
-          setIsSuccess(true);
+          // 存入歷史訂單
+          try {
+            const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
+            history.unshift(orderData);
+            localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify(history));
+          } catch (err) {}
+
           clearCart();
-
-        } catch (error) {
-          console.error('送出訂單失敗:', error);
-          alert('發送失敗，請稍後再試。');
           setIsSubmitting(false);
+          onClose();
+          onOpenReceipt(orderData);
+        } catch (error) {
+          console.error('送出訂單錯誤:', error);
+          // 網路失敗時仍允許離線完成並扣庫存
+          deductStock(cart);
+          try {
+            const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
+            history.unshift(orderData);
+            localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify(history));
+          } catch (err) {}
+          clearCart();
+          setIsSubmitting(false);
+          onClose();
+          onOpenReceipt(orderData);
         }
       };
 
@@ -2014,110 +2013,86 @@
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
+          <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[92vh] overflow-y-auto z-10 flex flex-col">
+            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
+              <h3 className="text-lg font-bold font-serif text-coffee-900 flex items-center gap-2"><Icons.ShoppingBag className="h-5 w-5" /> {t.checkout}</h3>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+            </div>
 
-            {isSuccess ? (
-              <div className="py-8 text-center space-y-4">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner border border-green-200">
-                  <Icons.CheckCircle className="h-10 w-10 animate-bounce" />
+            <form onSubmit={handleSubmitOrder} className="space-y-4 text-xs sm:text-sm">
+              <div className="space-y-3">
+                <h4 className="font-bold text-coffee-900 uppercase tracking-wider text-[11px]">{t.customerInfo}</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input type="text" name="fullName" required placeholder={t.fullName} value={formData.fullName} onChange={handleChange} className="bg-gray-50 border rounded-2xl p-3 text-xs" />
+                  <input type="tel" name="phone" required placeholder={t.phone} value={formData.phone} onChange={handleChange} className="bg-gray-50 border rounded-2xl p-3 text-xs" />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-coffee-900">{t.orderSuccess}</h3>
-                <p className="text-xs sm:text-sm text-coffee-600 leading-relaxed">{t.orderSuccessDesc}</p>
-                {lastCreatedOrder && (
-                  <button
-                    onClick={() => { onClose(); onOpenReceipt(lastCreatedOrder); }}
-                    className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-sm mt-4 transition-all"
-                  >
-                    <Icons.FileText className="h-5 w-5" /> {t.printReceipt}
-                  </button>
-                )}
+                <input type="text" name="address" required placeholder={t.address} value={formData.address} onChange={handleChange} className="w-full bg-gray-50 border rounded-2xl p-3 text-xs" />
+                <textarea name="notes" rows="2" placeholder={t.notes} value={formData.notes} onChange={handleChange} className="w-full bg-gray-50 border rounded-2xl p-3 text-xs" />
               </div>
-            ) : (
-              <form onSubmit={handleSubmitOrder} className="space-y-4">
-                <h2 className="text-lg sm:text-2xl font-bold font-serif text-coffee-900 border-b border-gray-100 pb-3">{t.customerInfo}</h2>
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.fullName}</label>
-                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900" />
+              <div className="space-y-2 pt-2">
+                <h4 className="font-bold text-coffee-900 uppercase tracking-wider text-[11px]">{t.paymentMethod}</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  <label className={`p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${formData.paymentMethod === 'cod' ? 'border-coffee-900 bg-coffee-50 font-bold' : 'border-gray-200'}`}>
+                    <input type="radio" name="paymentMethod" value="cod" checked={formData.paymentMethod === 'cod'} onChange={handleChange} className="accent-coffee-900" />
+                    <span>{t.cod}</span>
+                  </label>
+                  <label className={`p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${formData.paymentMethod === 'bank' ? 'border-coffee-900 bg-coffee-50 font-bold' : 'border-gray-200'}`}>
+                    <input type="radio" name="paymentMethod" value="bank" checked={formData.paymentMethod === 'bank'} onChange={handleChange} className="accent-coffee-900" />
+                    <span>{t.bank}</span>
+                  </label>
+                  <label className={`p-3.5 rounded-2xl border flex items-center gap-3 cursor-pointer transition-all ${formData.paymentMethod === 'momo' ? 'border-coffee-900 bg-coffee-50 font-bold' : 'border-gray-200'}`}>
+                    <input type="radio" name="paymentMethod" value="momo" checked={formData.paymentMethod === 'momo'} onChange={handleChange} className="accent-coffee-900" />
+                    <span>{t.momo}</span>
+                  </label>
                 </div>
+              </div>
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.phone}</label>
-                  <input type="tel" name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900" />
+              {formData.paymentMethod === 'bank' && (
+                <div className="bg-blue-50 p-4 rounded-2xl border border-blue-200 space-y-2 text-xs text-blue-900">
+                  <p className="font-bold">Vietcombank QR 轉帳資訊：</p>
+                  <p>銀行：Vietcombank (Ngân hàng Ngoại thương Việt Nam)</p>
+                  <p>帳號：<strong>0348246669</strong> | 戶名：PHOENIX COFFEE</p>
+                  <p className="text-[10px] text-blue-700">轉帳時請於備註欄填寫您的手機號碼以便系統核對。</p>
                 </div>
+              )}
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.address}</label>
-                  <textarea name="address" required rows="2" value={formData.address} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900" />
+              <div className="space-y-2 pt-2">
+                <label className="block text-xs font-bold text-coffee-800">{t.promoCodeLabel}</label>
+                <div className="flex gap-2">
+                  <input type="text" name="promoCode" placeholder="PHOENIX10" value={formData.promoCode} onChange={handleChange} className="flex-1 bg-gray-50 border rounded-2xl p-2.5 text-xs uppercase" />
+                  <button type="button" onClick={handleApplyPromo} className="px-5 bg-coffee-900 text-amber-100 rounded-2xl font-bold text-xs hover:bg-coffee-800">{t.applyPromo}</button>
                 </div>
+                {promoMessage && <p className={`text-xs font-bold ${discountPercent > 0 ? 'text-green-600' : 'text-red-600'}`}>{promoMessage}</p>}
+              </div>
 
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.paymentMethod}</label>
-                  <select name="paymentMethod" value={formData.paymentMethod} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 font-bold">
-                    <option value="Bank Transfer">{t.bank}</option>
-                    <option value="COD">{t.cod}</option>
-                    <option value="MoMo / ZaloPay">{t.momo}</option>
-                  </select>
+              <div className="bg-coffee-50 p-4 rounded-2xl border border-coffee-200/60 space-y-1.5 text-xs">
+                <div className="flex justify-between text-gray-600"><span>{t.subtotal}:</span><span>{subtotal.toLocaleString()} VND</span></div>
+                {discountAmount > 0 && <div className="flex justify-between text-red-600 font-bold"><span>{t.discountAmount}:</span><span>-{discountAmount.toLocaleString()} VND</span></div>}
+                <div className="flex justify-between text-gray-600"><span>{t.shippingFee}:</span><span>{shippingFee === 0 ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
+                <div className="flex justify-between font-bold text-sm text-coffee-900 pt-2 border-t">
+                  <span>{t.payable}</span>
+                  <span className="text-amber-800 text-base">{grandTotal.toLocaleString()} VND</span>
                 </div>
+              </div>
 
-                {formData.paymentMethod === 'Bank Transfer' && (
-                  <div className="bg-amber-50/80 border border-amber-200 rounded-2xl p-4 text-center space-y-3">
-                    <div className="flex items-center justify-center gap-2">
-                      <span className="inline-block w-2.5 h-2.5 rounded-full bg-green-600 animate-ping"></span>
-                      <span className="text-xs font-bold text-amber-900">Vietcombank 自動付款 QR Code</span>
-                    </div>
-                    <div className="bg-white p-3 rounded-xl inline-block shadow-sm border border-amber-100">
-                      <img src={vietcombankQRUrl} alt="Vietcombank QR" className="w-48 h-auto mx-auto object-contain rounded" />
-                    </div>
-                    <div className="text-[11px] text-coffee-700 space-y-0.5">
-                      <p><strong>戶名 (Tên):</strong> MIU KIM PHUONG</p>
-                      <p><strong>帳號 (STK):</strong> 0121000852742 (PGD Trảng Bom)</p>
-                      <p><strong>金額 (Số tiền):</strong> <span className="text-red-600 font-bold">{grandTotal.toLocaleString()} VND</span></p>
-                      <p><strong>內文 (Nội dung):</strong> PHOENIX {tempOrderId}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.notes}</label>
-                  <input type="text" name="notes" value={formData.notes} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900" />
-                </div>
-
-                <div className="space-y-1.5 pt-2">
-                  <label className="block text-xs font-bold text-coffee-800">{t.promoCodeLabel}</label>
-                  <div className="flex gap-2">
-                    <input type="text" placeholder="PHOENIX10" value={promoCode} onChange={(e) => setPromoCode(e.target.value)} className="flex-1 bg-gray-50 border border-coffee-200 rounded-2xl px-3 py-2 text-xs uppercase font-bold" />
-                    <button type="button" onClick={handleApplyPromo} className="px-4 bg-coffee-800 text-white rounded-2xl text-xs font-bold hover:bg-coffee-900">{t.applyPromo}</button>
-                  </div>
-                  {promoMessage && <p className={`text-[11px] font-bold ${discountRate > 0 ? 'text-green-600' : 'text-red-600'}`}>{promoMessage}</p>}
-                </div>
-
-                <div className="bg-coffee-50 p-4 rounded-2xl border border-coffee-200/60 space-y-1.5 text-xs">
-                  <div className="flex justify-between"><span>{t.subtotal}：</span><span>{subtotal.toLocaleString()} VND</span></div>
-                  {discount > 0 && <div className="flex justify-between text-red-600 font-semibold"><span>{t.discountAmount}：</span><span>-{discount.toLocaleString()} VND</span></div>}
-                  <div className="flex justify-between"><span>{t.shippingFee}：</span><span>{isFreeShipping ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
-                  <div className="flex justify-between font-bold text-sm sm:text-base text-coffee-900 pt-2 border-t border-coffee-200">
-                    <span>{t.payable}</span><span className="text-amber-800">{grandTotal.toLocaleString()} VND</span>
-                  </div>
-                </div>
-
+              <div className="pt-2">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
+                  className="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
                 >
                   {isSubmitting ? t.submitting : t.submitOrder}
                 </button>
-              </form>
-            )}
+              </div>
+            </form>
           </div>
         </div>
       );
     }
 
-    function OrderHistoryModal({ isOpen, onClose, t, onViewReceipt }) {
+    function OrderHistoryModal({ isOpen, lang, t, onClose, onViewReceipt }) {
       const [history, setHistory] = useState(() => {
         try {
           return JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
@@ -2135,59 +2110,45 @@
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
           <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 flex flex-col">
             <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
-              <h2 className="text-base sm:text-xl font-bold font-serif text-coffee-900 flex items-center gap-2"><Icons.Clock className="h-5 w-5 text-coffee-800" /> {t.orderHistoryTitle}</h2>
-              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              <h3 className="text-lg font-bold font-serif text-coffee-900 flex items-center gap-2"><Icons.Clock className="h-5 w-5" /> {t.orderHistoryTitle}</h3>
+              <div className="flex items-center gap-2">
+                {history.length > 0 && (
+                  <button onClick={handleClear} className="px-3 py-1.5 bg-red-100 text-red-700 rounded-xl text-xs font-bold hover:bg-red-200 transition-colors">{t.clearHistory}</button>
+                )}
+                <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-4 pr-1">
               {history.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 space-y-2">
-                  <Icons.Clock className="h-10 w-10 mx-auto opacity-40" />
-                  <p className="text-sm">{t.noHistory}</p>
+                <div className="py-20 text-center space-y-3 text-gray-400">
+                  <Icons.FileText className="h-12 w-12 mx-auto stroke-1 opacity-50" />
+                  <p className="text-sm font-medium">{t.noHistory}</p>
                 </div>
               ) : (
-                history.map((order) => (
-                  <div key={order.id} className="bg-coffee-50/60 p-4 sm:p-5 rounded-2xl border border-coffee-200/60 space-y-3">
-                    <div className="flex flex-wrap justify-between items-center gap-2 pb-3 border-b border-coffee-200/50 text-xs">
-                      <div>
-                        <span className="font-bold text-coffee-900">{t.orderId}: #{order.id}</span>
-                        <span className="text-gray-500 ml-3">{order.date}</span>
+                history.map(order => (
+                  <div key={order.id} className="p-4 bg-coffee-50 rounded-2xl border border-coffee-200/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">#{order.id}</span>
+                        <span className="text-[11px] text-gray-500">{order.date}</span>
                       </div>
-                      <span className="font-extrabold text-amber-800 text-sm">{order.grandTotal.toLocaleString()} VND</span>
+                      <div className="text-xs font-bold text-coffee-900">{order.customerName} ({order.phone})</div>
+                      <div className="text-xs font-extrabold text-coffee-900">{order.grandTotal.toLocaleString()} VND • <span className="text-gray-600 font-normal">{order.paymentMethod || 'COD'}</span></div>
                     </div>
-
-                    <div className="text-xs space-y-1 text-gray-700">
-                      <p><strong>收件人:</strong> {order.customerName} ({order.phone})</p>
-                      <p><strong>地址:</strong> {order.address}</p>
-                      <p><strong>付款方式:</strong> {order.paymentMethod || 'COD'}</p>
-                    </div>
-
-                    <div className="flex justify-end pt-2">
-                      <button
-                        onClick={() => { onClose(); onViewReceipt(order); }}
-                        className="px-4 py-2 bg-coffee-900 hover:bg-coffee-800 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-                      >
-                        <Icons.FileText className="h-3.5 w-3.5" /> {t.viewReceipt}
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => { onClose(); onViewReceipt(order); }}
+                      className="px-4 py-2 bg-coffee-900 hover:bg-coffee-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1.5 whitespace-nowrap"
+                    >
+                      <Icons.FileText className="h-3.5 w-3.5" /> {t.viewReceipt}
+                    </button>
                   </div>
                 ))
               )}
             </div>
-
-            {history.length > 0 && (
-              <div className="pt-4 border-t border-gray-100 mt-4 flex justify-between items-center">
-                <button onClick={handleClear} className="text-xs text-red-600 hover:text-red-700 font-bold flex items-center gap-1">
-                  <Icons.Trash className="h-4 w-4" /> {t.clearHistory}
-                </button>
-                <button onClick={onClose} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors">
-                  {t.close}
-                </button>
-              </div>
-            )}
           </div>
         </div>
       );
