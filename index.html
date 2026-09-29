@@ -1,156 +1,269 @@
 <!DOCTYPE html>
-<html lang="zh-Hant" x-data="phoenixApp()" :dir="lang === 'ar' ? 'rtl' : 'ltr'">
+<html lang="zh-TW" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHOENIX Cafe | 頂級越南咖啡專賣店</title>
+    <title>AURA COFFEE | 頂級精品咖啡與職人選物</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        phoenix: {
-                            dark: '#1c1917',
-                            brown: '#78350f',
-                            gold: '#d97706',
-                            cream: '#fef3c7',
-                            light: '#fafaf9'
+                        aura: {
+                            50: '#fcfbfa',
+                            100: '#f4f0ec',
+                            200: '#e5ddd3',
+                            300: '#bfae9e',
+                            800: '#38322c',
+                            900: '#221e1a',
+                        },
+                        coffee: {
+                            light: '#d7c4b7',
+                            DEFAULT: '#6f4e37',
+                            dark: '#3c2415'
                         }
                     },
                     fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- Alpine.js for interactive reactive state -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        [x-cloak] { display: none !important; }
+        body { font-family: 'Inter', sans-serif; background-color: #fcfbfa; color: #221e1a; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-phoenix-light text-phoenix-dark font-sans antialiased min-h-screen flex flex-col selection:bg-phoenix-gold selection:text-white">
+<body x-data="auraCoffeeApp()" class="antialiased selection:bg-coffee selection:text-white">
 
-    <!-- 頂部通告列 -->
-    <div class="bg-phoenix-dark text-amber-100 text-xs sm:text-sm py-2 px-4 text-center font-medium tracking-wide flex justify-center items-center gap-2">
-        <span x-text="t('topBar')">🔥 歡慶 PHOENIX Cafe 越南旗艦館開幕，全館消費滿 500,000 VND 即享免運優惠！</span>
-        <div class="inline-flex gap-2 ml-4 border-l border-neutral-700 pl-4">
-            <button @click="setLang('zh')" :class="lang === 'zh' ? 'text-phoenix-gold font-bold underline' : 'text-neutral-400 hover:text-white'">繁體中文</button>
-            <span>/</span>
-            <button @click="setLang('vi')" :class="lang === 'vi' ? 'text-phoenix-gold font-bold underline' : 'text-neutral-400 hover:text-white'">Tiếng Việt</button>
-        </div>
+    <div class="bg-aura-900 text-aura-100 text-xs py-2 text-center tracking-widest uppercase font-medium">
+        全館滿 NT$1,200 即享免運優惠 · 職人精選單品豆新鮮烘焙中
     </div>
 
-    <!-- 導覽列 Navbar -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-neutral-200 shadow-sm transition-all">
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-aura-200 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex items-center gap-3 cursor-pointer" @click="currentTab = 'shop'">
-                <div class="w-10 h-10 rounded-full bg-phoenix-dark flex items-center justify-center text-phoenix-gold font-bold text-xl shadow-md">
-                    P
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold tracking-wider uppercase text-phoenix-dark">PHOENIX Cafe</h1>
-                    <p class="text-[10px] text-neutral-500 tracking-widest uppercase" x-text="t('subLogo')">Saigon Artisan Roastery</p>
-                </div>
+            <!-- 手機版選單按鈕 -->
+            <button @click="mobileMenuOpen = true" class="lg:hidden text-aura-900 focus:outline-none p-2">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+
+            <!-- 品牌標誌與導覽 -->
+            <div class="flex items-center space-x-12">
+                <a href="#" @click.prevent="currentView = 'home'" class="text-2xl font-bold tracking-widest uppercase font-serif">
+                    AURA <span class="text-coffee">COFFEE</span>
+                </a>
+                <nav class="hidden lg:flex space-x-8 text-xs font-medium uppercase tracking-widest text-aura-800">
+                    <a href="#" @click.prevent="currentView = 'home'" class="hover:text-coffee transition-colors" :class="currentView === 'home' ? 'border-b-2 border-coffee pb-1 text-coffee' : ''">首頁</a>
+                    <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'all'" class="hover:text-coffee transition-colors" :class="currentView === 'shop' ? 'border-b-2 border-coffee pb-1 text-coffee' : ''">所有商品</a>
+                    <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'beans'" class="hover:text-coffee transition-colors">單品莊園豆</a>
+                    <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'drip'" class="hover:text-coffee transition-colors">浸泡式濾袋</a>
+                    <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'equipment'" class="hover:text-coffee transition-colors">器具周邊</a>
+                </nav>
             </div>
 
-            <!-- 導覽選單 -->
-            <nav class="hidden md:flex items-center gap-8 font-medium text-sm">
-                <button @click="currentTab = 'shop'" :class="currentTab === 'shop' ? 'text-phoenix-gold font-semibold' : 'text-neutral-600 hover:text-phoenix-dark'" x-text="t('navShop')">精選咖啡</button>
-                <button @click="currentTab = 'orders'" :class="currentTab === 'orders' ? 'text-phoenix-gold font-semibold' : 'text-neutral-600 hover:text-phoenix-dark'" x-text="t('navOrders')">歷史訂單查詢</button>
-                <button @click="openAdminModal = true" class="text-neutral-600 hover:text-phoenix-dark flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <span x-text="t('navAdmin')">訂單管理</span>
+            <!-- 右側功能按鈕 -->
+            <div class="flex items-center space-x-6">
+                <button @click="searchOpen = true" class="text-aura-900 hover:text-coffee transition-colors p-2" title="搜尋咖啡">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
                 </button>
-            </nav>
-
-            <!-- 右側功能按鈕 (購物車) -->
-            <div class="flex items-center gap-4">
-                <button @click="cartOpen = true" class="relative bg-phoenix-dark text-white px-4 py-2.5 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-neutral-800 transition shadow-md">
-                    <svg class="w-5 h-5 text-phoenix-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    <span x-text="t('cart')">購物車</span>
-                    <span class="bg-phoenix-gold text-phoenix-dark font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center" x-text="cartItemCount">0</span>
+                <button @click="currentView = 'account'" class="hidden sm:block text-aura-900 hover:text-coffee transition-colors p-2" title="會員中心">
+                    <i class="fa-regular fa-user text-lg"></i>
+                </button>
+                <button @click="cartOpen = true" class="relative text-aura-900 hover:text-coffee transition-colors p-2" title="購物車">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span x-show="cartCount > 0" x-text="cartCount" class="absolute top-0 right-0 bg-coffee text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold"></span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- 主體內容區 -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <main class="min-h-screen">
 
-        <!-- 區塊一：商品列表頁 -->
-        <div x-show="currentTab === 'shop'" x-cloak>
-            <!-- 英雄橫幅 Banner -->
-            <div class="relative rounded-3xl overflow-hidden bg-phoenix-dark text-white mb-12 p-8 sm:p-12 shadow-xl flex flex-col md:flex-row items-center justify-between">
-                <div class="absolute inset-0 opacity-25 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px]"></div>
-                <div class="relative z-10 max-w-xl mb-6 md:mb-0">
-                    <span class="bg-phoenix-gold/20 text-phoenix-gold border border-phoenix-gold/30 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-4" x-text="t('bannerTag')">100% 越南高原阿拉比卡與頂級羅布斯塔</span>
-                    <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-tight" x-text="t('bannerTitle')">探索產地直送的極致風味</h2>
-                    <p class="text-neutral-300 text-sm sm:text-base mb-6" x-text="t('bannerDesc')">嚴選自邦美蜀與大叻的莊園咖啡豆，融合傳統越南滴漏 Phin 與現代職人烘焙工藝。</p>
+        <!-- ==================== 1. 首頁 (HOME VIEW) ==================== -->
+        <div x-show="currentView === 'home'" x-transition.opacity.duration.300ms>
+            <!-- Hero 區塊 -->
+            <div class="relative bg-aura-100 overflow-hidden h-[85vh] flex items-center">
+                <div class="absolute inset-0 z-0">
+                    <img src="https://placehold.co/1920x1080/e5ddd3/221e1a?text=AURA+COFFEE+ROASTERS" alt="Hero Image" class="w-full h-full object-cover object-center opacity-85">
+                    <div class="absolute inset-0 bg-gradient-to-r from-aura-900/60 via-aura-900/20 to-transparent"></div>
                 </div>
-                <div class="relative z-10 w-full md:w-auto flex justify-center">
-                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 text-center shadow-lg max-w-xs">
-                        <p class="text-xs text-amber-300 uppercase tracking-widest font-bold mb-1" x-text="t('bannerBoxTitle')">PROMOTION</p>
-                        <p class="text-xl font-bold mb-2" x-text="t('bannerBoxSub')">全館免運門檻達成中</p>
-                        <p class="text-xs text-neutral-300" x-text="t('bannerBoxDesc')">支援 VietQR 即時轉帳與 Google 雲端自動對帳</p>
+                <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-white">
+                    <span class="text-xs uppercase tracking-[0.25em] bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full mb-6 inline-block font-medium">Crafting Moments, One Sip at a Time</span>
+                    <h1 class="text-4xl sm:text-6xl font-light tracking-wide mb-6 leading-tight font-serif">探索純粹的<br><span class="font-semibold italic">咖啡靈魂</span></h1>
+                    <p class="text-sm sm:text-base text-aura-100 max-w-lg mb-8 font-light leading-relaxed">嚴選全球微批次莊園咖啡豆，以精準烘焙曲線勾勒出每一款豆子獨一無二的風味風土。</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button @click="currentView = 'shop'" class="bg-white text-aura-900 px-8 py-3.5 text-xs uppercase tracking-widest font-semibold hover:bg-coffee hover:text-white transition-all shadow-lg rounded-sm">
+                            立即選購商品
+                        </button>
+                        <button @click="currentView = 'shop'; filterCategory = 'drip'" class="border border-white/80 text-white px-8 py-3.5 text-xs uppercase tracking-widest font-semibold hover:bg-white hover:text-aura-900 transition-all rounded-sm">
+                            探索浸泡式咖啡
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- 篩選列 -->
-            <div class="flex flex-wrap gap-3 mb-8 items-center justify-between">
-                <div class="flex gap-2 flex-wrap">
-                    <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'bg-phoenix-dark text-white' : 'bg-white text-neutral-600 hover:bg-neutral-100'" class="px-4 py-2 rounded-xl text-sm font-medium border border-neutral-200 transition" x-text="t('catAll')">全部商品</button>
-                    <button @click="selectedCategory = 'bean'" :class="selectedCategory === 'bean' ? 'bg-phoenix-dark text-white' : 'bg-white text-neutral-600 hover:bg-neutral-100'" class="px-4 py-2 rounded-xl text-sm font-medium border border-neutral-200 transition" x-text="t('catBean')">精品咖啡豆</button>
-                    <button @click="selectedCategory = 'drip'" :class="selectedCategory === 'drip' ? 'bg-phoenix-dark text-white' : 'bg-white text-neutral-600 hover:bg-neutral-100'" class="px-4 py-2 rounded-xl text-sm font-medium border border-neutral-200 transition" x-text="t('catDrip')">浸泡/濾掛式</button>
-                    <button @click="selectedCategory = 'gear'" :class="selectedCategory === 'gear' ? 'bg-phoenix-dark text-white' : 'bg-white text-neutral-600 hover:bg-neutral-100'" class="px-4 py-2 rounded-xl text-sm font-medium border border-neutral-200 transition" x-text="t('catGear')">越南滴漏器具</button>
+            <!-- 四大核心優勢 -->
+            <section class="border-b border-aura-200 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="text-coffee text-2xl"><i class="fa-solid fa-earth-americas"></i></div>
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">100% 精選產區</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light">尋訪全球卓越微批次莊園，嚴格把關每一顆生豆品質。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="text-coffee text-2xl"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">職人精準烘焙</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light">依照豆性量身打造烘焙曲線，完美釋放產區獨特花果香。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="text-coffee text-2xl"><i class="fa-solid fa-mug-saucer"></i></div>
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">風味絕佳保證</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light">杯測師嚴格評鑑，確保每一包咖啡送到您手上皆是巔峰狀態。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4">
+                        <div class="text-coffee text-2xl"><i class="fa-solid fa-truck-fast"></i></div>
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">急速新鮮配送</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light">接單後新鮮研磨包裝，全館滿 NT$1,200 即享免運優惠。</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-sm text-neutral-500" x-text="filteredProducts.length + ' ' + t('itemsFound')"></div>
+            </section>
+
+            <!-- 分類快捷區 -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center mb-12">
+                    <span class="text-xs uppercase tracking-[0.2em] text-coffee font-semibold">Curated Collections</span>
+                    <h2 class="text-2xl sm:text-3xl font-light tracking-wide mt-2 font-serif">品味分類推薦</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div @click="currentView = 'shop'; filterCategory = 'beans'" class="group relative h-96 overflow-hidden rounded-sm cursor-pointer shadow-sm">
+                        <img src="https://placehold.co/600x800/d7c4b7/221e1a?text=Single+Origin+Beans" alt="Beans" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-aura-900/80 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
+                            <h3 class="text-xl font-medium tracking-wide font-serif">嚴選單品咖啡豆</h3>
+                            <p class="text-xs text-aura-200 mt-2 uppercase tracking-wider">探索莊園豆 <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                        </div>
+                    </div>
+                    <div @click="currentView = 'shop'; filterCategory = 'drip'" class="group relative h-96 overflow-hidden rounded-sm cursor-pointer shadow-sm">
+                        <img src="https://placehold.co/600x800/bfae9e/221e1a?text=Drip+Coffee+Bags" alt="Drip" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-aura-900/80 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
+                            <h3 class="text-xl font-medium tracking-wide font-serif">浸泡式咖啡濾袋</h3>
+                            <p class="text-xs text-aura-200 mt-2 uppercase tracking-wider">隨身極致享受 <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                        </div>
+                    </div>
+                    <div @click="currentView = 'shop'; filterCategory = 'equipment'" class="group relative h-96 overflow-hidden rounded-sm cursor-pointer shadow-sm">
+                        <img src="https://placehold.co/600x800/38322c/ffffff?text=Brewing+Gear" alt="Equipment" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-aura-900/80 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
+                            <h3 class="text-xl font-medium tracking-wide font-serif">烘焙設備與周邊</h3>
+                            <p class="text-xs text-aura-200 mt-2 uppercase tracking-wider">職人器具選物 <i class="fa-solid fa-arrow-right ml-1"></i></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 本周人氣精選 -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-coffee font-semibold">Featured Bestsellers</span>
+                        <h2 class="text-2xl sm:text-3xl font-light tracking-wide mt-1 font-serif">本周人氣精選</h2>
+                    </div>
+                    <button @click="currentView = 'shop'" class="text-xs uppercase tracking-widest border-b border-aura-900 pb-1 hover:text-coffee hover:border-coffee transition-colors font-medium">
+                        查看全部商品
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <template x-for="product in products.slice(0, 4)" :key="product.id">
+                        <div class="group flex flex-col cursor-pointer" @click="openProductDetail(product)">
+                            <div class="relative bg-aura-100 aspect-[3/4] overflow-hidden rounded-sm mb-4">
+                                <img :src="product.image" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute top-3 left-3" x-show="product.badge">
+                                    <span class="bg-coffee text-white text-[10px] uppercase tracking-wider px-2.5 py-1 font-semibold" x-text="product.badge"></span>
+                                </div>
+                                <button @click.stop="quickAddToCart(product)" class="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md text-aura-900 py-3 text-xs font-semibold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity rounded-sm shadow hover:bg-coffee hover:text-white">
+                                    快速加入購物車
+                                </button>
+                            </div>
+                            <span class="text-[10px] text-coffee uppercase tracking-widest font-semibold" x-text="product.flavorTags.join(' / ')"></span>
+                            <h3 class="text-sm font-medium text-aura-900 tracking-wide mt-1" x-text="product.name"></h3>
+                            <p class="text-sm font-semibold text-aura-900 mt-2" x-text="formatPrice(product.price)"></p>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </div>
+
+        <!-- ==================== 2. 商品列表頁 (SHOP VIEW) ==================== -->
+        <div x-show="currentView === 'shop'" x-transition.opacity class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <!-- 麵包屑 -->
+            <div class="text-xs uppercase tracking-widest text-coffee mb-6">
+                <a href="#" @click.prevent="currentView = 'home'" class="hover:text-aura-900">首頁</a> / <span class="text-aura-900">所有商品目錄</span>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-aura-200 pb-6 mb-8 gap-4">
+                <h1 class="text-3xl font-light tracking-wide font-serif">
+                    咖啡選物目錄 <span class="text-xs text-coffee font-sans tracking-normal align-middle ml-2 font-semibold" x-text="`(${filteredProducts.length} 件商品)`"></span>
+                </h1>
+                
+                <!-- 篩選器與排序 -->
+                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                    <select x-model="filterCategory" class="bg-white border border-aura-200 text-xs uppercase tracking-wider py-2.5 px-4 rounded-sm focus:outline-none focus:border-coffee">
+                        <option value="all">所有分類</option>
+                        <option value="beans">單品莊園豆</option>
+                        <option value="drip">浸泡式濾袋</option>
+                        <option value="equipment">器具周邊</option>
+                    </select>
+
+                    <select x-model="sortBy" class="bg-white border border-aura-200 text-xs uppercase tracking-wider py-2.5 px-4 rounded-sm focus:outline-none focus:border-coffee">
+                        <option value="featured">精選排序</option>
+                        <option value="price-low">價格：由低到高</option>
+                        <option value="price-high">價格：由高到低</option>
+                        <option value="newest">最新上架</option>
+                    </select>
+                </div>
             </div>
 
             <!-- 商品網格 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <template x-for="product in filteredProducts" :key="product.id">
-                    <div class="bg-white rounded-3xl border border-neutral-200 overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col justify-between group">
+                    <div class="group cursor-pointer bg-white border border-aura-100 rounded-sm p-4 hover:shadow-lg transition-all flex flex-col justify-between" @click="openProductDetail(product)">
                         <div>
-                            <!-- 商品圖片與標籤 -->
-                            <div class="relative h-64 bg-neutral-100 overflow-hidden flex items-center justify-center">
-                                <img :src="product.image" :alt="product.name[lang]" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                                <div class="absolute top-4 left-4 flex flex-col gap-1">
-                                    <span class="bg-phoenix-dark/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider" x-text="product.badge[lang]"></span>
-                                </div>
-                                <div class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-phoenix-brown shadow-sm" x-text="formatVND(product.price)"></div>
-                            </div>
-                            <!-- 商品內容 -->
-                            <div class="p-6">
-                                <h3 class="text-lg font-bold text-phoenix-dark mb-2 group-hover:text-phoenix-gold transition" x-text="product.name[lang]"></h3>
-                                <p class="text-neutral-500 text-xs line-clamp-2 mb-4" x-text="product.desc[lang]"></p>
-
-                                <!-- 規格選單 (研磨度 / 重量) -->
-                                <div class="space-y-3 pt-2 border-t border-neutral-100 text-xs">
-                                    <div v-if="product.options">
-                                        <label class="block font-semibold text-neutral-700 mb-1" x-text="t('selectSpec')">規格選擇：</label>
-                                        <select x-model="product.selectedOption" class="w-full bg-neutral-50 border border-neutral-200 rounded-lg p-2 text-xs font-medium focus:ring-1 focus:ring-phoenix-gold outline-none">
-                                            <template x-for="opt in product.options">
-                                                <option :value="opt" x-text="opt"></option>
-                                            </template>
-                                        </select>
-                                    </div>
+                            <div class="relative bg-aura-100 aspect-[3/4] overflow-hidden rounded-sm mb-4">
+                                <img :src="product.image" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div class="absolute top-3 left-3" x-show="product.badge">
+                                    <span class="bg-coffee text-white text-[10px] uppercase tracking-wider px-2.5 py-1 font-semibold" x-text="product.badge"></span>
                                 </div>
                             </div>
+                            <div class="flex flex-wrap gap-1 mb-1">
+                                <template x-for="tag in product.flavorTags">
+                                    <span class="text-[10px] bg-aura-100 text-coffee px-2 py-0.5 rounded-full font-medium" x-text="tag"></span>
+                                </template>
+                            </div>
+                            <h3 class="text-sm font-medium text-aura-900 tracking-wide mt-1" x-text="product.name"></h3>
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-2 font-light" x-text="product.description"></p>
                         </div>
-
-                        <!-- 立即購買 / 加入購物車按鈕 -->
-                        <div class="p-6 pt-0">
-                            <button @click="addToCart(product)" class="w-full bg-phoenix-dark hover:bg-phoenix-brown text-white font-medium py-3 rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-md">
-                                <svg class="w-4 h-4 text-phoenix-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                                <span x-text="t('addToCart')">放入購物車</span>
+                        <div class="flex items-center justify-between mt-6 pt-4 border-t border-aura-100">
+                            <span class="text-sm font-semibold text-aura-900" x-text="formatPrice(product.price)"></span>
+                            <button @click.stop="quickAddToCart(product)" class="bg-aura-900 text-white px-4 py-2 text-xs uppercase tracking-wider rounded-sm hover:bg-coffee transition-colors">
+                                加入購物車
                             </button>
                         </div>
                     </div>
@@ -158,44 +271,258 @@
             </div>
         </div>
 
-        <!-- 區塊二：歷史訂單查詢頁 -->
-        <div x-show="currentTab === 'orders'" x-cloak class="max-w-3xl mx-auto">
-            <div class="bg-white rounded-3xl p-8 border border-neutral-200 shadow-sm">
-                <h2 class="text-2xl font-bold mb-4" x-text="t('orderHistoryTitle')">歷史訂單與狀態查詢</h2>
-                <p class="text-neutral-500 text-sm mb-6" x-text="t('orderHistoryDesc')">您可以透過下方的搜尋框輸入您的訂單編號或電話，隨時追蹤您的咖啡出貨與配送進度。</p>
-                
-                <div class="flex gap-3 mb-8">
-                    <input type="text" x-model="searchQuery" :placeholder="t('searchPlaceholder')" class="flex-grow bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-phoenix-gold outline-none">
-                    <button @click="searchOrders()" class="bg-phoenix-dark text-white px-6 py-3 rounded-xl text-sm font-medium hover:bg-neutral-800 transition shadow-sm" x-text="t('searchBtn')">查詢</button>
+        <!-- ==================== 3. 商品詳情頁 (DETAIL VIEW) ==================== -->
+        <div x-show="currentView === 'detail'" x-transition.opacity class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-xs uppercase tracking-widest text-coffee mb-6">
+                <a href="#" @click.prevent="currentView = 'home'" class="hover:text-aura-900">首頁</a> / 
+                <a href="#" @click.prevent="currentView = 'shop'" class="hover:text-aura-900">選物目錄</a> / 
+                <span class="text-aura-900" x-text="selectedProduct.name"></span>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+                <!-- 左側圖片 -->
+                <div class="space-y-4">
+                    <div class="bg-aura-100 aspect-square overflow-hidden rounded-sm shadow-sm">
+                        <img :src="selectedProduct.image" :alt="selectedProduct.name" class="w-full h-full object-cover">
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-aura-100 aspect-square rounded-sm overflow-hidden border-2 border-coffee">
+                            <img :src="selectedProduct.image" class="w-full h-full object-cover">
+                        </div>
+                        <div class="bg-aura-100 aspect-square rounded-sm overflow-hidden opacity-70 hover:opacity-100 cursor-pointer">
+                            <img :src="selectedProduct.image" class="w-full h-full object-cover">
+                        </div>
+                        <div class="bg-aura-100 aspect-square rounded-sm overflow-hidden opacity-70 hover:opacity-100 cursor-pointer">
+                            <img :src="selectedProduct.image" class="w-full h-full object-cover">
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 訂單列表顯示 -->
-                <div class="space-y-4">
-                    <template x-for="order in displayedOrders" :key="order.id">
-                        <div class="border border-neutral-200 rounded-2xl p-6 bg-neutral-50/50">
-                            <div class="flex justify-between items-start mb-4 pb-3 border-b border-neutral-200">
-                                <div>
-                                    <span class="text-xs font-bold text-phoenix-gold uppercase tracking-wider" x-text="'ID: ' + order.id"></span>
-                                    <p class="text-xs text-neutral-400 mt-0.5" x-text="order.date"></p>
-                                </div>
-                                <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full" x-text="order.status"></span>
+                <!-- 右側規格與操作 -->
+                <div class="flex flex-col justify-start">
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <template x-for="tag in selectedProduct.flavorTags">
+                            <span class="text-xs bg-aura-100 text-coffee px-3 py-1 rounded-full font-medium uppercase tracking-wider" x-text="tag"></span>
+                        </template>
+                    </div>
+                    <h1 class="text-3xl font-light tracking-wide text-aura-900 font-serif" x-text="selectedProduct.name"></h1>
+                    <div class="text-xl font-semibold text-aura-900 mt-4" x-text="formatPrice(selectedProduct.price)"></div>
+
+                    <div class="border-t border-aura-200 my-6"></div>
+
+                    <p class="text-sm text-gray-600 leading-relaxed font-light" x-text="selectedProduct.description"></p>
+
+                    <!-- 研磨粗細選擇 -->
+                    <div class="mt-8" x-show="selectedProduct.category === 'beans' || selectedProduct.category === 'drip'">
+                        <label class="block text-xs uppercase tracking-widest text-aura-800 font-medium mb-3">研磨粗細選擇：<span class="font-semibold text-coffee" x-text="selectedGrind"></span></label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <button @click="selectedGrind = '原豆（不研磨）'" :class="selectedGrind === '原豆（不研磨）' ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium">原豆 (不研磨)</button>
+                            <button @click="selectedGrind = '手沖中粗研磨'" :class="selectedGrind === '手沖中粗研磨' ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium">手沖 (中粗)</button>
+                            <button @click="selectedGrind = '義式細研磨'" :class="selectedGrind === '義式細研磨' ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium">義式 (細)</button>
+                            <button @click="selectedGrind = '法壓壺粗研磨'" :class="selectedGrind === '法壓壺粗研磨' ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium">法壓壺 (粗)</button>
+                        </div>
+                    </div>
+
+                    <!-- 數量增減 -->
+                    <div class="mt-6">
+                        <label class="block text-xs uppercase tracking-widest text-aura-800 font-medium mb-3">訂購數量</label>
+                        <div class="flex items-center border border-aura-200 w-36 rounded-sm bg-white">
+                            <button @click="quantity > 1 ? quantity-- : null" class="px-4 py-2.5 text-aura-800 hover:bg-aura-100 transition-colors">-</button>
+                            <input type="text" readonly x-model="quantity" class="w-full text-center text-sm font-medium focus:outline-none">
+                            <button @click="quantity++" class="px-4 py-2.5 text-aura-800 hover:bg-aura-100 transition-colors">+</button>
+                        </div>
+                    </div>
+
+                    <!-- 按鈕群組 -->
+                    <div class="mt-8 flex space-x-4">
+                        <button @click="addToCartFromDetail()" class="flex-1 bg-white border border-aura-900 text-aura-900 py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-aura-50 transition-colors">
+                            加入購物車
+                        </button>
+                        <button @click="buyNow()" class="flex-1 bg-aura-900 text-white py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors">
+                            立即結帳
+                        </button>
+                    </div>
+
+                    <!-- 風味輪廓特點 -->
+                    <div class="mt-12 border-t border-aura-200 pt-8 grid grid-cols-3 gap-4 text-center">
+                        <div class="bg-aura-50 p-4 rounded-sm">
+                            <i class="fa-solid fa-mug-hot text-coffee text-xl mb-2"></i>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">焙度</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light" x-text="selectedProduct.roastLevel || '中淺焙'"></p>
+                        </div>
+                        <div class="bg-aura-50 p-4 rounded-sm">
+                            <i class="fa-solid fa-seedling text-coffee text-xl mb-2"></i>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">處理法</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light" x-text="selectedProduct.process || '水洗處理'"></p>
+                        </div>
+                        <div class="bg-aura-50 p-4 rounded-sm">
+                            <i class="fa-solid fa-earth-americas text-coffee text-xl mb-2"></i>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-aura-900">產區</h4>
+                            <p class="text-xs text-gray-500 mt-1 font-light" x-text="selectedProduct.origin || '衣索比亞'"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 4. 結帳流程 (CHECKOUT VIEW) ==================== -->
+        <div x-show="currentView === 'checkout'" x-transition.opacity class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-light tracking-wide font-serif">安全結帳頁面</h1>
+                <p class="text-xs text-coffee uppercase tracking-widest mt-1 font-semibold">Secure Checkout Protocol</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- 左側表單 -->
+                <div class="lg:col-span-2 space-y-8">
+                    <!-- 收件資訊 -->
+                    <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center">
+                            <span class="bg-coffee text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2 font-bold">1</span>
+                            收件人資訊
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs uppercase tracking-wider text-aura-800 mb-1">姓名</label>
+                                <input type="text" x-model="checkoutForm.name" placeholder="王小明" class="w-full border border-aura-200 p-3 text-xs rounded-sm focus:outline-none focus:border-coffee">
                             </div>
-                            <div class="space-y-2 mb-4">
-                                <template x-for="item in order.items">
-                                    <div class="flex justify-between text-sm">
-                                        <span class="text-neutral-700" x-text="item.name[lang] + ' (' + item.selectedOption + ') x ' + item.qty"></span>
-                                        <span class="font-medium" x-text="formatVND(item.price * item.qty)"></span>
-                                    </div>
-                                </template>
+                            <div>
+                                <label class="block text-xs uppercase tracking-wider text-aura-800 mb-1">手機號碼</label>
+                                <input type="text" x-model="checkoutForm.phone" placeholder="0912-345-678" class="w-full border border-aura-200 p-3 text-xs rounded-sm focus:outline-none focus:border-coffee">
                             </div>
-                            <div class="flex justify-between items-center pt-3 border-t border-neutral-200 text-sm font-bold">
-                                <span x-text="t('totalAmount')">總金額：</span>
-                                <span class="text-phoenix-brown text-base" x-text="formatVND(order.total)"></span>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs uppercase tracking-wider text-aura-800 mb-1">收件地址</label>
+                                <input type="text" x-model="checkoutForm.address" placeholder="台北市大安區忠孝東路四段 1 號" class="w-full border border-aura-200 p-3 text-xs rounded-sm focus:outline-none focus:border-coffee">
                             </div>
                         </div>
-                    </template>
-                    <div x-show="displayedOrders.length === 0" class="text-center py-12 text-neutral-400 text-sm" x-text="t('noOrdersFound')">
-                        目前沒有找到相關訂單紀錄。
+                    </div>
+
+                    <!-- 運送方式 -->
+                    <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center">
+                            <span class="bg-coffee text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2 font-bold">2</span>
+                            運送方式
+                        </h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between border border-aura-200 p-4 rounded-sm cursor-pointer hover:border-coffee">
+                                <div class="flex items-center space-x-3">
+                                    <input type="radio" name="shipping" checked class="text-coffee focus:ring-0">
+                                    <span class="text-xs uppercase tracking-wider font-medium">黑貓宅急便 / 常溫新鮮配送</span>
+                                </div>
+                                <span class="text-xs font-semibold" x-text="cartSubtotal >= 1200 ? '免運費' : 'NT$ 120'"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 付款方式 -->
+                    <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center">
+                            <span class="bg-coffee text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2 font-bold">3</span>
+                            付款方式
+                        </h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <button @click="checkoutForm.payment = 'credit'" :class="checkoutForm.payment === 'credit' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider">線上信用卡</button>
+                            <button @click="checkoutForm.payment = 'linepay'" :class="checkoutForm.payment === 'linepay' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider">LINE Pay</button>
+                            <button @click="checkoutForm.payment = 'cod'" :class="checkoutForm.payment === 'cod' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider">超商取貨付款</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右側訂單摘要 -->
+                <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm h-fit">
+                    <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 pb-3 border-b border-aura-200 font-serif">訂單摘要細節</h2>
+                    <div class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-1">
+                        <template x-for="item in cart" :key="item.id + item.grind">
+                            <div class="flex justify-between items-center text-xs">
+                                <div class="flex items-center space-x-3">
+                                    <img :src="item.image" class="w-12 h-12 object-cover rounded-sm">
+                                    <div>
+                                        <p class="font-medium text-aura-900" x-text="item.name"></p>
+                                        <p class="text-gray-500 text-[10px]" x-text="`${item.grind} / 數量: ${item.quantity}`"></p>
+                                    </div>
+                                </div>
+                                <span class="font-semibold" x-text="formatPrice(item.price * item.quantity)"></span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="space-y-2 border-t border-aura-200 pt-4 text-xs">
+                        <div class="flex justify-between text-gray-600">
+                            <span>商品小計</span>
+                            <span x-text="formatPrice(cartSubtotal)"></span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>運費</span>
+                            <span x-text="cartSubtotal >= 1200 ? '免運費' : 'NT$ 120'"></span>
+                        </div>
+                        <div class="flex justify-between text-sm font-semibold text-aura-900 pt-2 border-t border-aura-200">
+                            <span>總計金額</span>
+                            <span x-text="formatPrice(cartTotal)"></span>
+                        </div>
+                    </div>
+
+                    <button @click="completeOrder()" class="w-full mt-6 bg-aura-900 text-white py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors shadow-md">
+                        確認送出訂單
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 5. 會員中心 (ACCOUNT VIEW) ==================== -->
+        <div x-show="currentView === 'account'" x-transition.opacity class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h1 class="text-3xl font-light tracking-wide mb-8 font-serif">職人會員中心</h1>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div class="space-y-2 bg-white p-4 border border-aura-200 rounded-sm h-fit shadow-sm">
+                    <button @click="accountTab = 'orders'" :class="accountTab === 'orders' ? 'bg-coffee text-white' : 'text-aura-800 hover:bg-aura-50'" class="w-full text-left px-4 py-3 text-xs uppercase tracking-wider rounded-sm font-medium transition-colors">歷史訂單紀錄</button>
+                    <button @click="accountTab = 'wishlist'" :class="accountTab === 'wishlist' ? 'bg-coffee text-white' : 'text-aura-800 hover:bg-aura-50'" class="w-full text-left px-4 py-3 text-xs uppercase tracking-wider rounded-sm font-medium transition-colors">我的風味收藏</button>
+                    <button @click="accountTab = 'profile'" :class="accountTab === 'profile' ? 'bg-coffee text-white' : 'text-aura-800 hover:bg-aura-50'" class="w-full text-left px-4 py-3 text-xs uppercase tracking-wider rounded-sm font-medium transition-colors">會員資料設定</button>
+                </div>
+
+                <div class="lg:col-span-3 bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
+                    <!-- 訂單紀錄 -->
+                    <div x-show="accountTab === 'orders'">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-6 font-serif">歷史訂單清單</h2>
+                        <div class="space-y-4">
+                            <div class="border border-aura-200 p-5 rounded-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="text-xs font-semibold text-aura-900">#AURA-2026-9042</span>
+                                        <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2.5 py-0.5 rounded uppercase font-medium">已完成配送</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">訂單日期：2026-06-20 | 總金額：NT$ 1,480</p>
+                                </div>
+                                <button class="border border-aura-900 text-aura-900 px-4 py-2 text-xs uppercase tracking-wider hover:bg-aura-900 hover:text-white transition-colors">檢視明細</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 風味收藏 -->
+                    <div x-show="accountTab === 'wishlist'">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-6 font-serif">我的咖啡豆收藏</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="border border-aura-100 p-4 rounded-sm">
+                                <img src="https://placehold.co/400x500/d7c4b7/221e1a?text=Coffee+Beans" class="w-full aspect-[3/4] object-cover mb-3 rounded-sm">
+                                <h4 class="text-xs font-medium text-aura-900">衣索比亞 耶加雪菲 歌蕾莎村</h4>
+                                <p class="text-xs font-semibold mt-1 text-coffee">NT$ 580</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 個人設定 -->
+                    <div x-show="accountTab === 'profile'">
+                        <h2 class="text-sm font-semibold uppercase tracking-wider mb-6 font-serif">會員基本資料</h2>
+                        <div class="space-y-4 text-xs">
+                            <div>
+                                <label class="block text-gray-500 mb-1">電子信箱 (無法修改)</label>
+                                <input type="text" readonly value="member@auracoffee.tw" class="w-full bg-aura-50 border border-aura-200 p-3 rounded-sm text-gray-600">
+                            </div>
+                            <div>
+                                <label class="block text-gray-500 mb-1">會員名稱</label>
+                                <input type="text" value="職人咖啡迷" class="w-full border border-aura-200 p-3 rounded-sm focus:outline-none focus:border-coffee">
+                            </div>
+                            <button class="bg-aura-900 text-white px-6 py-3 uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors">儲存變更</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -203,175 +530,92 @@
 
     </main>
 
-    <!-- 購物車側邊欄 Drawer -->
-    <div x-show="cartOpen" x-cloak class="fixed inset-0 z-50 overflow-hidden">
-        <div @click="cartOpen = false" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
+    <!-- 購物車側邊欄 (Cart Slide-over) -->
+    <div x-show="cartOpen" class="fixed inset-0 z-50 overflow-hidden">
+        <div @click="cartOpen = false" class="absolute inset-0 bg-aura-900/40 backdrop-blur-sm transition-opacity"></div>
         <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
             <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
-                <!-- 側邊欄標頭 -->
-                <div class="p-6 border-b border-neutral-200 flex items-center justify-between">
-                    <h2 class="text-lg font-bold flex items-center gap-2">
-                        <svg class="w-5 h-5 text-phoenix-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                        <span x-text="t('cartTitle')">您的咖啡購物車</span>
-                    </h2>
-                    <button @click="cartOpen = false" class="text-neutral-400 hover:text-phoenix-dark p-2 rounded-full hover:bg-neutral-100">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <div class="p-6 border-b border-aura-200 flex items-center justify-between">
+                    <h2 class="text-sm font-semibold uppercase tracking-widest text-aura-900 font-serif">購物車 ( <span x-text="cartCount"></span> )</h2>
+                    <button @click="cartOpen = false" class="text-aura-900 hover:text-coffee transition-colors p-2">
+                        <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
 
                 <!-- 滿額免運進度條 -->
-                <div class="bg-amber-50 p-4 border-b border-amber-100">
-                    <div class="flex justify-between text-xs font-semibold mb-1 text-amber-900">
-                        <span x-text="shippingProgressText"></span>
-                        <span x-text="Math.round(shippingProgress) + '%'"></span>
+                <div class="bg-aura-100 p-4 border-b border-aura-200">
+                    <div class="flex justify-between text-xs mb-1.5 font-medium">
+                        <span x-text="cartSubtotal >= 1200 ? '🎉 您已享有免費宅配優惠！' : `距離免運還差 NT$ ${1200 - cartSubtotal}`"></span>
+                        <span x-text="`${Math.min(Math.round((cartSubtotal / 1200) * 100), 100)}%`"></span>
                     </div>
-                    <div class="w-full bg-amber-200 h-2 rounded-full overflow-hidden">
-                        <div class="bg-phoenix-gold h-full transition-all duration-500 rounded-full" :style="'width: ' + shippingProgress + '%'"></div>
+                    <div class="w-full bg-aura-200 h-2 rounded-full overflow-hidden">
+                        <div class="bg-coffee h-full transition-all duration-500" :style="`width: ${Math.min((cartSubtotal / 1200) * 100, 100)}%`"></div>
                     </div>
                 </div>
 
-                <!-- 購物車商品清單 -->
-                <div class="flex-grow overflow-y-auto p-6 space-y-4">
-                    <template x-for="(item, index) in cart" :key="index">
-                        <div class="flex gap-4 items-center bg-neutral-50 p-4 rounded-2xl border border-neutral-100">
-                            <img :src="item.image" class="w-16 h-16 object-cover rounded-xl border border-neutral-200">
-                            <div class="flex-grow">
-                                <h4 class="text-sm font-bold text-phoenix-dark" x-text="item.name[lang]"></h4>
-                                <p class="text-xs text-neutral-500 mb-1" x-text="item.selectedOption"></p>
-                                <div class="flex justify-between items-center mt-2">
-                                    <span class="text-xs font-bold text-phoenix-brown" x-text="formatVND(item.price)"></span>
-                                    <div class="flex items-center gap-2">
-                                        <button @click="updateQty(index, -1)" class="w-6 h-6 bg-white border border-neutral-200 rounded-md flex items-center justify-center text-xs font-bold hover:bg-neutral-100">-</button>
-                                        <span class="text-xs font-bold w-4 text-center" x-text="item.qty"></span>
-                                        <button @click="updateQty(index, 1)" class="w-6 h-6 bg-white border border-neutral-200 rounded-md flex items-center justify-center text-xs font-bold hover:bg-neutral-100">+</button>
+                <div class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <template x-for="(item, index) in cart" :key="item.id + item.grind">
+                        <div class="flex items-center space-x-4 border-b border-aura-100 pb-4">
+                            <img :src="item.image" :alt="item.name" class="w-16 h-16 object-cover rounded-sm flex-shrink-0">
+                            <div class="flex-1">
+                                <h3 class="text-xs font-medium text-aura-900" x-text="item.name"></h3>
+                                <p class="text-[10px] text-gray-500 mt-0.5" x-text="item.grind"></p>
+                                <p class="text-xs font-semibold text-aura-900 mt-1" x-text="formatPrice(item.price)"></p>
+                                <div class="flex items-center space-x-3 mt-2">
+                                    <div class="flex items-center border border-aura-200 rounded-sm">
+                                        <button @click="updateCartQty(index, -1)" class="px-2 py-0.5 text-xs">-</button>
+                                        <span class="px-2 text-xs font-medium" x-text="item.quantity"></span>
+                                        <button @click="updateCartQty(index, 1)" class="px-2 py-0.5 text-xs">+</button>
                                     </div>
+                                    <button @click="removeFromCart(index)" class="text-xs text-red-500 hover:underline">刪除</button>
                                 </div>
                             </div>
                         </div>
                     </template>
-                    <div x-show="cart.length === 0" class="text-center py-16 text-neutral-400 text-sm" x-text="t('emptyCart')">
-                        您的購物車目前是空的，快去挑選喜愛的咖啡吧！
+                    <div x-show="cart.length === 0" class="text-center py-20 text-gray-400 text-xs uppercase tracking-widest font-light">
+                        您的購物車內目前沒有商品
                     </div>
                 </div>
 
-                <!-- 側邊欄結帳底部 -->
-                <div class="p-6 border-t border-neutral-200 bg-neutral-50">
-                    <div class="space-y-2 mb-4 text-sm">
-                        <div class="flex justify-between text-neutral-600">
-                            <span x-text="t('subtotal')">小計</span>
-                            <span x-text="formatVND(cartSubtotal)"></span>
+                <div class="p-6 border-t border-aura-200 bg-aura-50">
+                    <div class="space-y-2 mb-4 text-xs">
+                        <div class="flex justify-between text-gray-600">
+                            <span>小計金額</span>
+                            <span x-text="formatPrice(cartSubtotal)"></span>
                         </div>
-                        <div class="flex justify-between text-neutral-600">
-                            <span x-text="t('shippingFee')">運費</span>
-                            <span x-text="cartShipping === 0 ? t('freeShipping') : formatVND(cartShipping)"></span>
+                        <div class="flex justify-between text-gray-600">
+                            <span>運費</span>
+                            <span x-text="cartSubtotal >= 1200 ? '免運費' : 'NT$ 120'"></span>
                         </div>
-                        <div class="flex justify-between text-base font-bold text-phoenix-dark pt-2 border-t border-neutral-200">
-                            <span x-text="t('total')">總計</span>
-                            <span class="text-phoenix-brown text-lg" x-text="formatVND(cartTotal)"></span>
+                        <div class="flex justify-between text-sm font-semibold text-aura-900 pt-2 border-t border-aura-200">
+                            <span>總計</span>
+                            <span x-text="formatPrice(cartTotal)"></span>
                         </div>
                     </div>
-                    <button @click="openCheckout()" :disabled="cart.length === 0" class="w-full bg-phoenix-dark hover:bg-phoenix-brown disabled:bg-neutral-300 text-white font-medium py-3.5 rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2">
-                        <span x-text="t('proceedCheckout')">前往安全結帳</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+                    <button @click="cartOpen = false; currentView = 'checkout'" :disabled="cart.length === 0" class="w-full bg-aura-900 text-white py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors shadow-md disabled:opacity-50">
+                        前往安全結帳
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 結帳彈跳視窗 Checkout Modal -->
-    <div x-show="checkoutOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-3xl max-w-xl w-full p-8 shadow-2xl z-10 overflow-hidden">
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200">
-                <h3 class="text-xl font-bold text-phoenix-dark" x-text="t('checkoutTitle')">填寫收件與付款資訊</h3>
-                <button @click="checkoutOpen = false" class="text-neutral-400 hover:text-phoenix-dark">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+    <!-- 搜尋 Modal -->
+    <div x-show="searchOpen" class="fixed inset-0 z-50 bg-aura-900/80 backdrop-blur-md flex items-start justify-center pt-24 px-4">
+        <div @click.outside="searchOpen = false" class="bg-white w-full max-w-2xl rounded-sm p-6 shadow-2xl relative">
+            <div class="flex items-center border-b border-aura-200 pb-4">
+                <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3"></i>
+                <input type="text" x-model="searchQuery" placeholder="搜尋衣索比亞、耶加雪菲、浸泡式咖啡包..." class="w-full text-sm focus:outline-none uppercase tracking-wider">
+                <button @click="searchOpen = false" class="text-aura-900"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-
-            <form @submit.prevent="submitOrder()" class="space-y-4 text-sm">
-                <div>
-                    <label class="block font-medium text-neutral-700 mb-1" x-text="t('fieldName')">收件人姓名</label>
-                    <input type="text" x-model="checkoutForm.name" required class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 focus:ring-2 focus:ring-phoenix-gold outline-none">
-                </div>
-                <div>
-                    <label class="block font-medium text-neutral-700 mb-1" x-text="t('fieldPhone')">聯絡電話 (Phone)</label>
-                    <input type="tel" x-model="checkoutForm.phone" required class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 focus:ring-2 focus:ring-phoenix-gold outline-none">
-                </div>
-                <div>
-                    <label class="block font-medium text-neutral-700 mb-1" x-text="t('fieldAddress')">收件地址 (越南或海外)</label>
-                    <textarea x-model="checkoutForm.address" rows="2" required class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 focus:ring-2 focus:ring-phoenix-gold outline-none"></textarea>
-                </div>
-                <div>
-                    <label class="block font-medium text-neutral-700 mb-1" x-text="t('fieldPayment')">付款方式 (Payment)</label>
-                    <select x-model="checkoutForm.paymentMethod" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 focus:ring-2 focus:ring-phoenix-gold outline-none">
-                        <option value="VietQR">VietQR (越南在地銀行即時轉帳 - 自動對帳)</option>
-                        <option value="COD">貨到付款 (Cash on Delivery)</option>
-                    </select>
-                </div>
-
-                <!-- 模擬 VietQR 顯示區 -->
-                <div x-show="checkoutForm.paymentMethod === 'VietQR'" class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-center">
-                    <p class="text-xs font-bold text-amber-900 mb-2" x-text="t('vietqrNotice')">請使用越南任一銀行 App (Techcombank, VPBank, MB 等) 掃描以下 VietQR 完成付款：</p>
-                    <div class="bg-white p-4 inline-block rounded-xl shadow-sm border border-neutral-200">
-                        <img src="https://api.vietqr.io/image/970422-0348246669-K589k9s.jpg?accountName=PHOENIX%20CAFE&amount=0" alt="VietQR" class="w-36 h-36 mx-auto object-contain">
-                    </div>
-                    <p class="text-[11px] text-neutral-500 mt-2" x-text="t('vietqrSub')">帳號: 0348246669 | 戶名: PHOENIX CAFE</p>
-                </div>
-
-                <button type="submit" class="w-full bg-phoenix-dark hover:bg-phoenix-brown text-white font-medium py-3.5 rounded-xl transition shadow-lg mt-6" x-text="t('submitOrderBtn')">
-                    確認送出訂單並同步至雲端
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 管理員密碼驗證視窗 Admin Modal -->
-    <div x-show="openAdminModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="openAdminModal = false"></div>
-        <div class="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl z-10">
-            <h3 class="text-lg font-bold mb-3" x-text="t('adminLoginTitle')">管理員驗證</h3>
-            <p class="text-xs text-neutral-500 mb-4" x-text="t('adminLoginDesc')">請輸入後台管理密碼以進入訂單與數據管理中心：</p>
-            <input type="password" x-model="adminPasswordInput" placeholder="請輸入管理密碼" class="w-full bg-neutral-50 border border-neutral-200 rounded-xl p-3 text-sm mb-4 outline-none focus:ring-2 focus:ring-phoenix-gold">
-            <div class="flex justify-end gap-2">
-                <button @click="openAdminModal = false" class="px-4 py-2 bg-neutral-100 rounded-xl text-xs font-medium" x-text="t('cancel')">取消</button>
-                <button @click="verifyAdmin()" class="px-4 py-2 bg-phoenix-dark text-white rounded-xl text-xs font-medium" x-text="t('confirm')">確認</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 管理員訂單清單後台視窗 Dashboard Modal -->
-    <div x-show="openDashboard" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="openDashboard = false"></div>
-        <div class="relative bg-white rounded-3xl max-w-4xl w-full p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-neutral-200">
-                <h3 class="text-xl font-bold" x-text="t('dashboardTitle')">PHOENIX Cafe 雲端訂單管理後台</h3>
-                <button @click="openDashboard = false" class="text-neutral-400 hover:text-phoenix-dark">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-
-            <div class="mb-4 flex justify-between items-center">
-                <p class="text-xs text-neutral-500" x-text="'目前系統共有 ' + allOrders.length + ' 筆歷史訂單（已與 Google Apps Script 模擬同步）'"></p>
-                <button @click="exportToCSV()" class="bg-phoenix-gold text-phoenix-dark font-bold px-4 py-2 rounded-xl text-xs hover:bg-amber-500 transition" x-text="t('exportCSV')">匯出訂單 CSV</button>
-            </div>
-
-            <div class="space-y-4">
-                <template x-for="order in allOrders" :key="order.id">
-                    <div class="bg-neutral-50 border border-neutral-200 rounded-2xl p-5 flex flex-col sm:flex-row justify-between gap-4">
+            <div class="mt-4 max-h-60 overflow-y-auto space-y-2">
+                <template x-for="product in products.filter(p => p.name.includes(searchQuery))" :key="product.id">
+                    <div @click="openProductDetail(product); searchOpen = false" class="flex items-center space-x-3 p-2 hover:bg-aura-50 cursor-pointer rounded-sm">
+                        <img :src="product.image" class="w-10 h-10 object-cover rounded-sm">
                         <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="font-bold text-phoenix-brown text-sm" x-text="order.id"></span>
-                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-semibold px-2 py-0.5 rounded-full" x-text="order.status"></span>
-                            </div>
-                            <p class="text-xs text-neutral-600 font-medium" x-text="order.customer.name + ' | ' + order.customer.phone"></p>
-                            <p class="text-xs text-neutral-400 mt-0.5" x-text="order.customer.address"></p>
-                            <p class="text-xs text-neutral-500 mt-2 font-mono" x-text="order.date"></p>
-                        </div>
-                        <div class="text-right flex flex-col justify-between">
-                            <div class="text-sm font-bold text-phoenix-dark" x-text="formatVND(order.total)"></div>
-                            <div class="text-xs text-neutral-500" x-text="'付款方式: ' + order.customer.paymentMethod"></div>
+                            <p class="text-xs font-medium text-aura-900" x-text="product.name"></p>
+                            <p class="text-[10px] text-coffee" x-text="formatPrice(product.price)"></p>
                         </div>
                     </div>
                 </template>
@@ -379,341 +623,288 @@
         </div>
     </div>
 
-    <!-- 頁尾 Footer -->
-    <footer class="bg-phoenix-dark text-neutral-400 py-12 mt-auto border-t border-neutral-800 text-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-phoenix-gold flex items-center justify-center text-phoenix-dark font-bold">P</div>
-                <span class="text-white font-bold tracking-wider">PHOENIX Cafe © 2026</span>
+    <!-- 手機版導覽選單 -->
+    <div x-show="mobileMenuOpen" class="fixed inset-0 z-50 flex">
+        <div @click="mobileMenuOpen = false" class="fixed inset-0 bg-aura-900/40"></div>
+        <div class="relative bg-white w-4/5 max-w-sm h-full shadow-2xl flex flex-col p-6 z-10">
+            <div class="flex justify-between items-center mb-8 border-b border-aura-200 pb-4">
+                <span class="text-lg font-bold tracking-widest uppercase font-serif">AURA <span class="text-coffee">COFFEE</span></span>
+                <button @click="mobileMenuOpen = false"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-center md:text-left" x-text="t('footerRights')">Saigon Artisan Roastery & Specialty Coffee. All Rights Reserved.</p>
-            <div class="flex gap-6 text-xs">
-                <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition">Terms of Service</a>
-                <a href="#" class="hover:text-white transition">Contact Us</a>
+            <nav class="space-y-4 text-xs uppercase tracking-wider font-semibold text-aura-800">
+                <a href="#" @click.prevent="currentView = 'home'; mobileMenuOpen = false" class="block py-2">首頁</a>
+                <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'all'; mobileMenuOpen = false" class="block py-2">所有商品</a>
+                <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'beans'; mobileMenuOpen = false" class="block py-2">單品莊園豆</a>
+                <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'drip'; mobileMenuOpen = false" class="block py-2">浸泡式濾袋</a>
+                <a href="#" @click.prevent="currentView = 'shop'; filterCategory = 'equipment'; mobileMenuOpen = false" class="block py-2">器具周邊</a>
+                <a href="#" @click.prevent="currentView = 'account'; mobileMenuOpen = false" class="block py-2">會員中心</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 頁尾 (Footer) -->
+    <footer class="bg-aura-900 text-aura-100 py-16 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div>
+                <h3 class="text-lg font-bold tracking-widest uppercase font-serif mb-4">AURA <span class="text-coffee">COFFEE</span></h3>
+                <p class="text-xs text-aura-300 leading-relaxed font-light">追求純粹風土與極致職人烘焙工藝，為懂咖啡的您帶來無與倫比的感官體驗。</p>
             </div>
+            <div>
+                <h4 class="text-xs font-semibold uppercase tracking-widest mb-4">嚴選分類</h4>
+                <ul class="space-y-2 text-xs text-aura-300 font-light">
+                    <li><a href="#" class="hover:text-white transition-colors">單品莊園咖啡豆</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">浸泡式隨身濾袋</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">手沖器具與磨豆機</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xs font-semibold uppercase tracking-widest mb-4">客戶服務</h4>
+                <ul class="space-y-2 text-xs text-aura-300 font-light">
+                    <li><a href="#" class="hover:text-white transition-colors">烘焙出貨與運送說明</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">職人會員禮遇條款</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">隱私權政策</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xs font-semibold uppercase tracking-widest mb-4">訂閱專屬優惠</h4>
+                <p class="text-xs text-aura-300 mb-4 font-light">訂閱電子報即可獲得首筆訂單 9 折專屬優惠代碼。</p>
+                <div class="flex">
+                    <input type="email" placeholder="您的電子信箱" class="bg-aura-800 text-xs px-3 py-2 text-white rounded-l-sm focus:outline-none w-full border border-aura-700">
+                    <button class="bg-white text-aura-900 text-xs px-4 py-2 uppercase tracking-wider rounded-r-sm hover:bg-aura-200 font-semibold">訂閱</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-aura-800 mt-12 pt-8 text-center text-xs text-aura-300">
+            &copy; 2026 AURA COFFEE ROASTERS. All Rights Reserved. Crafted with Minimalist Luxury.
         </div>
     </footer>
 
-    <!-- Alpine.js 邏輯與多語系字典 -->
     <script>
-        const translations = {
-            zh: {
-                topBar: '🔥 歡慶 PHOENIX Cafe 越南旗艦館開幕，全館消費滿 500,000 VND 即享免運優惠！',
-                subLogo: 'Saigon Artisan Roastery',
-                navShop: '精選咖啡',
-                navOrders: '歷史訂單查詢',
-                navAdmin: '訂單管理',
-                cart: '購物車',
-                bannerTag: '100% 越南高原阿拉比卡與頂級羅布斯塔',
-                bannerTitle: '探索產地直送的極致風味',
-                bannerDesc: '嚴選自邦美蜀與大叻的莊園咖啡豆，融合傳統越南滴漏 Phin 與現代職人烘焙工藝。',
-                bannerBoxTitle: 'PROMOTION',
-                bannerBoxSub: '全館免運門檻達成中',
-                bannerBoxDesc: '支援 VietQR 即時轉帳與 Google 雲端自動對帳',
-                catAll: '全部商品',
-                catBean: '精品咖啡豆',
-                catDrip: '浸泡/濾掛式',
-                catGear: '越南滴漏器具',
-                itemsFound: '項商品',
-                selectSpec: '規格與研磨度選擇：',
-                addToCart: '放入購物車',
-                orderHistoryTitle: '歷史訂單與狀態查詢',
-                orderHistoryDesc: '您可以透過下方的搜尋框輸入您的訂單編號或電話，隨時追蹤您的咖啡出貨與配送進度。',
-                searchPlaceholder: '輸入訂單編號或手機號碼...',
-                searchBtn: '查詢',
-                totalAmount: '總金額：',
-                noOrdersFound: '目前沒有找到相關訂單紀錄。',
-                cartTitle: '您的咖啡購物車',
-                emptyCart: '您的購物車目前是空的，快去挑選喜愛的咖啡吧！',
-                subtotal: '小計',
-                shippingFee: '運費',
-                freeShipping: '免運費',
-                total: '總計',
-                proceedCheckout: '前往安全結帳',
-                checkoutTitle: '填寫收件與付款資訊',
-                fieldName: '收件人姓名',
-                fieldPhone: '聯絡電話 (Phone)',
-                fieldAddress: '收件地址 (越南或海外)',
-                fieldPayment: '付款方式 (Payment)',
-                vietqrNotice: '請使用越南任一銀行 App 掃描以下 VietQR 完成付款：',
-                vietqrSub: '帳號: 0348246669 | 戶名: PHOENIX CAFE',
-                submitOrderBtn: '確認送出訂單並同步至雲端',
-                adminLoginTitle: '管理員驗證',
-                adminLoginDesc: '請輸入後台管理密碼 (預設: 0348246669)：',
-                cancel: '取消',
-                confirm: '確認',
-                dashboardTitle: 'PHOENIX Cafe 雲端訂單管理後台',
-                exportCSV: '匯出訂單 CSV',
-                footerRights: 'Saigon Artisan Roastery & Specialty Coffee. All Rights Reserved.'
-            },
-            vi: {
-                topBar: '🔥 Chào mừng khai trương PHOENIX Cafe, Freeship cho đơn hàng từ 500,000 VND!',
-                subLogo: 'Saigon Artisan Roastery',
-                navShop: 'Cà phê đặc sản',
-                navOrders: 'Tra cứu đơn hàng',
-                navAdmin: 'Quản lý',
-                cart: 'Giỏ hàng',
-                bannerTag: '100% Arabica Cao Nguyên & Robusta Thượng Hạng',
-                bannerTitle: 'Khám Phá Hương Vị Cà Phê Chuẩn Vị',
-                bannerDesc: 'Tuyển chọn từ các trang trại Buôn Ma Thuột và Đà Lạt, kết hợp phin truyền thống và rang xay hiện đại.',
-                bannerBoxTitle: 'KHUYẾN MÃI',
-                bannerBoxSub: 'Miễn phí vận chuyển toàn quốc',
-                bannerBoxDesc: 'Hỗ trợ VietQR chuyển khoản nhanh và đồng bộ Google Sheets',
-                catAll: 'Tất cả',
-                catBean: 'Cà phê hạt',
-                catDrip: 'Cà phê túi lọc / Cold Brew',
-                catGear: 'Dụng cụ pha Phin',
-                itemsFound: 'sản phẩm',
-                selectSpec: 'Chọn quy cách & độ xay:',
-                addToCart: 'Thêm vào giỏ',
-                orderHistoryTitle: 'Lịch sử đơn hàng & Trạng thái',
-                orderHistoryDesc: 'Tra cứu tình trạng vận chuyển đơn hàng của bạn bằng cách nhập mã đơn hoặc số điện thoại.',
-                searchPlaceholder: 'Nhập mã đơn hàng hoặc số điện thoại...',
-                searchBtn: 'Tìm kiếm',
-                totalAmount: 'Tổng cộng:',
-                noOrdersFound: 'Không tìm thấy đơn hàng nào.',
-                cartTitle: 'Giỏ hàng của bạn',
-                emptyCart: 'Giỏ hàng đang trống, hãy chọn sản phẩm yêu thích!',
-                subtotal: 'Tạm tính',
-                shippingFee: 'Phí vận chuyển',
-                freeShipping: 'Miễn phí',
-                total: 'Tổng thanh toán',
-                proceedCheckout: 'Tiến hành thanh toán',
-                checkoutTitle: 'Thông tin giao hàng & Thanh toán',
-                fieldName: 'Họ tên người nhận',
-                fieldPhone: 'Số điện thoại',
-                fieldAddress: 'Địa chỉ nhận hàng',
-                fieldPayment: 'Phương thức thanh toán',
-                vietqrNotice: 'Quét mã VietQR bằng ứng dụng ngân hàng bất kỳ để thanh toán:',
-                vietqrSub: 'STK: 0348246669 | Chủ tài khoản: PHOENIX CAFE',
-                submitOrderBtn: 'Xác nhận đặt hàng & Đồng bộ đám mây',
-                adminLoginTitle: 'Xác thực quản trị',
-                adminLoginDesc: 'Nhập mật khẩu quản trị (Mặc định: 0348246669):',
-                cancel: 'Hủy',
-                confirm: 'Xác nhận',
-                dashboardTitle: 'Bảng điều khiển quản lý đơn hàng PHOENIX Cafe',
-                exportCSV: 'Xuất file CSV',
-                footerRights: 'Saigon Artisan Roastery & Specialty Coffee. All Rights Reserved.'
-            }
-        };
-
-        function phoenixApp() {
+        function auraCoffeeApp() {
             return {
-                lang: localStorage.getItem('phoenix_lang') || 'zh',
-                currentTab: 'shop',
-                selectedCategory: 'all',
+                currentView: 'home',
                 cartOpen: false,
-                checkoutOpen: false,
-                openAdminModal: false,
-                openDashboard: false,
-                adminPasswordInput: '',
+                searchOpen: false,
+                mobileMenuOpen: false,
+                accountTab: 'orders',
+                filterCategory: 'all',
+                sortBy: 'featured',
                 searchQuery: '',
-                
-                cart: JSON.parse(localStorage.getItem('phoenix_cart')) || [],
-                allOrders: JSON.parse(localStorage.getItem('phoenix_orders')) || [
-                    {
-                        id: 'PHO-8829',
-                        date: '2026-09-29 14:20',
-                        status: '已出貨 (Shipped)',
-                        customer: { name: 'Nguyen Van Minh', phone: '0901234567', address: 'District 1, HCMC', paymentMethod: 'VietQR' },
-                        items: [{ name: { zh: '西貢尊爵羅布斯塔', vi: 'Robusta Sài Gòn Thượng Hạng' }, selectedOption: '咖啡豆 (Whole Bean)', price: 280000, qty: 2 }],
-                        total: 560000
+                selectedGrind: '原豆（不研磨）',
+                quantity: 1,
+
+                selectedProduct: { 
+                    id: 1, 
+                    name: '衣索比亞 耶加雪菲 歌蕾莎村 水洗', 
+                    category: 'beans', 
+                    price: 580, 
+                    image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Ethiopia+Yirgacheffe', 
+                    description: '帶有迷人的茉莉花香、檸檬皮與佛手柑風味，口感清新明亮，餘韻帶著優雅的白茶香氣。', 
+                    flavorTags: ['茉莉花香', '檸檬', '佛手柑'],
+                    roastLevel: '淺焙',
+                    process: '水洗處理',
+                    origin: '衣索比亞 耶加雪菲',
+                    badge: 'HOT' 
+                },
+
+                products: [
+                    { 
+                        id: 1, 
+                        name: '衣索比亞 耶加雪菲 歌蕾莎村 水洗', 
+                        category: 'beans', 
+                        price: 580, 
+                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Ethiopia+Yirgacheffe', 
+                        description: '帶有迷人的茉莉花香、檸檬皮與佛手柑風味，口感清新明亮，餘韻帶著優雅的白茶香氣。', 
+                        flavorTags: ['茉莉花香', '檸檬', '佛手柑'],
+                        roastLevel: '淺焙',
+                        process: '水洗處理',
+                        origin: '衣索比亞',
+                        badge: 'HOT' 
+                    },
+                    { 
+                        id: 2, 
+                        name: '哥倫比亞 薇拉 天堂莊園 雙重厭氧發酵', 
+                        category: 'beans', 
+                        price: 720, 
+                        image: 'https://placehold.co/600x800/bfae9e/221e1a?text=Colombia+El+Paraiso', 
+                        description: '充滿濃郁的草莓、水蜜桃與熱帶水果香氣，層次極其豐富且甜感飽滿。', 
+                        flavorTags: ['草莓', '水蜜桃', '熱帶水果'],
+                        roastLevel: '中淺焙',
+                        process: '雙重厭氧水洗',
+                        origin: '哥倫比亞',
+                        badge: 'NEW' 
+                    },
+                    { 
+                        id: 3, 
+                        name: '職人特選浸泡式咖啡濾袋 (10入裝/盒)', 
+                        category: 'drip', 
+                        price: 480, 
+                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Drip+Coffee+Box', 
+                        description: '採用質感牛皮紙夾鏈袋包裝，只需浸泡於冷水或熱水中，即可隨時隨地享受精品莊園咖啡。', 
+                        flavorTags: ['黑巧克力', '堅果', '焦糖'],
+                        roastLevel: '中焙',
+                        process: '綜合配方',
+                        origin: '多國拼配',
+                        badge: 'BEST' 
+                    },
+                    { 
+                        id: 4, 
+                        name: '肯亞 祈安布 恩布產區 AA TOP', 
+                        category: 'beans', 
+                        price: 640, 
+                        image: 'https://placehold.co/600x800/e5ddd3/221e1a?text=Kenya+AA+TOP', 
+                        description: '黑醋栗、烏梅與蔓越莓風味，厚實多汁的口感，酸值明亮高雅。', 
+                        flavorTags: ['黑醋栗', '烏梅', '蔓越莓'],
+                        roastLevel: '淺焙',
+                        process: '水洗處理',
+                        origin: '肯亞',
+                        badge: '' 
+                    },
+                    { 
+                        id: 5, 
+                        name: '極簡霧黑不鏽鋼細口手沖壺 (600ml)', 
+                        category: 'equipment', 
+                        price: 1580, 
+                        image: 'https://placehold.co/600x800/221e1a/ffffff?text=Kettle', 
+                        description: '90度垂直水流控制專用細口壺，霧黑極簡美學設計，手沖咖啡愛好者的必備利器。', 
+                        flavorTags: ['職人器具', '手沖專用'],
+                        roastLevel: '不鏽鋼',
+                        process: '精工製造',
+                        origin: '日本設計',
+                        badge: '' 
+                    },
+                    { 
+                        id: 6, 
+                        name: '哥斯大黎加 卡內特莊園 音樂家系列 貝多芬', 
+                        category: 'beans', 
+                        price: 850, 
+                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Costa+Rica+Beethoven', 
+                        description: '乾香帶有強烈的白花與葡萄柚香氣，入口有葡萄乾與草莓奶昔般的滑順甜感。', 
+                        flavorTags: ['白花', '葡萄柚', '草莓奶昔'],
+                        roastLevel: '淺焙',
+                        process: '葡萄乾蜜處理',
+                        origin: '哥斯大黎加',
+                        badge: 'LIMITED' 
                     }
                 ],
-                displayedOrders: [],
+
+                cart: [
+                    { 
+                        id: 1, 
+                        name: '衣索比亞 耶加雪菲 歌蕾莎村 水洗', 
+                        price: 580, 
+                        quantity: 1, 
+                        grind: '原豆（不研磨）', 
+                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Ethiopia+Yirgacheffe' 
+                    }
+                ],
 
                 checkoutForm: {
                     name: '',
                     phone: '',
                     address: '',
-                    paymentMethod: 'VietQR'
+                    payment: 'credit'
                 },
 
-                products: [
-                    {
-                        id: 1,
-                        category: 'bean',
-                        badge: { zh: '冠軍首選', vi: 'Bán chạy nhất' },
-                        name: { zh: '西貢尊爵羅布斯塔 (Saigon Noir)', vi: 'Cà phê Robusta Sài Gòn Noir' },
-                        desc: { zh: '濃郁黑巧克力與烘焙焦糖香氣，完美適配越南傳統滴漏 Phin 與經典越式煉乳咖啡。', vi: 'Hương vị sô-cô-la đen đậm đà và caramel cháy, hoàn hảo cho phin truyền thống.' },
-                        price: 280000,
-                        image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80',
-                        options: ['咖啡豆 (Whole Bean)', '粗研磨 (Coarse - Phin)', '細研磨 (Fine - Espresso)'],
-                        selectedOption: '咖啡豆 (Whole Bean)'
-                    },
-                    {
-                        id: 2,
-                        category: 'bean',
-                        badge: { zh: '大叻莊園', vi: 'Đặc sản Đà Lạt' },
-                        name: { zh: '大叻高山阿拉比卡 (Dalat Highland)', vi: 'Cà phê Arabica Đà Lạt Highland' },
-                        desc: { zh: '帶有明亮柑橘調與蜂蜜甜感，產自海拔 1,500 公尺的大叻火山灰土壤莊園。', vi: 'Hương cam chanh tươi sáng và vị ngọt mật ong từ độ cao 1,500m.' },
-                        price: 350000,
-                        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80',
-                        options: ['咖啡豆 (Whole Bean)', '中研磨 (Medium - Hand Drip)', '細研磨 (Fine - Espresso)'],
-                        selectedOption: '咖啡豆 (Whole Bean)'
-                    },
-                    {
-                        id: 3,
-                        category: 'drip',
-                        badge: { zh: '職人便攜', vi: 'Tiện lợi' },
-                        name: { zh: '冷萃浸泡咖啡包 (Cold Brew Bag)', vi: 'Túi Lọc Cold Brew Tiện Lợi' },
-                        desc: { zh: '浸泡 12 小時即可享用絲滑甘醇的冰釀冷萃咖啡，隨時隨地享受精品咖啡。', vi: 'Ngâm 12 tiếng để tận hưởng ly cold brew mượt mà, đậm vị mọi lúc mọi nơi.' },
-                        price: 220000,
-                        image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80',
-                        options: ['標準盒裝 (10包入 / Box)', '大容量裝 (25包入 / Box)'],
-                        selectedOption: '標準盒裝 (10包入 / Box)'
-                    },
-                    {
-                        id: 4,
-                        category: 'gear',
-                        badge: { zh: '越南工藝', vi: 'Dụng cụ Phin' },
-                        name: { zh: '不鏽鋼經典越南滴漏 Phin 壺', vi: 'Phin Cà Phê Inox Truyền Thống' },
-                        desc: { zh: '304 不鏽鋼精密製成，重現正宗西貢街頭滴漏風味，耐用且質感滿分。', vi: 'Inox 304 cao cấp, tái hiện đúng chuẩn hương vị cà phê phố Sài Gòn.' },
-                        price: 150000,
-                        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80',
-                        options: ['標準單人份 (Standard)', '大容量分享份 (Large)'],
-                        selectedOption: '標準單人份 (Standard)'
-                    }
-                ],
-
-                setLang(l) {
-                    this.lang = l;
-                    localStorage.setItem('phoenix_lang', l);
-                },
-
-                t(key) {
-                    return translations[this.lang][key] || key;
-                },
-
-                formatVND(amount) {
-                    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-                },
-
-                get filteredProducts() {
-                    if (this.selectedCategory === 'all') return this.products;
-                    return this.products.filter(p => p.category === this.selectedCategory);
-                },
-
-                get cartItemCount() {
-                    return this.cart.reduce((sum, item) => sum + item.qty, 0);
+                get cartCount() {
+                    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
                 },
 
                 get cartSubtotal() {
-                    return this.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                },
-
-                get cartShipping() {
-                    return this.cartSubtotal >= 500000 || this.cartSubtotal === 0 ? 0 : 35000;
+                    return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 },
 
                 get cartTotal() {
-                    return this.cartSubtotal + this.cartShipping;
+                    let shipping = this.cartSubtotal >= 1200 ? 0 : 120;
+                    return this.cartSubtotal + shipping;
                 },
 
-                get shippingProgress() {
-                    let progress = (this.cartSubtotal / 500000) * 100;
-                    return progress > 100 ? 100 : progress;
-                },
-
-                get shippingProgressText() {
-                    if (this.cartSubtotal >= 500000) {
-                        return this.lang === 'zh' ? '🎉 您已享有全館免運優惠！' : '🎉 Bạn đã được miễn phí vận chuyển!';
-                    } else {
-                        let diff = 500000 - this.cartSubtotal;
-                        let formattedDiff = this.formatVND(diff);
-                        return this.lang === 'zh' ? `還差 ${formattedDiff} 即可享免運費` : `Còn thiếu ${formattedDiff} để được freeship`;
+                get filteredProducts() {
+                    let result = this.products;
+                    if (this.filterCategory !== 'all') {
+                        result = result.filter(p => p.category === this.filterCategory);
                     }
+                    if (this.sortBy === 'price-low') {
+                        result = [...result].sort((a, b) => a.price - b.price);
+                    } else if (this.sortBy === 'price-high') {
+                        result = [...result].sort((a, b) => b.price - a.price);
+                    }
+                    return result;
                 },
 
-                addToCart(product) {
-                    let existing = this.cart.find(item => item.id === product.id && item.selectedOption === product.selectedOption);
+                formatPrice(price) {
+                    return 'NT$ ' + price.toLocaleString();
+                },
+
+                openProductDetail(product) {
+                    this.selectedProduct = product;
+                    this.quantity = 1;
+                    this.selectedGrind = '原豆（不研磨）';
+                    this.currentView = 'detail';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                quickAddToCart(product) {
+                    let existing = this.cart.find(item => item.id === product.id && item.grind === '原豆（不研磨）');
                     if (existing) {
-                        existing.qty++;
+                        existing.quantity++;
                     } else {
                         this.cart.push({
-                            ...product,
-                            qty: 1
+                            id: product.id,
+                            name: product.name,
+                            price: product.price,
+                            quantity: 1,
+                            grind: '原豆（不研磨）',
+                            image: product.image
                         });
                     }
-                    this.saveCart();
                     this.cartOpen = true;
                 },
 
-                updateQty(index, change) {
-                    this.cart[index].qty += change;
-                    if (this.cart[index].qty <= 0) {
+                addToCartFromDetail() {
+                    let existing = this.cart.find(item => item.id === this.selectedProduct.id && item.grind === this.selectedGrind);
+                    if (existing) {
+                        existing.quantity += this.quantity;
+                    } else {
+                        this.cart.push({
+                            id: this.selectedProduct.id,
+                            name: this.selectedProduct.name,
+                            price: this.selectedProduct.price,
+                            quantity: this.quantity,
+                            grind: this.selectedGrind,
+                            image: this.selectedProduct.image
+                        });
+                    }
+                    this.cartOpen = true;
+                },
+
+                buyNow() {
+                    this.addToCartFromDetail();
+                    this.cartOpen = false;
+                    this.currentView = 'checkout';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                updateCartQty(index, delta) {
+                    this.cart[index].quantity += delta;
+                    if (this.cart[index].quantity <= 0) {
                         this.cart.splice(index, 1);
                     }
-                    this.saveCart();
                 },
 
-                saveCart() {
-                    localStorage.setItem('phoenix_cart', JSON.stringify(this.cart));
+                removeFromCart(index) {
+                    this.cart.splice(index, 1);
                 },
 
-                openCheckout() {
-                    this.cartOpen = false;
-                    this.checkoutOpen = true;
-                },
-
-                submitOrder() {
-                    let newOrder = {
-                        id: 'PHO-' + Math.floor(1000 + Math.random() * 9000),
-                        date: new Date().toISOString().slice(0, 16).replace('T', ' '),
-                        status: '備貨中 (Processing)',
-                        customer: { ...this.checkoutForm },
-                        items: [...this.cart],
-                        total: this.cartTotal
-                    };
-
-                    this.allOrders.unshift(newOrder);
-                    localStorage.setItem('phoenix_orders', JSON.stringify(this.allOrders));
-                    
-                    // 清空購物車
-                    this.cart = [];
-                    this.saveCart();
-                    this.checkoutOpen = false;
-
-                    alert(this.lang === 'zh' ? '訂單已成功送出！系統已同步至雲端試算表。' : 'Đặt hàng thành công! Đã đồng bộ lên Google Sheets.');
-                    this.currentTab = 'orders';
-                },
-
-                searchOrders() {
-                    if (!this.searchQuery) {
-                        this.displayedOrders = [];
+                completeOrder() {
+                    if (!this.checkoutForm.name || !this.checkoutForm.phone || !this.checkoutForm.address) {
+                        alert('請完整填寫收件人姓名、手機號碼與收件地址');
                         return;
                     }
-                    let q = this.searchQuery.toLowerCase();
-                    this.displayedOrders = this.allOrders.filter(o => 
-                        o.id.toLowerCase().includes(q) || o.customer.phone.includes(q)
-                    );
-                },
-
-                verifyAdmin() {
-                    if (this.adminPasswordInput === '0348246669') {
-                        this.openAdminModal = false;
-                        this.adminPasswordInput = '';
-                        this.openDashboard = true;
-                    } else {
-                        alert(this.lang === 'zh' ? '密碼錯誤！預設密碼為 0348246669' : 'Mật khẩu sai! Mật khẩu mặc định: 0348246669');
-                    }
-                },
-
-                exportToCSV() {
-                    let csv = 'Order ID,Date,Customer Name,Phone,Address,Payment,Total (VND)\n';
-                    this.allOrders.forEach(o => {
-                        csv += `${o.id},${o.date},"${o.customer.name}",${o.customer.phone},"${o.customer.address}",${o.customer.paymentMethod},${o.total}\n`;
-                    });
-                    let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                    let link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'phoenix_cafe_orders.csv';
-                    link.click();
-                },
-
-                init() {
-                    this.displayedOrders = [...this.allOrders];
+                    alert('訂單已成功建立！感謝您選購 AURA COFFEE 職人咖啡。');
+                    this.cart = [];
+                    this.currentView = 'home';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             }
         }
