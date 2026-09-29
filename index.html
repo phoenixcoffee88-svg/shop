@@ -98,26 +98,11 @@
       Globe: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
       ),
-      Truck: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-      ),
       CheckCircle: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
       ),
       Package: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-      ),
-      Lock: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-      ),
-      Printer: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-      ),
-      Sparkles: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-      ),
-      Heart: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.04 3 5.5l7 7Z"/></svg>
       ),
       QrCode: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><line x1="7" y1="7" x2="7" y2="7"></line><line x1="18" y1="7" x2="18" y2="7"></line><line x1="7" y1="18" x2="7" y2="18"></line><line x1="18" y1="18" x2="18" y2="18"></line><line x1="3" y1="11" x2="21" y2="11"></line><line x1="11" y1="3" x2="11" y2="21"></line></svg>
@@ -130,7 +115,7 @@
     const ADMIN_PASSWORD = '0348246669';
     const SHIPPING_CONFIG = { FREE_THRESHOLD: 500000, FLAT_RATE: 25000 };
     
-    // 💡 請在此處填入您的 Google Apps Script 部署網址 (Web App URL)
+    // Google Apps Script 部署網址
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec';
 
     const TRANSLATIONS = {
@@ -145,9 +130,6 @@
         grindSize: '選擇研磨度 / 規格',
         quantity: '數量',
         addToCart: '加入購物車',
-        freeShippingGoal: '滿 500,000 VND 免運',
-        freeShippingReached: '已達免運門檻！',
-        freeShippingShort: '還差 ',
         emptyCart: '購物車目前是空的',
         subtotal: '商品小計',
         shippingFee: '運費',
@@ -165,15 +147,13 @@
         orderSuccess: '訂單已成功建立並同步至 Google 試算表！',
         orderSuccessDesc: '請使用行動銀行或電子支付 App 掃描下方 QR Code 完成轉帳付款。',
         paymentInfoTitle: '付款資訊',
-        bankName: '銀行名稱：Vietcombank / VCB (Miu kim phuong)',
+        bankName: '銀行名稱：Vietcombank (VCB) - MIU KIM PHUONG',
         bankAccount: '轉帳帳號：0121000852742',
         scanToPay: '手機掃描 QR Code 快速付款',
         completePaymentBtn: '完成付款並檢視正式收據',
         orderHistoryTitle: '歷史訂單紀錄',
         noHistory: '尚無歷史訂單紀錄',
-        clearHistory: '清除歷史',
         orderId: '訂單編號',
-        confirmClear: '確定要清除所有歷史訂單紀錄？',
         historyPasswordTitle: '歷史訂單驗證',
         historyPasswordDesc: '請輸入管理密碼以檢視歷史訂單',
         printReceipt: '列印/儲存單據',
@@ -183,14 +163,6 @@
         passwordPlaceholder: '請輸入管理密碼',
         passwordError: '密碼錯誤，請重新輸入',
         passwordSubmit: '確認送出',
-        brandStoryTitle: '品牌故事與經營理念',
-        brandStorySubtitle: '源自對風土的敬意，淬鍊每一杯極致的手作咖啡',
-        story1Title: '探索莊園純粹風土',
-        story1Desc: 'PHOENIX 堅信每一顆咖啡豆都承載著大自然的餽贈。我們親自尋訪高海拔優選產區與小農莊園，嚴選 100% 純粹豆種，確保從土壤、栽種到採收的每一個環節都無懈可擊。',
-        story2Title: '黃金三焙職人工藝',
-        story2Desc: '我們大膽融合淺焙的明亮果香、中焙的焦糖甜感與深焙的醇厚尾韻。透過獨家精準的混調工藝，讓咖啡層次在口中完美立體交織，為您帶來無與倫比的豐富體驗。',
-        story3Title: '用心堅持品質承諾',
-        story3Desc: '從咖啡豆到冷萃浸泡包，我們堅持 100% 天然烘焙，通過嚴格食安檢驗。不只是販售咖啡，更是傳遞一份對生活美學與溫暖手作的極致堅持。',
         grindOptions: {
           beans: { label: '保留原豆', detail: 'Whole Beans' },
           phin: { label: '越南滴漏', detail: 'Phin Filter' },
@@ -218,9 +190,6 @@
         grindSize: 'Chọn mức độ xay / Quy cách',
         quantity: 'Số lượng',
         addToCart: 'Thêm vào giỏ hàng',
-        freeShippingGoal: 'Freeship từ 500,000 VND',
-        freeShippingReached: 'Đã đạt mức Freeship!',
-        freeShippingShort: 'Còn thiếu ',
         emptyCart: 'Giỏ hàng đang trống',
         subtotal: 'Tạm tính',
         shippingFee: 'Phí vận chuyển',
@@ -238,15 +207,13 @@
         orderSuccess: 'Đơn hàng đã được tạo và lưu vào Google Sheets thành công!',
         orderSuccessDesc: 'Vui lòng sử dụng ứng dụng ngân hàng hoặc ví điện tử để quét mã QR bên dưới thanh toán.',
         paymentInfoTitle: 'Thông tin chuyển khoản',
-        bankName: 'Ngân hàng: Techcombank / VCB (PHOENIX CAFE)',
-        bankAccount: 'Số tài khoản: 0348246669',
+        bankName: 'Ngân hàng: Vietcombank (VCB) - MIU KIM PHUONG',
+        bankAccount: 'Số tài khoản: 0121000852742',
         scanToPay: 'Quét mã QR để thanh toán nhanh',
         completePaymentBtn: 'Hoàn tất thanh toán & Xem hóa đơn',
         orderHistoryTitle: 'Lịch sử đơn hàng',
         noHistory: 'Chưa có lịch sử đơn hàng',
-        clearHistory: 'Xóa lịch sử',
         orderId: 'Mã đơn hàng',
-        confirmClear: 'Bạn có chắc muốn xóa lịch sử đơn hàng?',
         historyPasswordTitle: 'Xác thực lịch sử đơn hàng',
         historyPasswordDesc: 'Vui lòng nhập mật khẩu để xem lịch sử',
         printReceipt: 'In / Lưu hóa đơn',
@@ -256,14 +223,6 @@
         passwordPlaceholder: 'Nhập mật khẩu quản trị',
         passwordError: 'Mật khẩu sai, vui lòng thử lại',
         passwordSubmit: 'Xác nhận',
-        brandStoryTitle: 'Câu chuyện thương hiệu & Triết lý kinh doanh',
-        brandStorySubtitle: 'Xuất phát từ sự tôn trọng thổ nhưỡng, chắt chiu từng giọt cà phê thủ công hoàn hảo nhất',
-        story1Title: 'Khám phá hương vị nguyên bản',
-        story1Desc: 'PHOENIX tin rằng mỗi hạt cà phê đều mang trong mình món quà của thiên nhiên. Chúng tôi trực tiếp chọn lọc từ các vùng cao nguyên chất lượng cao và các nông hộ uy tín, cam kết hạt cà phê thuần khiết 100%.',
-        story2Title: 'Nghệ thuật rang 3 cấp độ',
-        story2Desc: 'Chúng tôi kết hợp táo bạo giữa vị trái cây thanh mát của rang nhạt, vị caramel ngọt ngào của rang vừa và hậu vị đậm đà của rang đậm. Mang đến tầng hương phong phú và trải nghiệm độc đáo.',
-        story3Title: 'Cam kết chất lượng từ tâm',
-        story3Desc: 'Từ cà phê hạt đến túi lọc cold brew, chúng tôi luôn duy trì tiêu chuẩn rang mộc tự nhiên và kiểm định an toàn nghiêm ngặt. Không chỉ bán cà phê, chúng tôi lan tỏa lối sống tinh tế.',
         grindOptions: {
           beans: { label: 'Nguyên hạt', detail: 'Whole Beans' },
           phin: { label: 'Pha Phin', detail: 'Phin Filter' },
@@ -579,7 +538,7 @@
       );
     }
 
-    // 訂單結帳彈窗（已串接 Google Apps Script 試算表寫入）
+    // 訂單結帳彈窗（已使用 VietQR 格式）
     function CheckoutModal({ isOpen, lang, t, deductStock, onClose, cart, clearCart, onOpenReceipt }) {
       const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '' });
       const [submitting, setSubmitting] = useState(false);
@@ -598,7 +557,6 @@
         const orderId = 'PH-' + Date.now().toString().slice(-6);
         const orderDate = new Date().toLocaleString();
         
-        // 組合品項明細字串供試算表紀錄
         const orderItemsStr = cart.map(item => `${item.name} (${item.spec}, ${item.grindLabel || ''}) x ${item.quantity}`).join('; ');
 
         const payload = {
@@ -615,11 +573,10 @@
         };
 
         try {
-          // 發送 POST 請求至您的 Google Apps Script 網址
           if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
             await fetch(GOOGLE_SCRIPT_URL, {
               method: 'POST',
-              mode: 'no-cors', // 避免 Google Apps Script 跨域限制
+              mode: 'no-cors',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(payload)
             });
@@ -713,7 +670,11 @@
 
                 <div className="bg-coffee-50 border border-coffee-200/80 rounded-3xl p-5 space-y-4 shadow-sm">
                   <div className="bg-white p-4 rounded-2xl inline-block shadow-md border border-coffee-200/60">
-                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`PHOENIX CAFE ORDER: #${completedOrder.id}, Amount:${completedOrder.grandTotal} VND`)}`} alt="QR" className="w-40 h-40 object-contain mx-auto rounded-lg" />
+                    <img 
+                      src={`https://img.vietqr.io/image/vcb-0121000852742-compact.png?amount=${completedOrder.grandTotal}&addInfo=${encodeURIComponent(completedOrder.id)}&accountName=MIU%20KIM%20PHUONG`} 
+                      alt="Payment QR" 
+                      className="w-40 h-40 object-contain mx-auto rounded-lg" 
+                    />
                   </div>
                   <div className="text-xs text-coffee-800 space-y-1 font-medium bg-white/60 p-3 rounded-2xl border border-coffee-100">
                     <p className="font-bold text-coffee-900">{t.bankName}</p>
