@@ -163,6 +163,11 @@
         passwordPlaceholder: '請輸入管理密碼',
         passwordError: '密碼錯誤，請重新輸入',
         passwordSubmit: '確認送出',
+        productDetailsLabel: '詳細資訊',
+        flavorNotesLabel: '風味筆記',
+        processLabel: '處理法',
+        roastLevelLabel: '烘焙度',
+        originLabel: '產區',
         grindOptions: {
           beans: { label: '保留原豆', detail: 'Whole Beans' },
           phin: { label: '越南滴漏', detail: 'Phin Filter' },
@@ -223,6 +228,11 @@
         passwordPlaceholder: 'Nhập mật khẩu quản trị',
         passwordError: 'Mật khẩu sai, vui lòng thử lại',
         passwordSubmit: 'Xác nhận',
+        productDetailsLabel: 'Thông tin chi tiết',
+        flavorNotesLabel: 'Hương vị',
+        processLabel: 'Phương pháp chế biến',
+        roastLevelLabel: 'Mức độ rang',
+        originLabel: 'Vùng trồng',
         grindOptions: {
           beans: { label: 'Nguyên hạt', detail: 'Whole Beans' },
           phin: { label: 'Pha Phin', detail: 'Phin Filter' },
@@ -252,7 +262,15 @@
         price: 220000, 
         type: 'beans', 
         stock: 20, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg'
+        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
+        originZh: '衣索比亞 谷吉 (Guji, Ethiopia)',
+        originVi: 'Guji, Ethiopia',
+        processZh: '水洗處理 (Washed)',
+        processVi: 'Chế biến ướt (Washed)',
+        roastZh: '淺中焙 (Light-Medium Roast)',
+        roastVi: 'Rang nhạt vừa (Light-Medium)',
+        flavorZh: '帶有清新迷人的茉莉花香、檸檬皮氣息與柑橘調性，口感純淨且明亮多汁，餘韻帶有伯爵紅茶般的優雅香氣。',
+        flavorVi: 'Hương hoa nhài, vỏ chanh và cam quýt tươi mát, vị chua sáng mọng nước, dư vị trà Earl Grey thanh lịch.'
       },
       { 
         id: 'arabica-coldbrew-10', 
@@ -264,7 +282,15 @@
         price: 125000, 
         type: 'coldbrew', 
         stock: 20, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P4.jpg'
+        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P4.jpg',
+        originZh: '精選 100% 阿拉比卡豆 (100% Arabica Blend)',
+        originVi: '100% Arabica Chọn Lọc',
+        processZh: '浸泡式低溫冷萃專用研磨',
+        processVi: 'Xay chuyên dụng cho ủ lạnh (Cold Brew)',
+        roastZh: '中焙 (Medium Roast)',
+        roastVi: 'Rang vừa (Medium)',
+        flavorZh: '口感滑順醇厚，展現出焦糖堅果與黑巧克力般的深邃香氣，低酸溫潤，適合在家或辦公室輕鬆製作冷萃冰咖啡。',
+        flavorVi: 'Vị êm dịu, đậm đà với hương caramel, các loại hạt và sô-cô-la đen, ít chua, tiện lợi pha chế tại nhà hoặc văn phòng.'
       }
     ];
 
@@ -873,6 +899,10 @@
 
       const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
       const specText = lang === 'zh-TW' ? product.specZh : product.specVi;
+      const originText = lang === 'zh-TW' ? product.originZh : product.originVi;
+      const processText = lang === 'zh-TW' ? product.processZh : product.processVi;
+      const roastText = lang === 'zh-TW' ? product.roastZh : product.roastVi;
+      const flavorText = lang === 'zh-TW' ? product.flavorZh : product.flavorVi;
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
@@ -884,7 +914,38 @@
               <img src={product.image} alt={productName} className="w-full h-56 object-cover rounded-2xl bg-coffee-100" />
               <div>
                 <h3 className="text-lg font-bold font-serif text-coffee-900">{productName}</h3>
-                <p className="text-base font-extrabold text-amber-800 mt-1">{product.price.toLocaleString()} VND</p>
+                <p className="text-base font-extrabold text-amber-800 mt-1">{product.price.toLocaleString()} VND <span className="text-xs font-normal text-gray-500">({specText})</span></p>
+              </div>
+
+              {/* 詳細產品內容資訊區塊 */}
+              <div className="bg-coffee-50 border border-coffee-200/60 rounded-2xl p-4 space-y-2.5 text-xs text-coffee-900">
+                <h4 className="font-bold font-serif text-coffee-900 border-b border-coffee-200/60 pb-1.5 flex items-center gap-1.5">
+                  <Icons.Coffee className="h-3.5 w-3.5 text-amber-800" /> {t.productDetailsLabel}
+                </h4>
+                {originText && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-coffee-600 font-medium">{t.originLabel}：</span>
+                    <span className="font-bold text-right">{originText}</span>
+                  </div>
+                )}
+                {processText && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-coffee-600 font-medium">{t.processLabel}：</span>
+                    <span className="font-bold text-right">{processText}</span>
+                  </div>
+                )}
+                {roastText && (
+                  <div className="flex justify-between gap-2">
+                    <span className="text-coffee-600 font-medium">{t.roastLevelLabel}：</span>
+                    <span className="font-bold text-right">{roastText}</span>
+                  </div>
+                )}
+                {flavorText && (
+                  <div className="space-y-1 pt-1 border-t border-coffee-200/40">
+                    <span className="text-coffee-600 font-medium block">{t.flavorNotesLabel}：</span>
+                    <p className="text-coffee-800 italic leading-relaxed">{flavorText}</p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
