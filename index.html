@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AURA COFFEE | 頂級精品咖啡與職人選物</title>
+    <title>PHOENIX COFFEE | 頂級精品咖啡與職人選物</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -45,7 +45,7 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body x-data="auraCoffeeApp()" class="antialiased selection:bg-coffee selection:text-white">
+<body x-data="phoenixCoffeeApp()" class="antialiased selection:bg-coffee selection:text-white">
 
     <div class="bg-aura-900 text-aura-100 text-xs py-2 text-center tracking-widest uppercase font-medium">
         全館滿 VND 800,000 即享免運優惠 · 職人精選單品豆新鮮烘焙中
@@ -61,7 +61,7 @@
             <!-- 品牌標誌與導覽 -->
             <div class="flex items-center space-x-12">
                 <a href="#" @click.prevent="currentView = 'home'" class="text-2xl font-bold tracking-widest uppercase font-serif">
-                    AURA <span class="text-coffee">COFFEE</span>
+                    PHOENIX <span class="text-coffee">COFFEE</span>
                 </a>
                 <nav class="hidden lg:flex space-x-8 text-xs font-medium uppercase tracking-widest text-aura-800">
                     <a href="#" @click.prevent="currentView = 'home'" class="hover:text-coffee transition-colors" :class="currentView === 'home' ? 'border-b-2 border-coffee pb-1 text-coffee' : ''">首頁</a>
@@ -95,7 +95,7 @@
             <!-- Hero 區塊 -->
             <div class="relative bg-aura-100 overflow-hidden h-[85vh] flex items-center">
                 <div class="absolute inset-0 z-0">
-                    <img src="https://placehold.co/1920x1080/e5ddd3/221e1a?text=AURA+COFFEE+ROASTERS" alt="Hero Image" class="w-full h-full object-cover object-center opacity-85">
+                    <img src="https://placehold.co/1920x1080/e5ddd3/221e1a?text=PHOENIX+COFFEE+ROASTERS" alt="Hero Image" class="w-full h-full object-cover object-center opacity-85">
                     <div class="absolute inset-0 bg-gradient-to-r from-aura-900/60 via-aura-900/20 to-transparent"></div>
                 </div>
                 <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-white">
@@ -491,7 +491,7 @@
                             <div class="border border-aura-200 p-5 rounded-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                 <div>
                                     <div class="flex items-center space-x-3">
-                                        <span class="text-xs font-semibold text-aura-900">#AURA-2026-9042</span>
+                                        <span class="text-xs font-semibold text-aura-900">#PHOENIX-2026-9042</span>
                                         <span class="bg-emerald-100 text-emerald-800 text-[10px] px-2.5 py-0.5 rounded uppercase font-medium">已完成配送</span>
                                     </div>
                                     <p class="text-xs text-gray-500 mt-1">訂單日期：2026-06-20 | 總金額：VND 350,000</p>
@@ -519,7 +519,7 @@
                         <div class="space-y-4 text-xs">
                             <div>
                                 <label class="block text-gray-500 mb-1">電子信箱 (無法修改)</label>
-                                <input type="text" readonly value="member@auracoffee.vn" class="w-full bg-aura-50 border border-aura-200 p-3 rounded-sm text-gray-600">
+                                <input type="text" readonly value="member@phoenixcoffee.vn" class="w-full bg-aura-50 border border-aura-200 p-3 rounded-sm text-gray-600">
                             </div>
                             <div>
                                 <label class="block text-gray-500 mb-1">會員名稱</label>
@@ -632,7 +632,7 @@
         <div @click="mobileMenuOpen = false" class="fixed inset-0 bg-aura-900/40"></div>
         <div class="relative bg-white w-4/5 max-w-sm h-full shadow-2xl flex flex-col p-6 z-10">
             <div class="flex justify-between items-center mb-8 border-b border-aura-200 pb-4">
-                <span class="text-lg font-bold tracking-widest uppercase font-serif">AURA <span class="text-coffee">COFFEE</span></span>
+                <span class="text-lg font-bold tracking-widest uppercase font-serif">PHOENIX <span class="text-coffee">COFFEE</span></span>
                 <button @click="mobileMenuOpen = false"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <nav class="space-y-4 text-xs uppercase tracking-wider font-semibold text-aura-800">
@@ -650,7 +650,7 @@
     <footer class="bg-aura-900 text-aura-100 py-16 mt-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div>
-                <h3 class="text-lg font-bold tracking-widest uppercase font-serif mb-4">AURA <span class="text-coffee">COFFEE</span></h3>
+                <h3 class="text-lg font-bold tracking-widest uppercase font-serif mb-4">PHOENIX <span class="text-coffee">COFFEE</span></h3>
                 <p class="text-xs text-aura-300 leading-relaxed font-light">追求純粹風土與極致職人烘焙工藝，為懂咖啡的您帶來無與倫比的感官體驗。</p>
             </div>
             <div>
@@ -679,12 +679,12 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-aura-800 mt-12 pt-8 text-center text-xs text-aura-300">
-            &copy; 2026 AURA COFFEE ROASTERS. All Rights Reserved. Crafted with Minimalist Luxury.
+            &copy; 2026 PHOENIX COFFEE ROASTERS. All Rights Reserved. Crafted with Minimalist Luxury.
         </div>
     </footer>
 
     <script>
-        function auraCoffeeApp() {
+        function phoenixCoffeeApp() {
             return {
                 currentView: 'home',
                 cartOpen: false,
@@ -969,10 +969,9 @@
 
                     const itemsString = this.cart.map(i => `${i.name} (${i.grind}) x ${i.quantity}`).join('；');
                     
-                    const orderId = 'AURA-' + Math.floor(100000 + Math.random() * 900000);
+                    const orderId = 'PHOENIX-' + Math.floor(100000 + Math.random() * 900000);
                     const now = new Date();
                     
-                    // 修正處：已補上 getDate() 的括號
                     const orderDate = now.getFullYear() + '-' + 
                                       String(now.getMonth() + 1).padStart(2, '0') + '-' + 
                                       String(now.getDate()).padStart(2, '0') + ' ' + 
