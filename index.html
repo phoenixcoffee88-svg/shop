@@ -310,7 +310,7 @@
                         </div>
                     </div>
 
-                    <!-- 包裝風格選擇 (針對浸泡式咖啡袋/濾袋，融入牛皮紙與鋁箔袋質感選物) -->
+                    <!-- 包裝風格選擇 (針對浸泡式咖啡袋/濾袋) -->
                     <div class="mt-8" x-show="selectedProduct.category === 'drip'">
                         <label class="block text-xs uppercase tracking-widest text-aura-800 font-medium mb-3">
                             <span x-text="t.pouchLabel"></span>：<span class="font-semibold text-coffee" x-text="selectedPouch"></span>
@@ -420,7 +420,7 @@
                         </div>
                     </div>
 
-                    <!-- 付款方式 (整合越南銀行轉帳與動態 QR Code) -->
+                    <!-- 付款方式 -->
                     <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
                         <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center">
                             <span class="bg-coffee text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2 font-bold">3</span>
@@ -438,13 +438,12 @@
                             <button @click="checkoutForm.payment = 'cod'" :class="checkoutForm.payment === 'cod' ? 'border-coffee bg-aura-50 text-coffee font-semibold' : 'border-aura-200 text-aura-800'" class="border p-3 text-center rounded-sm text-xs uppercase tracking-wider transition-all" x-text="t.payCod"></button>
                         </div>
 
-                        <!-- 若選擇越南銀行轉帳，顯示整合的 VietQR 區塊 -->
+                        <!-- 越南銀行轉帳與動態 QR Code -->
                         <div x-show="checkoutForm.payment === 'vcb'" class="bg-aura-50 border border-aura-200 p-6 rounded-sm mt-4">
                             <h3 class="text-xs font-bold uppercase tracking-widest text-aura-900 mb-4 flex items-center">
                                 <i class="fa-solid fa-building-columns text-coffee mr-2 text-base"></i> 越南銀行轉帳與動態結帳系統
                             </h3>
                             
-                            <!-- 銀行帳戶資訊 -->
                             <div class="bg-white border-l-4 border-coffee p-4 my-4 rounded-r-sm shadow-sm space-y-1.5 text-xs">
                                 <p><strong>銀行名稱：</strong> Vietcombank (越南外貿股份商業銀行)</p>
                                 <p><strong>收款戶名：</strong> MIU KIM PHUONG</p>
@@ -452,7 +451,6 @@
                                 <p><strong>分行資訊：</strong> PGD Trảng Bom</p>
                             </div>
 
-                            <!-- 動態 QR Code 顯示區 -->
                             <div class="text-center mt-6">
                                 <p class="text-xs font-semibold text-aura-900 mb-2">請使用越南銀行 App 掃描下方 QR Code 付款</p>
                                 <div class="inline-block p-3 bg-white border border-aura-200 rounded-lg shadow-sm">
@@ -468,13 +466,13 @@
                 <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm h-fit">
                     <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 pb-3 border-b border-aura-200 font-serif" x-text="t.orderSummary"></h2>
                     <div class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-1">
-                        <template x-for="item in cart" :key="item.id + (item.grind || item.pouch)">
+                        <template x-for="item in cart" :key="item.id + (item.grind || '') + (item.pouch || '')">
                             <div class="flex justify-between items-center text-xs">
                                 <div class="flex items-center space-x-3">
                                     <img :src="item.image" class="w-12 h-12 object-cover rounded-sm">
                                     <div>
                                         <p class="font-medium text-aura-900" x-text="getCartItemName(item)"></p>
-                                        <p class="text-gray-500 text-[10px]" x-text="`${item.grind || item.pouch} / ${t.qtyLabel}: ${item.quantity}`"></p>
+                                        <p class="text-gray-500 text-[10px]" x-text="`${item.grind || item.pouch || ''} / ${t.qtyLabel}: ${item.quantity}`"></p>
                                     </div>
                                 </div>
                                 <span class="font-semibold" x-text="formatPrice(item.price * item.quantity)"></span>
@@ -590,12 +588,12 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-6 space-y-4">
-                    <template x-for="(item, index) in cart" :key="item.id + (item.grind || item.pouch)">
+                    <template x-for="(item, index) in cart" :key="item.id + (item.grind || '') + (item.pouch || '')">
                         <div class="flex items-center space-x-4 border-b border-aura-100 pb-4">
                             <img :src="item.image" :alt="getCartItemName(item)" class="w-16 h-16 object-cover rounded-sm flex-shrink-0">
                             <div class="flex-1">
                                 <h3 class="text-xs font-medium text-aura-900" x-text="getCartItemName(item)"></h3>
-                                <p class="text-[10px] text-gray-500 mt-0.5" x-text="item.grind || item.pouch"></p>
+                                <p class="text-[10px] text-gray-500 mt-0.5" x-text="item.grind || item.pouch || ''"></p>
                                 <p class="text-xs font-semibold text-aura-900 mt-1" x-text="formatPrice(item.price)"></p>
                                 <div class="flex items-center space-x-3 mt-2">
                                     <div class="flex items-center border border-aura-200 rounded-sm">
@@ -943,7 +941,6 @@
                 isSubmitting: false,
                 lang: localStorage.getItem('phoenix_lang') || 'zh',
 
-                // 結帳表單狀態 (預設付款方式改為越南銀行轉帳 vcb)
                 checkoutForm: {
                     name: '',
                     phone: '',
@@ -952,7 +949,6 @@
                     payment: 'vcb'
                 },
 
-                // 購物車資料
                 cart: [
                     {
                         id: 1,
@@ -1075,17 +1071,18 @@
                     }
                 ],
 
+                // [修正 1] 解決陣列排序汙染：使用 [...this.products] 複製陣列再排序
                 get filteredProducts() {
-                    let result = this.products;
+                    let result = [...this.products];
                     if (this.filterCategory !== 'all') {
                         result = result.filter(p => p.category === this.filterCategory);
                     }
                     if (this.sortBy === 'price-low') {
-                        result = result.sort((a, b) => a.price - b.price);
+                        result.sort((a, b) => a.price - b.price);
                     } else if (this.sortBy === 'price-high') {
-                        result = result.sort((a, b) => b.price - a.price);
+                        result.sort((a, b) => b.price - a.price);
                     } else if (this.sortBy === 'newest') {
-                        result = result.sort((a, b) => b.id - a.id);
+                        result.sort((a, b) => b.id - a.id);
                     }
                     return result;
                 },
@@ -1103,7 +1100,6 @@
                     return this.cartSubtotal + shipping;
                 },
 
-                // 動態產生 VietQR 連結
                 get vietQrUrl() {
                     const bankId = "VCB";
                     const accountNo = "0121000852742";
@@ -1134,33 +1130,53 @@
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
+                // [修正 2] 解決購物車規格判斷錯誤：精準比對 grind 與 pouch
                 addToCartFromDetail() {
-                    const variant = this.selectedProduct.category === 'beans' ? this.selectedGrind : (this.selectedProduct.category === 'drip' ? this.selectedPouch : '');
-                    const existing = this.cart.find(item => item.id === this.selectedProduct.id && (item.grind === variant || item.pouch === variant));
+                    const isBean = this.selectedProduct.category === 'beans';
+                    const isDrip = this.selectedProduct.category === 'drip';
+                    const variant = isBean ? this.selectedGrind : (isDrip ? this.selectedPouch : null);
+                    
+                    const existing = this.cart.find(item => {
+                        if (item.id !== this.selectedProduct.id) return false;
+                        if (isBean) return item.grind === variant;
+                        if (isDrip) return item.pouch === variant;
+                        return true; // 一般周邊商品無規格
+                    });
+
                     if (existing) {
                         existing.quantity += this.quantity;
                     } else {
                         this.cart.push({
                             ...this.selectedProduct,
                             quantity: this.quantity,
-                            grind: this.selectedProduct.category === 'beans' ? variant : null,
-                            pouch: this.selectedProduct.category === 'drip' ? variant : null
+                            grind: isBean ? variant : null,
+                            pouch: isDrip ? variant : null
                         });
                     }
                     this.cartOpen = true;
                 },
 
+                // [修正 2 同步] 快速加入購物車也套用相同嚴格規格判斷
                 quickAddToCart(product) {
-                    const variant = product.category === 'beans' ? this.t.grindOptions[0] : (product.category === 'drip' ? this.t.pouchOptions[0] : '');
-                    const existing = this.cart.find(item => item.id === product.id && (item.grind === variant || item.pouch === variant));
+                    const isBean = product.category === 'beans';
+                    const isDrip = product.category === 'drip';
+                    const variant = isBean ? this.t.grindOptions[0] : (isDrip ? this.t.pouchOptions[0] : null);
+                    
+                    const existing = this.cart.find(item => {
+                        if (item.id !== product.id) return false;
+                        if (isBean) return item.grind === variant;
+                        if (isDrip) return item.pouch === variant;
+                        return true;
+                    });
+
                     if (existing) {
                         existing.quantity += 1;
                     } else {
                         this.cart.push({
                             ...product,
                             quantity: 1,
-                            grind: product.category === 'beans' ? variant : null,
-                            pouch: product.category === 'drip' ? variant : null
+                            grind: isBean ? variant : null,
+                            pouch: isDrip ? variant : null
                         });
                     }
                     this.cartOpen = true;
@@ -1210,3 +1226,4 @@
 
 </body>
 </html>
+
