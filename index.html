@@ -217,6 +217,7 @@
         },
         cats: {
           all: '全部分類',
+          specialty: '精品咖啡',
           arabica: '阿拉比卡',
           robusta: '羅布斯塔',
           blend: '特調商業咖啡',
@@ -303,6 +304,7 @@
         },
         cats: {
           all: 'Tất cả danh mục',
+          specialty: 'Cà phê đặc sản',
           arabica: 'Arabica',
           robusta: 'Robusta',
           blend: 'Cà phê Phối Trộn',
@@ -312,12 +314,12 @@
     };
 
     const INITIAL_PRODUCTS = [
-      // 精品咖啡豆新品
+      // 9 款精品咖啡豆品項 (category: 'specialty')
       { 
         id: 'ethiopia-guji-bishala-250g', 
         nameZh: '衣索比亞 谷吉 比沙拉 水洗 G1', 
         nameVi: 'Ethiopia Guji Bishala Washed G1', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 220000, 
@@ -335,7 +337,7 @@
         id: 'ethiopia-yirgacheffe-strawberry-250g', 
         nameZh: '衣索比亞 耶加雪菲 草莓水洗 G1', 
         nameVi: 'Ethiopia Yirgacheffe Strawberry Washed G1', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 240000, 
@@ -353,7 +355,7 @@
         id: 'ethiopia-sidama-rumudamo-250g', 
         nameZh: '衣索比亞 西達摩 阿貝哥納 露姆達莫 日曬 G1', 
         nameVi: 'Ethiopia Sidama Arbegona Rumudamo Natural G1', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 230000, 
@@ -371,7 +373,7 @@
         id: 'kenya-kiambu-kiratina-250g', 
         nameZh: '肯亞 基安布 基拉蒂娜 莊園 AB TOP', 
         nameVi: 'Kenya Kiambu Kiratina Estate AB TOP', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 250000, 
@@ -389,7 +391,7 @@
         id: 'guatemala-huehuetenango-250g', 
         nameZh: '瓜地馬拉 薇薇特南果 SHB EP 水洗', 
         nameVi: 'Guatemala Huehuetenango SHB EP Washed', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 210000, 
@@ -407,7 +409,7 @@
         id: 'brazil-cerrado-250g', 
         nameZh: '巴西 喜拉朵 NY2/3 S17/18 寇品 日曬', 
         nameVi: 'Brazil Cerrado NY2/3 S17/18 Fine Cup Natural', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 180000, 
@@ -425,7 +427,7 @@
         id: 'gesha-tarrazu-honduras-250g', 
         nameZh: '衣索比亞/宏都拉斯 塔拉珠 聖特雷莎 藝伎 紅蜜', 
         nameVi: 'GEISHA - Tarrazu Honduras Santa Teresa Gesha Red Honey', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 280000, 
@@ -443,7 +445,7 @@
         id: 'peru-cajamarca-gesha-250g', 
         nameZh: '祕魯 卡哈馬卡 露庫瑪莊園 藝伎 蜜處理', 
         nameVi: 'Peru Cajamarca Finca La Lucuma Gesha Honey', 
-        category: 'arabica', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 260000, 
@@ -461,7 +463,7 @@
         id: 'indonesia-sumatra-gayo-250g', 
         nameZh: '印尼 蘇門答臘 亞齊 迦佑山 咖啡豆', 
         nameVi: 'Indonesia Sumatra Aceh Gayo Mountain', 
-        category: 'robusta', 
+        category: 'specialty', 
         specZh: '250公克', 
         specVi: '250g', 
         price: 190000, 
@@ -473,7 +475,7 @@
         altitude: '優質高地',
         process: '濕剝法 / 傳統精製',
         grade: 'Mountain Grade',
-        flavor: '草本、香料、黑巧克力、低調沉穩的醇厚感'
+        flavor: '草本、香料、黑巧克力、低調沉穩的醇厚度'
       },
       // 原有經典品項
       { 
