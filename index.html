@@ -949,17 +949,8 @@
                     payment: 'vcb'
                 },
 
-                cart: [
-                    {
-                        id: 1,
-                        name: '100% 精品阿拉比卡咖啡豆 (250g)',
-                        nameVi: 'Cà phê hạt Arabica Đặc sản 100% (250g)',
-                        price: 145000,
-                        quantity: 1,
-                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Arabica+100+250g',
-                        grind: '手沖中粗研磨'
-                    }
-                ],
+                // 修正處：將原本寫死的測試商品改為空陣列
+                cart: [],
 
                 get t() {
                     return i18n[this.lang];
@@ -1204,7 +1195,6 @@
                     return 'VND ' + price.toLocaleString();
                 },
 
-                // 修正後：使用 text/plain 繞過 CORS 預檢限制，確保 GAS 能正確讀取 body 資料
                 async sendOrderToGAS(orderData) {
                     const GAS_URL = "https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec";
                     
@@ -1233,7 +1223,6 @@
                     }
                     this.isSubmitting = true;
 
-                    // 準備要傳送給 GAS 的訂單 payload
                     const orderPayload = {
                         orderId: "PHOENIX-" + Date.now(),
                         timestamp: new Date().toLocaleString(),
@@ -1249,7 +1238,6 @@
                         total: this.cartTotal
                     };
 
-                    // 非同步發送通知
                     this.sendOrderToGAS(orderPayload);
 
                     setTimeout(() => {
