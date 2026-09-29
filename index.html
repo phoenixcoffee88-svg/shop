@@ -113,12 +113,6 @@
       Printer: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
       ),
-      Settings: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      ),
-      ShieldCheck: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
-      ),
       Sparkles: (props) => (
         <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
       ),
@@ -135,6 +129,9 @@
     const ORDER_HISTORY_STORAGE_KEY = 'PHOENIX_cafe_order_history_v4';
     const ADMIN_PASSWORD = '0348246669';
     const SHIPPING_CONFIG = { FREE_THRESHOLD: 500000, FLAT_RATE: 25000 };
+    
+    // 💡 請在此處填入您的 Google Apps Script 部署網址 (Web App URL)
+    const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
 
     const TRANSLATIONS = {
       'zh-TW': {
@@ -146,20 +143,6 @@
         selectAndBuy: '選擇與購買',
         soldOut: '已售完',
         grindSize: '選擇研磨度 / 規格',
-        coldbrewNotice: '本商品為冷萃浸泡包：強調單一豆種，3種不同烘焙度混合。',
-        safetyInfoTitle: '產品安全與食品標示資訊',
-        safetyStorage: '保存方式：請置於陰涼乾燥處，避免陽光直射，開封後請盡速飲用完畢。',
-        safetyCert: '品質保證：100% 天然烘焙，通過嚴格食品安全檢驗，不含人工添加物。',
-        safetyUsage: '食用建議：孕婦、心血管疾病患者或對咖啡因敏感者，請斟酌個人體質適量飲用。',
-        coffeeDetailTitle: '咖啡豆詳細規格與風味',
-        origin: '產地來源',
-        altitude: '海拔高度',
-        process: '處理法',
-        grade: '咖啡等級',
-        flavor: '風味敘述',
-        coldbrewDetailTitle: '冷萃咖啡包特色說明',
-        coldbrewFeature1: '單一豆種（Single Origin）堅持：嚴選單一產區純粹豆種，不使用雜豆混搭，完整保留風土。',
-        coldbrewFeature2: '黃金三焙混調工藝：大膽結合淺焙、中焙、深焙三種不同烘焙度，交織出前所未有的立體層次。',
         quantity: '數量',
         addToCart: '加入購物車',
         freeShippingGoal: '滿 500,000 VND 免運',
@@ -177,9 +160,9 @@
         address: '收件地址 *',
         notes: '備註 (可選)',
         payable: '應付金額:',
-        submitOrder: '確認訂單並產生付款 QR Code',
-        submitting: '正在產生訂單與付款碼...',
-        orderSuccess: '訂單已成功建立！請掃描 QR Code 完成付款',
+        submitOrder: '確認訂單並寫入試算表',
+        submitting: '正在送出訂單至 Google 試算表...',
+        orderSuccess: '訂單已成功建立並同步至 Google 試算表！',
         orderSuccessDesc: '請使用行動銀行或電子支付 App 掃描下方 QR Code 完成轉帳付款。',
         paymentInfoTitle: '付款資訊',
         bankName: '銀行名稱：Techcombank / VCB (PHOENIX CAFE)',
@@ -233,20 +216,6 @@
         selectAndBuy: 'Chọn mua',
         soldOut: 'Hết hàng',
         grindSize: 'Chọn mức độ xay / Quy cách',
-        coldbrewNotice: 'Sản phẩm túi lọc Cold Brew: Nhấn mạnh đơn nguồn gốc, kết hợp 3 mức độ rang khác nhau.',
-        safetyInfoTitle: 'Thông tin an toàn & Tiêu chuẩn sản phẩm',
-        safetyStorage: 'Bảo quản: Nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp. Đóng kín sau khi mở.',
-        safetyCert: 'Cam kết chất lượng: 100% rang mộc tự nhiên, đạt tiêu chuẩn an toàn thực phẩm, không hóa chất.',
-        safetyUsage: 'Khuyến cáo: Phụ nữ mang thai, người bệnh tim mạch hoặc nhạy cảm với caffeine nên cân nhắc khi sử dụng.',
-        coffeeDetailTitle: 'Thông tin chi tiết & Hương vị cà phê hạt',
-        origin: 'Xuất xứ',
-        altitude: 'Độ cao',
-        process: 'Phương pháp chế biến',
-        grade: 'Cấp độ cà phê',
-        flavor: 'Hương vị',
-        coldbrewDetailTitle: 'Đặc điểm túi lọc Cold Brew',
-        coldbrewFeature1: 'Đơn nguồn gốc (Single Origin): Lựa chọn tinh tế từ một vùng trồng duy nhất, bảo tồn trọn vẹn hương vị bản địa.',
-        coldbrewFeature2: 'Công nghệ phối trộn 3 cấp độ rang: Kết hợp hoàn hảo giữa rang nhạt, rang vừa và rang đậm, mang đến tầng hương phong phú.',
         quantity: 'Số lượng',
         addToCart: 'Thêm vào giỏ hàng',
         freeShippingGoal: 'Freeship từ 500,000 VND',
@@ -264,9 +233,9 @@
         address: 'Địa chỉ nhận hàng *',
         notes: 'Ghi chú (Không bắt buộc)',
         payable: 'Thành tiền:',
-        submitOrder: 'Xác nhận đơn hàng & Tạo mã QR thanh toán',
-        submitting: 'Đang tạo đơn hàng và mã QR...',
-        orderSuccess: 'Đơn hàng đã được tạo thành công! Vui lòng quét mã QR để thanh toán',
+        submitOrder: 'Xác nhận đơn hàng & Lưu vào Google Sheets',
+        submitting: 'Đang gửi đơn hàng lên Google Sheets...',
+        orderSuccess: 'Đơn hàng đã được tạo và lưu vào Google Sheets thành công!',
         orderSuccessDesc: 'Vui lòng sử dụng ứng dụng ngân hàng hoặc ví điện tử để quét mã QR bên dưới thanh toán.',
         paymentInfoTitle: 'Thông tin chuyển khoản',
         bankName: 'Ngân hàng: Techcombank / VCB (PHOENIX CAFE)',
@@ -314,7 +283,6 @@
     };
 
     const INITIAL_PRODUCTS = [
-      // 9 款精品咖啡豆品項 (category: 'specialty')
       { 
         id: 'ethiopia-guji-bishala-250g', 
         nameZh: '衣索比亞 谷吉 比沙拉 水洗 G1', 
@@ -325,176 +293,7 @@
         price: 220000, 
         type: 'beans', 
         stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
-        origin: '衣索比亞 谷吉 (Ethiopia Guji)',
-        altitude: '高海拔精選產區',
-        process: '水洗法 (Washed G1 Lot 26/01)',
-        grade: 'Grade 1 精品級',
-        flavor: '花香、柑橘、明亮果酸、乾淨細緻'
-      },
-      { 
-        id: 'ethiopia-yirgacheffe-strawberry-250g', 
-        nameZh: '衣索比亞 耶加雪菲 草莓水洗 G1', 
-        nameVi: 'Ethiopia Yirgacheffe Strawberry Washed G1', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 240000, 
-        type: 'beans', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
-        origin: '衣索比亞 耶加雪菲 (Ethiopia Yirgacheffe)',
-        altitude: '高海拔精選產區',
-        process: '水洗法 (Washed G1)',
-        grade: 'Grade 1 精品級',
-        flavor: '濃郁草莓、清新花香、甜美多汁'
-      },
-      { 
-        id: 'ethiopia-sidama-rumudamo-250g', 
-        nameZh: '衣索比亞 西達摩 阿貝哥納 露姆達莫 日曬 G1', 
-        nameVi: 'Ethiopia Sidama Arbegona Rumudamo Natural G1', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 230000, 
-        type: 'beans', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
-        origin: '衣索比亞 西達摩 阿貝哥納 (Sidama Arbegona)',
-        altitude: '高海拔精選產區',
-        process: '日曬法 (Natural G1 - Elias Kare)',
-        grade: 'Grade 1 精品級',
-        flavor: '熱帶水果、發酵果香、醇厚度佳'
-      },
-      { 
-        id: 'kenya-kiambu-kiratina-250g', 
-        nameZh: '肯亞 基安布 基拉蒂娜 莊園 AB TOP', 
-        nameVi: 'Kenya Kiambu Kiratina Estate AB TOP', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 250000, 
-        type: 'beans', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P2.jpg',
-        origin: '肯亞 基安布 (Kenya Kiambu Kiratina Estate)',
-        altitude: '高海拔產區',
-        process: '傳統精製水洗',
-        grade: 'AB TOP 頂級',
-        flavor: '黑醋栗、柑橘、莓果風味、層次豐富'
-      },
-      { 
-        id: 'guatemala-huehuetenango-250g', 
-        nameZh: '瓜地馬拉 薇薇特南果 SHB EP 水洗', 
-        nameVi: 'Guatemala Huehuetenango SHB EP Washed', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 210000, 
-        type: 'beans', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P5.jpg',
-        origin: '瓜地馬拉 薇薇特南果 (Guatemala Huehuetenango)',
-        altitude: '高海拔 SHB 產區',
-        process: '水洗法 (Washed SHB EP)',
-        grade: 'Strictly Hard Bean (SHB)',
-        flavor: '核果、可可、焦糖甜感、口感平衡'
-      },
-      { 
-        id: 'brazil-cerrado-250g', 
-        nameZh: '巴西 喜拉朵 NY2/3 S17/18 寇品 日曬', 
-        nameVi: 'Brazil Cerrado NY2/3 S17/18 Fine Cup Natural', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 180000, 
-        type: 'beans', 
-        stock: 25, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
-        origin: '巴西 喜拉朵 (Brazil Cerrado)',
-        altitude: '優質產區',
-        process: '日曬法 (Natural)',
-        grade: 'NY2/3 S17/18 Fine Cup',
-        flavor: '堅果、巧克力、低酸順口、質地醇厚'
-      },
-      { 
-        id: 'gesha-tarrazu-honduras-250g', 
-        nameZh: '衣索比亞/宏都拉斯 塔拉珠 聖特雷莎 藝伎 紅蜜', 
-        nameVi: 'GEISHA - Tarrazu Honduras Santa Teresa Gesha Red Honey', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 280000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P2.jpg',
-        origin: '哥斯大黎加 / 宏都拉斯 塔拉珠 (Tarrazu Santa Teresa)',
-        altitude: '2000公尺高海拔莊園',
-        process: '紅蜜處理法 (Red Honey)',
-        grade: 'GEISHA 品種精選',
-        flavor: '白色花香、柑橘、蜂蜜甜感、優雅細緻'
-      },
-      { 
-        id: 'peru-cajamarca-gesha-250g', 
-        nameZh: '祕魯 卡哈馬卡 露庫瑪莊園 藝伎 蜜處理', 
-        nameVi: 'Peru Cajamarca Finca La Lucuma Gesha Honey', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 260000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P5.jpg',
-        origin: '祕魯 卡哈馬卡 (Peru Cajamarca Finca La Lucuma)',
-        altitude: '高海拔莊園 (T2722)',
-        process: '蜜處理法 (Honey)',
-        grade: 'Gesha 頂級品種',
-        flavor: '茉莉花香、熱帶水果、平衡的蜜香甜感'
-      },
-      { 
-        id: 'indonesia-sumatra-gayo-250g', 
-        nameZh: '印尼 蘇門答臘 亞齊 迦佑山 咖啡豆', 
-        nameVi: 'Indonesia Sumatra Aceh Gayo Mountain', 
-        category: 'specialty', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 190000, 
-        type: 'beans', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P2.jpg',
-        origin: '印尼 蘇門答臘 亞齊迦佑山 (Sumatra Aceh Gayo)',
-        altitude: '優質高地',
-        process: '濕剝法 / 傳統精製',
-        grade: 'Mountain Grade',
-        flavor: '草本、香料、黑巧克力、低調沉穩的醇厚度'
-      },
-      // 原有經典品項
-      { 
-        id: 'arabica-100-250g', 
-        nameZh: '100% 精品阿拉比卡咖啡豆', 
-        nameVi: 'Cà phê đặc sản Arabica 100%', 
-        category: 'arabica', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 145000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg',
-        origin: '嚴選特定產區與小農莊園，追溯咖啡果實生長環境與風土條件',
-        altitude: '約 1,200 至 2,000 公尺（高海拔山區）',
-        process: '精準對應水洗、日曬或蜜處理法',
-        grade: 'Grade 1 / Specialty Grade 精品級',
-        flavor: '前段明亮果香或花香，中段堅果與焦糖甜感，尾韻乾淨綿長'
+        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P1.jpg'
       },
       { 
         id: 'arabica-coldbrew-10', 
@@ -506,49 +305,7 @@
         price: 125000, 
         type: 'coldbrew', 
         stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P4.jpg',
-        origin: '嚴選單一產區阿拉比卡豆種（Single Origin）',
-        altitude: '高海拔特選產區',
-        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
-        grade: '精品冷萃浸泡包規格',
-        flavor: '淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富'
-      },
-      { 
-        id: 'robusta-100-250g', 
-        nameZh: '100% 精品羅布斯塔咖啡豆', 
-        nameVi: 'Cà phê đặc sản Robusta 100%', 
-        category: 'robusta', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 91000, 
-        type: 'beans', 
-        stock: 25, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P2.jpg',
-        origin: '精選頂級羅布斯塔莊園，濃郁風土與扎實口感',
-        altitude: '約 800 至 1,200 公尺',
-        process: '傳統日曬與水洗精製',
-        grade: 'Premium Grade 精選級',
-        flavor: '醇厚濃郁、帶有黑可可與麥香的獨特風味'
-      },
-      { 
-        id: 'blend-8020-250g', 
-        nameZh: '80/20 義式特調咖啡豆', 
-        nameVi: 'Cà phê phối trộn Blend 80/20 Espresso', 
-        category: 'blend', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 135000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P5.jpg',
-        origin: '精選阿拉比卡（80%）與羅布斯塔（20%）黃金比例拼配',
-        altitude: '綜合高海拔與優質莊園產區',
-        process: '水洗與日曬融合處理法',
-        grade: 'Espresso Blend 義式精選級',
-        flavor: '兼具阿拉比卡的優雅香氣與羅布斯塔的豐富油脂、濃厚Crema'
+        image: 'https://cdn.jsdelivr.net/gh/rick0960590177/viebucks-coffee@main/images/P4.jpg'
       }
     ];
 
@@ -641,7 +398,6 @@
 
       return (
         <div className="w-full flex-grow flex flex-col">
-          {/* Header Nav */}
           <nav className="sticky top-0 z-35 bg-coffee-900 text-coffee-100 shadow-lg w-full backdrop-blur-md bg-opacity-95 border-b border-coffee-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 sm:gap-3">
@@ -659,7 +415,6 @@
                 </div>
               </div>
 
-              {/* Desktop Search Bar */}
               <div className="relative flex-1 max-w-lg hidden md:block">
                 <input
                   type="text"
@@ -671,7 +426,6 @@
                 <Icons.Search className="absolute left-4 top-3.5 h-4 w-4 text-coffee-300" />
               </div>
 
-              {/* Controls */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={toggleLanguage}
@@ -699,75 +453,9 @@
                 </button>
               </div>
             </div>
-
-            {/* Mobile Search Bar */}
-            {isMobileSearchOpen && (
-              <div className="md:hidden px-4 pb-4 pt-2 border-t border-coffee-800 bg-coffee-900">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={t.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    autoFocus
-                    className="w-full bg-coffee-800 text-coffee-100 placeholder-coffee-300/60 rounded-full py-2.5 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-400 border border-coffee-700 text-sm"
-                  />
-                  <Icons.Search className="absolute left-4 top-3 h-4 w-4 text-coffee-300" />
-                </div>
-              </div>
-            )}
           </nav>
 
-          {/* Content Area */}
           <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-            
-            {/* 品牌故事與經營理念 */}
-            <section className="mb-12 sm:mb-16 bg-gradient-to-br from-white via-coffee-50 to-amber-50/40 rounded-3xl p-6 sm:p-10 border border-coffee-200/70 shadow-sm">
-              <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12">
-                <div className="inline-flex items-center gap-2 bg-coffee-900 text-amber-100 px-4 py-1.5 rounded-full text-xs font-medium tracking-widest uppercase mb-3 shadow-inner">
-                  <Icons.Sparkles className="h-3.5 w-3.5 text-amber-300" /> PHOENIX STORY
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-bold font-serif text-coffee-900">{t.brandStoryTitle}</h2>
-                <p className="text-xs sm:text-sm text-coffee-600 mt-2 leading-relaxed">{t.brandStorySubtitle}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-coffee-100 flex flex-col justify-between hover:shadow-md transition-shadow">
-                  <div>
-                    <div className="w-10 h-10 bg-amber-100 text-amber-900 rounded-xl flex items-center justify-center mb-4 font-bold shadow-inner">01</div>
-                    <h3 className="text-base font-bold font-serif text-coffee-900 mb-2">{t.story1Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700 leading-relaxed">{t.story1Desc}</p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-coffee-100 flex items-center gap-1.5 text-[11px] text-amber-800 font-semibold">
-                    <Icons.Coffee className="h-3.5 w-3.5" /> Single Origin
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-coffee-100 flex flex-col justify-between hover:shadow-md transition-shadow">
-                  <div>
-                    <div className="w-10 h-10 bg-amber-100 text-amber-900 rounded-xl flex items-center justify-center mb-4 font-bold shadow-inner">02</div>
-                    <h3 className="text-base font-bold font-serif text-coffee-900 mb-2">{t.story2Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700 leading-relaxed">{t.story2Desc}</p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-coffee-100 flex items-center gap-1.5 text-[11px] text-amber-800 font-semibold">
-                    <Icons.Sparkles className="h-3.5 w-3.5" /> Golden Blend
-                  </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-coffee-100 flex flex-col justify-between hover:shadow-md transition-shadow">
-                  <div>
-                    <div className="w-10 h-10 bg-amber-100 text-amber-900 rounded-xl flex items-center justify-center mb-4 font-bold shadow-inner">03</div>
-                    <h3 className="text-base font-bold font-serif text-coffee-900 mb-2">{t.story3Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700 leading-relaxed">{t.story3Desc}</p>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-coffee-100 flex items-center gap-1.5 text-[11px] text-amber-800 font-semibold">
-                    <Icons.Heart className="h-3.5 w-3.5 text-red-600" /> Artisan Quality
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Category Tabs */}
             <div className="overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-6 sm:mb-10">
               <div className="flex gap-2.5 sm:gap-3 min-w-max pb-1">
                 {Object.keys(t.cats).map(catKey => (
@@ -786,12 +474,9 @@
               </div>
             </div>
 
-            {/* Product Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {filteredProducts.map(product => {
                 const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
-                const productSubName = lang === 'zh-TW' ? product.nameVi : product.nameZh;
-                const specText = lang === 'zh-TW' ? product.specZh : product.specVi;
                 const isOut = product.stock <= 0;
 
                 return (
@@ -799,41 +484,20 @@
                     <div>
                       <div className="h-52 sm:h-60 overflow-hidden relative bg-coffee-100">
                         <img src={product.image} alt={productName} className={`w-full h-full object-cover transition-transform duration-700 ease-out ${isOut ? 'grayscale opacity-60' : 'group-hover:scale-105'}`} />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60 pointer-events-none" />
-                        <span className="absolute top-3.5 right-3.5 text-xs bg-coffee-900/85 text-amber-100 px-3 py-1.5 rounded-full backdrop-blur-md font-medium shadow-md border border-coffee-700/50">
-                          {specText}
-                        </span>
-
-                        <div className="absolute top-3.5 left-3.5">
-                          {isOut && (
-                            <span className="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">{t.soldOut}</span>
-                          )}
-                        </div>
+                        {isOut && <span className="absolute top-3.5 left-3.5 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md">{t.soldOut}</span>}
                       </div>
-
                       <div className="p-5 sm:p-6">
-                        <h3 className="text-base sm:text-lg font-bold text-coffee-900 font-serif line-clamp-1 group-hover:text-amber-800 transition-colors">{productName}</h3>
-                        <p className="text-xs text-coffee-600/80 italic mt-1 line-clamp-1">{productSubName}</p>
+                        <h3 className="text-base sm:text-lg font-bold text-coffee-900 font-serif line-clamp-1">{productName}</h3>
                       </div>
                     </div>
 
                     <div className="p-5 sm:p-6 pt-0">
                       <div className="pt-4 border-t border-coffee-100 space-y-4">
-                        <div className="flex items-baseline justify-between">
-                          <div>
-                            <div className="text-[10px] sm:text-xs text-coffee-500 font-medium uppercase tracking-wider">{t.price}</div>
-                            <div className="text-base sm:text-lg font-extrabold text-coffee-900">{product.price.toLocaleString()} VND</div>
-                          </div>
-                        </div>
-
+                        <div className="text-base sm:text-lg font-extrabold text-coffee-900">{product.price.toLocaleString()} VND</div>
                         <button
                           disabled={isOut}
                           onClick={() => setSelectedProduct(product)}
-                          className={`w-full py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 shadow-sm ${
-                            isOut 
-                              ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                              : 'bg-coffee-900 hover:bg-coffee-800 text-amber-50 shadow-md hover:shadow'
-                          }`}
+                          className={`w-full py-3 rounded-2xl text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 ${isOut ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-coffee-900 hover:bg-coffee-800 text-amber-50 shadow-md'}`}
                         >
                           <Icons.Plus className="h-4 w-4" /> {isOut ? t.soldOut : t.selectAndBuy}
                         </button>
@@ -845,55 +509,6 @@
             </div>
           </main>
 
-          {/* Mobile Drawer Navigation */}
-          {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-50 sm:hidden">
-              <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)} />
-              <div className="fixed inset-y-0 left-0 w-4/5 max-w-xs bg-coffee-900 text-coffee-100 shadow-2xl flex flex-col justify-between p-6 z-10 border-r border-coffee-800">
-                <div>
-                  <div className="flex items-center justify-between pb-5 border-b border-coffee-800">
-                    <div className="flex items-center gap-2.5">
-                      <div className="bg-coffee-800 p-2 rounded-xl border border-coffee-700">
-                        <Icons.Coffee className="h-6 w-6 text-amber-200" />
-                      </div>
-                      <span className="text-base font-bold tracking-wider font-serif">PHOENIX</span>
-                    </div>
-                    <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-full text-coffee-200 hover:bg-coffee-800 transition-colors">
-                      <Icons.X className="h-6 w-6" />
-                    </button>
-                  </div>
-
-                  <div className="mt-6 space-y-4">
-                    <button onClick={toggleLanguage} className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-coffee-800 text-amber-200 font-medium text-sm border border-coffee-700 shadow-inner">
-                      <span className="flex items-center gap-2.5"><Icons.Globe className="h-5 w-5" /> 語言 / Ngôn ngữ</span>
-                      <span className="font-bold">{lang === 'zh-TW' ? '繁體中文' : 'Tiếng Việt'}</span>
-                    </button>
-
-                    <button onClick={() => { setIsMobileMenuOpen(false); setIsHistoryPasswordModalOpen(true); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-coffee-800 text-coffee-200 hover:text-white font-medium text-sm transition-colors">
-                      <Icons.Clock className="h-5 w-5" /> {t.history}
-                    </button>
-
-                    <div className="pt-4 border-t border-coffee-800">
-                      <p className="text-xs font-bold text-amber-300/80 uppercase tracking-wider mb-3 px-2">{t.categories}</p>
-                      <div className="space-y-1.5">
-                        {Object.keys(t.cats).map(catKey => (
-                          <button
-                            key={catKey}
-                            onClick={() => { setSelectedCategory(catKey); setIsMobileMenuOpen(false); }}
-                            className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${selectedCategory === catKey ? 'bg-coffee-800 text-amber-300 font-bold border border-coffee-700' : 'text-coffee-300 hover:text-white'}`}
-                          >
-                            {t.cats[catKey]}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Modals & Drawers */}
           {selectedProduct && (
             <ProductDetailModal
               product={selectedProduct}
@@ -921,7 +536,6 @@
               isOpen={isCheckoutOpen}
               lang={lang}
               t={t}
-              products={products}
               deductStock={deductStock}
               onClose={() => setIsCheckoutOpen(false)}
               cart={cart}
@@ -965,8 +579,8 @@
       );
     }
 
-    // 訂單確認暨付款 QR Code 結帳彈窗
-    function CheckoutModal({ isOpen, lang, t, products, deductStock, onClose, cart, clearCart, onOpenReceipt }) {
+    // 訂單結帳彈窗（已串接 Google Apps Script 試算表寫入）
+    function CheckoutModal({ isOpen, lang, t, deductStock, onClose, cart, clearCart, onOpenReceipt }) {
       const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '' });
       const [submitting, setSubmitting] = useState(false);
       const [completedOrder, setCompletedOrder] = useState(null);
@@ -975,42 +589,72 @@
       const shippingFee = (subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || subtotal === 0) ? 0 : SHIPPING_CONFIG.FLAT_RATE;
       const grandTotal = subtotal + shippingFee;
 
-      const handleSubmitOrder = (e) => {
+      const handleSubmitOrder = async (e) => {
         e.preventDefault();
         if (!formData.fullName || !formData.phone || !formData.address) return;
 
         setSubmitting(true);
-        setTimeout(() => {
-          const newOrder = {
-            id: 'PH-' + Date.now().toString().slice(-6),
-            date: new Date().toLocaleString(),
-            items: [...cart],
-            subtotal,
-            shippingFee,
-            grandTotal,
-            ...formData
-          };
 
-          // 扣除庫存
-          deductStock(cart);
+        const orderId = 'PH-' + Date.now().toString().slice(-6);
+        const orderDate = new Date().toLocaleString();
+        
+        // 組合品項明細字串供試算表紀錄
+        const orderItemsStr = cart.map(item => `${item.name} (${item.spec}, ${item.grindLabel || ''}) x ${item.quantity}`).join('; ');
 
-          // 儲存至歷史紀錄
-          try {
-            const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
-            localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify([newOrder, ...history]));
-          } catch (err) {}
+        const payload = {
+          orderId: orderId,
+          orderDate: orderDate,
+          fullName: formData.fullName,
+          phone: formData.phone,
+          address: formData.address,
+          notes: formData.notes || '無',
+          orderItems: orderItemsStr,
+          subtotal: subtotal,
+          shippingFee: shippingFee,
+          grandTotal: grandTotal
+        };
 
-          clearCart();
-          setSubmitting(false);
-          setCompletedOrder(newOrder);
-        }, 800);
+        try {
+          // 發送 POST 請求至您的 Google Apps Script 網址
+          if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+            await fetch(GOOGLE_SCRIPT_URL, {
+              method: 'POST',
+              mode: 'no-cors', // 避免 Google Apps Script 跨域限制
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+          }
+        } catch (err) {
+          console.error("寫入試算表發生錯誤：", err);
+        }
+
+        const newOrder = {
+          id: orderId,
+          date: orderDate,
+          items: [...cart],
+          subtotal,
+          shippingFee,
+          grandTotal,
+          ...formData
+        };
+
+        deductStock(cart);
+
+        try {
+          const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
+          localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify([newOrder, ...history]));
+        } catch (err) {}
+
+        clearCart();
+        setSubmitting(false);
+        setCompletedOrder(newOrder);
       };
 
       if (!isOpen) return null;
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={() => !submitting && onClose()} />
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => !submitting && onClose()} />
           <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10 flex flex-col">
             <button onClick={onClose} className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
 
@@ -1024,57 +668,23 @@
                 <div className="space-y-3.5">
                   <div>
                     <label className="block text-xs font-bold uppercase text-coffee-800 mb-1">{t.fullName}</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.fullName}
-                      onChange={e => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 transition-all shadow-inner"
-                      placeholder="Nguyen Van A"
-                    />
+                    <input type="text" required value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm" placeholder="Nguyen Van A" />
                   </div>
-
                   <div>
                     <label className="block text-xs font-bold uppercase text-coffee-800 mb-1">{t.phone}</label>
-                    <input
-                      type="tel"
-                      required
-                      value={formData.phone}
-                      onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 transition-all shadow-inner"
-                      placeholder="0912345678"
-                    />
+                    <input type="tel" required value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm" placeholder="0912345678" />
                   </div>
-
                   <div>
                     <label className="block text-xs font-bold uppercase text-coffee-800 mb-1">{t.address}</label>
-                    <textarea
-                      required
-                      rows="2"
-                      value={formData.address}
-                      onChange={e => setFormData({ ...formData, address: e.target.value })}
-                      className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 transition-all shadow-inner"
-                      placeholder="District 1, HCMC..."
-                    />
+                    <textarea required rows="2" value={formData.address} onChange={e => setFormData({ ...formData, address: e.target.value })} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm" placeholder="District 1, HCMC..." />
                   </div>
-
                   <div>
                     <label className="block text-xs font-bold uppercase text-coffee-800 mb-1">{t.notes}</label>
-                    <input
-                      type="text"
-                      value={formData.notes}
-                      onChange={e => setFormData({ ...formData, notes: e.target.value })}
-                      className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-900 transition-all shadow-inner"
-                      placeholder="..."
-                    />
+                    <input type="text" value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm" placeholder="..." />
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
-                >
+                <button type="submit" disabled={submitting} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm">
                   {submitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1089,12 +699,10 @@
                 </button>
               </form>
             ) : (
-              /* 訂單成立與自動產生付款 QR Code 畫面 */
               <div className="space-y-6 text-center py-2">
                 <div className="w-16 h-16 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto shadow-inner border border-green-200 animate-bounce">
                   <Icons.CheckCircle className="h-8 w-8" />
                 </div>
-
                 <div className="space-y-1.5">
                   <h3 className="text-lg sm:text-xl font-bold font-serif text-coffee-900">{t.orderSuccess}</h3>
                   <p className="text-xs text-coffee-600">{t.orderSuccessDesc}</p>
@@ -1103,35 +711,17 @@
                   </div>
                 </div>
 
-                {/* 自動產生的付款 QR Code 區塊 */}
                 <div className="bg-coffee-50 border border-coffee-200/80 rounded-3xl p-5 space-y-4 shadow-sm">
-                  <div className="flex items-center justify-center gap-2 text-xs font-bold text-coffee-900">
-                    <Icons.QrCode className="h-4 w-4 text-amber-800" />
-                    <span>{t.scanToPay}</span>
-                  </div>
-
                   <div className="bg-white p-4 rounded-2xl inline-block shadow-md border border-coffee-200/60">
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`PHOENIX CAFE ORDER: #${completedOrder.id}, Amount: ${completedOrder.grandTotal} VND, Bank: Techcombank 0348246669`)}`}
-                      alt="Payment QR Code" 
-                      className="w-40 h-40 object-contain mx-auto rounded-lg"
-                    />
+                    <img src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`PHOENIX CAFE ORDER: #${completedOrder.id}, Amount:${completedOrder.grandTotal} VND`)}`} alt="QR" className="w-40 h-40 object-contain mx-auto rounded-lg" />
                   </div>
-
                   <div className="text-xs text-coffee-800 space-y-1 font-medium bg-white/60 p-3 rounded-2xl border border-coffee-100">
                     <p className="font-bold text-coffee-900">{t.bankName}</p>
                     <p className="font-bold text-amber-800 text-sm">{t.bankAccount}</p>
-                    <p className="text-coffee-600 pt-1">應付金額: <strong className="text-coffee-900 font-extrabold">{completedOrder.grandTotal.toLocaleString()} VND</strong></p>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenReceipt(completedOrder);
-                  }}
-                  className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
-                >
+                <button onClick={() => { onClose(); onOpenReceipt(completedOrder); }} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm">
                   <Icons.Package className="h-4 w-4" /> {t.completePaymentBtn}
                 </button>
               </div>
@@ -1141,77 +731,56 @@
       );
     }
 
-    function OrderHistoryModal({ isOpen, lang, t, onClose, onViewReceipt }) {
-      const [history, setHistory] = useState(() => {
-        try {
-          const saved = localStorage.getItem(ORDER_HISTORY_STORAGE_KEY);
-          return saved ? JSON.parse(saved) : [];
-        } catch (e) { return []; }
-      });
-
-      const handleClear = () => {
-        if (confirm(t.confirmClear)) {
-          localStorage.removeItem(ORDER_HISTORY_STORAGE_KEY);
-          setHistory([]);
-        }
-      };
-
+    // 購物車側邊欄
+    function CartDrawer({ isOpen, lang, t, onClose, cart, updateQuantity, onOpenCheckout }) {
       if (!isOpen) return null;
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const shippingFee = (subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || subtotal === 0) ? 0 : SHIPPING_CONFIG.FLAT_RATE;
+      const grandTotal = subtotal + shippingFee;
 
       return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 flex flex-col">
-            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
-              <h3 className="text-lg sm:text-xl font-bold font-serif text-coffee-900 flex items-center gap-2">
-                <Icons.Clock className="h-5 w-5 text-amber-800" /> {t.orderHistoryTitle}
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative w-full max-w-md bg-white shadow-2xl h-full flex flex-col z-10 p-6 overflow-y-auto">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-100">
+              <h3 className="text-lg font-bold font-serif text-coffee-900 flex items-center gap-2">
+                <Icons.ShoppingBag className="h-5 w-5 text-amber-800" /> {t.cart}
               </h3>
-              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><Icons.X className="h-5 w-5" /></button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-4">
-              {history.length === 0 ? (
-                <div className="py-16 text-center text-gray-400 text-sm">
-                  <Icons.Package className="h-10 w-10 mx-auto mb-2 opacity-40" />
-                  {t.noHistory}
-                </div>
+            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+              {cart.length === 0 ? (
+                <div className="text-center py-20 text-gray-400 text-sm">{t.emptyCart}</div>
               ) : (
-                history.map((order, idx) => (
-                  <div key={idx} className="p-4 sm:p-5 bg-coffee-50/60 rounded-2xl border border-coffee-200/60 space-y-3 shadow-sm">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <span className="font-bold text-xs bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full border border-amber-200">#{order.id}</span>
-                        <span className="text-xs text-gray-500 ml-2">{order.date}</span>
-                      </div>
-                      <button
-                        onClick={() => onViewReceipt(order)}
-                        className="px-3 py-1.5 bg-coffee-900 text-white rounded-xl text-xs font-bold hover:bg-coffee-800 transition-colors shadow-sm flex items-center gap-1.5"
-                      >
-                        <Icons.Package className="h-3.5 w-3.5" /> {t.viewReceipt}
-                      </button>
+                cart.map(item => (
+                  <div key={item.cartKey} className="flex gap-3 bg-coffee-50/50 p-3 rounded-2xl border border-coffee-100 items-center">
+                    <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-xl bg-gray-200" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-xs text-coffee-900 truncate">{item.name}</h4>
+                      <p className="text-[10px] text-gray-500">{item.spec} / {item.grindLabel}</p>
+                      <div className="text-xs font-extrabold text-amber-800 mt-1">{item.price.toLocaleString()} VND</div>
                     </div>
-
-                    <div className="text-xs text-gray-700 space-y-1">
-                      <p><strong>收件人:</strong> {order.fullName} ({order.phone})</p>
-                      <p><strong>地址:</strong> {order.address}</p>
-                    </div>
-
-                    <div className="pt-2 border-t border-coffee-200/40 flex justify-between items-center text-xs">
-                      <span className="text-gray-500">{order.items.length} 項商品</span>
-                      <span className="font-extrabold text-coffee-900 text-sm">{order.grandTotal.toLocaleString()} VND</span>
+                    <div className="flex items-center gap-2 bg-white rounded-xl p-1 border border-gray-200">
+                      <button onClick={() => updateQuantity(item.cartKey, -1)} className="p-1 text-gray-600 hover:bg-gray-100 rounded-lg"><Icons.Minus className="h-3 w-3" /></button>
+                      <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.cartKey, 1)} className="p-1 text-gray-600 hover:bg-gray-100 rounded-lg"><Icons.Plus className="h-3 w-3" /></button>
                     </div>
                   </div>
                 ))
               )}
             </div>
 
-            {history.length > 0 && (
-              <div className="pt-4 border-t border-gray-100 mt-4 flex justify-end">
-                <button
-                  onClick={handleClear}
-                  className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5"
-                >
-                  <Icons.X className="h-4 w-4" /> {t.clearHistory}
+            {cart.length > 0 && (
+              <div className="pt-4 border-t border-gray-100 space-y-3">
+                <div className="flex justify-between text-xs text-gray-600"><span>{t.subtotal}</span><span>{subtotal.toLocaleString()} VND</span></div>
+                <div className="flex justify-between text-xs text-gray-600"><span>{t.shippingFee}</span><span>{shippingFee === 0 ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
+                <div className="flex justify-between font-bold text-base text-coffee-900 pt-2 border-t border-gray-100">
+                  <span>{t.total}</span>
+                  <span className="text-amber-800">{grandTotal.toLocaleString()} VND</span>
+                </div>
+                <button onClick={onOpenCheckout} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-3.5 rounded-2xl shadow-md text-xs sm:text-sm">
+                  {t.checkout}
                 </button>
               </div>
             )}
@@ -1220,366 +789,184 @@
       );
     }
 
-    function ReceiptModal({ order, t, onClose }) {
-      const handlePrint = () => {
-        window.print();
-      };
+    // 歷史訂單紀錄彈窗
+    function OrderHistoryModal({ isOpen, lang, t, onClose, onViewReceipt }) {
+      const [history, setHistory] = useState(() => {
+        try {
+          const saved = localStorage.getItem(ORDER_HISTORY_STORAGE_KEY);
+          return saved ? JSON.parse(saved) : [];
+        } catch (e) { return []; }
+      });
+
+      if (!isOpen) return null;
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10 flex flex-col">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 flex flex-col">
             <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
-              <div className="flex items-center gap-2.5">
-                <div className="bg-coffee-900 p-2 rounded-xl text-amber-100">
-                  <Icons.Coffee className="h-5 w-5" />
-                </div>
-                <h3 className="text-base sm:text-lg font-bold font-serif text-coffee-900">PHOENIX Cafe</h3>
-              </div>
-              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
+              <h3 className="text-lg font-bold font-serif text-coffee-900 flex items-center gap-2">
+                <Icons.Clock className="h-5 w-5 text-amber-800" /> {t.orderHistoryTitle}
+              </h3>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><Icons.X className="h-5 w-5" /></button>
             </div>
 
-            {/* Printable Area */}
-            <div id="printable-receipt" className="space-y-4 text-xs sm:text-sm text-gray-800 flex-1">
-              <div className="text-center space-y-1.5">
-                <h2 className="text-base sm:text-xl font-bold font-serif text-coffee-900">{t.receiptTitle}</h2>
-                <p className="text-gray-500 text-xs">{order.date}</p>
-                <p className="font-bold text-amber-800 text-xs inline-block bg-amber-50 px-3 py-1 rounded-full border border-amber-200">{t.orderId}: #{order.id}</p>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200/60 space-y-1.5 text-xs">
-                <p><strong>收件人 / Người nhận:</strong> {order.fullName}</p>
-                <p><strong>電話 / Điện thoại:</strong> {order.phone}</p>
-                <p><strong>地址 / Địa chỉ:</strong> {order.address}</p>
-                {order.notes && <p><strong>備註 / Ghi chú:</strong> {order.notes}</p>}
-              </div>
-
-              <div className="space-y-2.5 pt-2">
-                <div className="font-bold border-b border-gray-200 pb-2 text-xs text-gray-500 flex justify-between uppercase tracking-wider">
-                  <span>品項 / Sản phẩm</span>
-                  <span>小計 / Thành tiền</span>
-                </div>
-                {order.items.map((prod, idx) => (
-                  <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-dashed border-gray-200/60">
-                    <div>
-                      <div className="font-bold text-gray-900">{prod.name} ({prod.spec})</div>
-                      <div className="text-[10px] text-gray-500 mt-0.5">{prod.grindLabel} × {prod.quantity}</div>
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {history.length === 0 ? (
+                <div className="py-16 text-center text-gray-400 text-sm">{t.noHistory}</div>
+              ) : (
+                history.map((order, idx) => (
+                  <div key={idx} className="p-4 bg-coffee-50/60 rounded-2xl border border-coffee-200/60 space-y-2 shadow-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-xs bg-amber-100 text-amber-900 px-2.5 py-1 rounded-full">#{order.id}</span>
+                      <button onClick={() => onViewReceipt(order)} className="px-3 py-1 bg-coffee-900 text-white rounded-xl text-xs font-bold">{t.viewReceipt}</button>
                     </div>
-                    <div className="font-bold whitespace-nowrap text-gray-900">{(prod.price * prod.quantity).toLocaleString()} VND</div>
+                    <div className="text-xs text-gray-700">
+                      <p><strong>收件人:</strong> {order.fullName} ({order.phone})</p>
+                      <p className="font-extrabold text-coffee-900 mt-1">{order.grandTotal.toLocaleString()} VND</p>
+                    </div>
                   </div>
-                ))}
-              </div>
-
-              <div className="space-y-2 pt-3 border-t border-gray-200 text-xs bg-coffee-50/50 p-4 rounded-2xl">
-                <div className="flex justify-between text-gray-600"><span>商品小計:</span><span>{order.subtotal.toLocaleString()} VND</span></div>
-                <div className="flex justify-between text-gray-600"><span>運費:</span><span>{order.shippingFee === 0 ? '免費 / Miễn phí' : `${order.shippingFee.toLocaleString()} VND`}</span></div>
-                <div className="flex justify-between font-bold text-sm sm:text-base text-coffee-900 pt-3 border-t border-gray-200">
-                  <span>總計金額:</span>
-                  <span className="text-amber-800">{order.grandTotal.toLocaleString()} VND</span>
-                </div>
-              </div>
-
-              <div className="text-center pt-4 text-[10px] text-gray-400 font-serif tracking-widest uppercase">
-                感謝您的選購！Xin cảm ơn quý khách! • PHOENIX CAFE
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-gray-100 mt-6 flex gap-3">
-              <button
-                onClick={handlePrint}
-                className="flex-1 bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
-              >
-                <Icons.Printer className="h-4 w-4" /> {t.printReceipt}
-              </button>
-              <button
-                onClick={onClose}
-                className="px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl text-xs sm:text-sm transition-colors"
-              >
-                {t.close}
-              </button>
+                ))
+              )}
             </div>
           </div>
         </div>
       );
     }
 
+    // 正式收據列印彈窗
+    function ReceiptModal({ order, t, onClose }) {
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10 flex flex-col">
+            <div className="flex justify-between items-center mb-5 pb-4 border-b border-gray-100">
+              <h3 className="text-base font-bold font-serif text-coffee-900">PHOENIX Cafe</h3>
+              <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100"><Icons.X className="h-5 w-5" /></button>
+            </div>
+
+            <div id="printable-receipt" className="space-y-4 text-xs sm:text-sm text-gray-800 flex-1">
+              <div className="text-center space-y-1">
+                <h2 className="text-base font-bold font-serif text-coffee-900">{t.receiptTitle}</h2>
+                <p className="text-gray-500 text-xs">{order.date}</p>
+                <p className="font-bold text-amber-800 text-xs">{t.orderId}: #{order.id}</p>
+              </div>
+              <div className="bg-gray-50 rounded-2xl p-4 border border-gray-200/60 space-y-1 text-xs">
+                <p><strong>收件人:</strong> {order.fullName}</p>
+                <p><strong>電話:</strong> {order.phone}</p>
+                <p><strong>地址:</strong> {order.address}</p>
+              </div>
+              <div className="space-y-2 pt-2">
+                {order.items.map((prod, idx) => (
+                  <div key={idx} className="flex justify-between py-1 border-b border-dashed border-gray-200">
+                    <span>{prod.name} x {prod.quantity}</span>
+                    <span className="font-bold">{(prod.price * prod.quantity).toLocaleString()} VND</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between font-bold text-sm text-coffee-900 pt-2 border-t border-gray-200">
+                <span>總計金額:</span>
+                <span className="text-amber-800">{order.grandTotal.toLocaleString()} VND</span>
+              </div>
+            </div>
+
+            <div className="pt-6 border-t border-gray-100 mt-6 flex gap-3">
+              <button onClick={() => window.print()} className="flex-1 bg-coffee-900 text-white font-bold py-3.5 rounded-2xl text-xs">{t.printReceipt}</button>
+              <button onClick={onClose} className="px-6 bg-gray-100 text-gray-700 font-bold py-3.5 rounded-2xl text-xs">{t.close}</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 管理密碼驗證彈窗
     function PasswordPromptModal({ isOpen, title, desc, t, onClose, onSuccess }) {
       const [password, setPassword] = useState('');
       const [error, setError] = useState(false);
-
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        if (password === ADMIN_PASSWORD) {
-          setError(false);
-          setPassword('');
-          onSuccess();
-        } else {
-          setError(true);
-        }
-      };
 
       if (!isOpen) return null;
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 space-y-5 z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
-
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 space-y-5 z-10">
+            <button onClick={onClose} className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100"><Icons.X className="h-5 w-5" /></button>
             <div className="text-center space-y-2">
-              <div className="w-14 h-14 bg-coffee-100 text-coffee-900 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-inner border border-coffee-200">
-                <Icons.Lock className="h-6 w-6" />
-              </div>
               <h3 className="text-lg font-bold font-serif text-coffee-900">{title}</h3>
-              <p className="text-xs text-coffee-600 leading-relaxed">{desc}</p>
+              <p className="text-xs text-coffee-600">{desc}</p>
             </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="password"
-                placeholder={t.passwordPlaceholder}
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setError(false); }}
-                autoFocus
-                className="w-full bg-gray-50 border border-coffee-200/80 rounded-2xl p-3.5 text-sm text-center font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-coffee-900 transition-all shadow-inner"
-              />
-
-              {error && (
-                <p className="text-xs text-red-600 text-center font-bold animate-shake">{t.passwordError}</p>
-              )}
-
-              <button
-                type="submit"
-                className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-3.5 rounded-2xl shadow-md text-xs sm:text-sm transition-all"
-              >
-                {t.passwordSubmit}
-              </button>
+            <form onSubmit={(e) => { e.preventDefault(); if (password === ADMIN_PASSWORD) { setError(false); setPassword(''); onSuccess(); } else { setError(true); } }} className="space-y-4">
+              <input type="password" placeholder={t.passwordPlaceholder} value={password} onChange={(e) => { setPassword(e.target.value); setError(false); }} autoFocus className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-sm text-center font-bold tracking-widest" />
+              {error && <p className="text-xs text-red-600 text-center font-bold">{t.passwordError}</p>}
+              <button type="submit" className="w-full bg-coffee-900 text-white font-bold py-3.5 rounded-2xl text-xs">{t.passwordSubmit}</button>
             </form>
           </div>
         </div>
       );
     }
 
+    // 產品詳細與規格彈窗
     function ProductDetailModal({ product, lang, t, onClose, onAddToCart }) {
       const [quantity, setQuantity] = useState(1);
-      const [selectedGrind, setSelectedGrind] = useState(product.type === 'beans' ? 'beans' : product.type);
+      const [selectedGrind, setSelectedGrind] = useState('beans');
 
-      const isBeanProduct = product.type === 'beans';
-      const maxStock = product.stock;
-      const currentUnitPrice = product.price;
       const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
-      const productSubName = lang === 'zh-TW' ? product.nameVi : product.nameZh;
       const specText = lang === 'zh-TW' ? product.specZh : product.specVi;
-
-      const handleAdd = () => {
-        const grindObj = t.grindOptions[selectedGrind] || t.grindOptions.beans;
-        onAddToCart({
-          ...product,
-          quantity,
-          name: productName,
-          spec: specText,
-          grind: selectedGrind,
-          grindLabel: grindObj.label
-        });
-        onClose();
-      };
 
       return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 space-y-5 max-h-[92vh] overflow-y-auto z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10 flex flex-col">
+            <button onClick={onClose} className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 z-10"><Icons.X className="h-5 w-5" /></button>
 
-            <div>
-              <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60 uppercase tracking-wider">{specText}</span>
-              <h2 className="text-xl sm:text-2xl font-bold font-serif text-coffee-900 mt-2">{productName}</h2>
-              <p className="text-xs text-coffee-600/80 italic mt-0.5">{productSubName}</p>
-            </div>
+            <div className="space-y-4">
+              <img src={product.image} alt={productName} className="w-full h-56 object-cover rounded-2xl bg-coffee-100" />
+              <div>
+                <h3 className="text-lg font-bold font-serif text-coffee-900">{productName}</h3>
+                <p className="text-base font-extrabold text-amber-800 mt-1">{product.price.toLocaleString()} VND</p>
+              </div>
 
-            <div className="flex items-baseline justify-between bg-coffee-50/80 p-4 rounded-2xl border border-coffee-100">
-              <div className="flex items-baseline gap-2.5 flex-wrap">
-                <span className="text-xl sm:text-2xl font-extrabold text-coffee-900">{currentUnitPrice.toLocaleString()} VND</span>
-              </div>
-            </div>
-
-            {isBeanProduct ? (
-              <div className="bg-coffee-50 border border-coffee-200/60 rounded-2xl p-4 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-coffee-900 font-serif">
-                  <Icons.Coffee className="h-4 w-4 text-coffee-800 flex-shrink-0" />
-                  <span>{t.coffeeDetailTitle}</span>
-                </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• <strong className="font-semibold text-coffee-900">{t.origin}：</strong>{product.origin}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.altitude}：</strong>{product.altitude}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.process}：</strong>{product.process}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.grade}：</strong>{product.grade}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.flavor}：</strong>{product.flavor}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-amber-50/70 border border-amber-200/70 rounded-2xl p-4 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900 font-serif">
-                  <Icons.Package className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                  <span>{t.coldbrewDetailTitle}</span>
-                </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• {t.coldbrewFeature1}</p>
-                  <p>• {t.coldbrewFeature2}</p>
-                  <p className="pt-1 text-amber-900 font-semibold">• <strong className="font-semibold">{t.flavor}：</strong>{product.flavor}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="bg-amber-50/50 border border-amber-200/60 rounded-2xl p-4 space-y-2">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900">
-                <Icons.ShieldCheck className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                <span>{t.safetyInfoTitle}</span>
-              </div>
-              <div className="space-y-1 text-xs text-coffee-800/90 leading-relaxed">
-                <p>• {t.safetyStorage}</p>
-                <p>• {t.safetyCert}</p>
-                <p>• {t.safetyUsage}</p>
-              </div>
-            </div>
-
-            {isBeanProduct ? (
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold uppercase text-coffee-800 flex items-center gap-1.5 tracking-wider"><Icons.Settings className="h-4 w-4" /> {t.grindSize}</label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  {['beans', 'phin', 'espresso', 'pour_over'].map(key => (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedGrind(key)}
-                      className={`p-3 rounded-2xl text-left border transition-all ${
-                        selectedGrind === key 
-                          ? 'bg-coffee-900 text-white border-coffee-900 shadow-md ring-2 ring-coffee-900/20' 
-                          : 'bg-white text-coffee-800 border-coffee-200 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="text-xs font-bold">{t.grindOptions[key].label}</div>
-                      <div className="text-[10px] opacity-75 mt-0.5">{t.grindOptions[key].detail}</div>
-                    </button>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-coffee-800 uppercase">{t.grindSize}</label>
+                <select value={selectedGrind} onChange={e => setSelectedGrind(e.target.value)} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3 text-sm">
+                  {Object.keys(t.grindOptions).map(key => (
+                    <option key={key} value={key}>{t.grindOptions[key].label} ({t.grindOptions[key].detail})</option>
                   ))}
-                </div>
-              </div>
-            ) : (
-              <div className="p-3.5 bg-coffee-50 rounded-2xl text-xs text-coffee-800 border border-coffee-200/60 font-medium">
-                {t.coldbrewNotice}
-              </div>
-            )}
-
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs sm:text-sm font-bold text-coffee-900">{t.quantity}</span>
-              <div className="flex items-center rounded-2xl border border-coffee-300 bg-white p-1.5 shadow-sm">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-1.5 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Minus className="h-4 w-4" /></button>
-                <span className="w-9 text-center text-sm font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(q => Math.min(maxStock, q + 1))} className="p-1.5 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Plus className="h-4 w-4" /></button>
-              </div>
-            </div>
-
-            <button onClick={handleAdd} className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
-              <Icons.ShoppingBag className="h-4 w-4" /> {t.addToCart} • {(currentUnitPrice * quantity).toLocaleString()} VND
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    function CartDrawer({ isOpen, onClose, cart, updateQuantity, onOpenCheckout, t }) {
-      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-      const isFreeShipping = subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || subtotal === 0;
-      const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
-      const grandTotal = subtotal + shippingFee;
-      const amountNeeded = Math.max(0, SHIPPING_CONFIG.FREE_THRESHOLD - subtotal);
-      const progress = Math.min(100, (subtotal / SHIPPING_CONFIG.FREE_THRESHOLD) * 100);
-
-      if (!isOpen) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="absolute inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-md bg-white text-coffee-900 shadow-2xl flex flex-col border-l border-coffee-200">
-              <div className="p-5 sm:p-6 bg-coffee-900 text-coffee-100 flex items-center justify-between">
-                <h2 className="text-base sm:text-xl font-bold flex items-center gap-2.5 font-serif"><Icons.ShoppingBag className="h-5 w-5 text-amber-200" /> {t.cart}</h2>
-                <button onClick={onClose} className="p-2 hover:bg-coffee-800 rounded-full transition-colors text-coffee-200 hover:text-white"><Icons.X className="h-6 w-6" /></button>
+                </select>
               </div>
 
-              <div className="bg-amber-50/80 p-4 border-b border-amber-200/60">
-                <div className="flex items-center justify-between text-xs font-bold text-amber-900 mb-2">
-                  <span className="flex items-center gap-1.5"><Icons.Truck className="h-4 w-4 text-amber-700" /> {t.freeShippingGoal}</span>
-                  <span className="text-amber-800">{isFreeShipping ? t.freeShippingReached : `${t.freeShippingShort}${amountNeeded.toLocaleString()} VND`}</span>
-                </div>
-                <div className="w-full bg-amber-200/50 rounded-full h-2.5 overflow-hidden shadow-inner">
-                  <div className="bg-amber-700 h-full transition-all duration-500 rounded-full" style={{ width: `${progress}%` }} />
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-xs font-bold text-coffee-800 uppercase">{t.quantity}</span>
+                <div className="flex items-center gap-3 bg-gray-50 rounded-2xl p-1.5 border border-coffee-200">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-1 rounded-xl hover:bg-gray-200"><Icons.Minus className="h-4 w-4" /></button>
+                  <span className="text-sm font-bold w-6 text-center">{quantity}</span>
+                  <button onClick={() => setQuantity(q => q + 1)} className="p-1 rounded-xl hover:bg-gray-200"><Icons.Plus className="h-4 w-4" /></button>
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5">
-                {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-coffee-600 space-y-2">
-                    <div className="bg-coffee-100 p-4 rounded-full text-coffee-400">
-                      <Icons.ShoppingBag className="h-8 w-8" />
-                    </div>
-                    <p className="text-sm font-medium">{t.emptyCart}</p>
-                  </div>
-                ) : (
-                  cart.map(item => (
-                    <div key={item.cartKey} className="p-4 bg-coffee-50/50 rounded-2xl shadow-sm border border-coffee-200/60 space-y-3">
-                      <div className="flex items-start gap-3.5">
-                        <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-2xl flex-shrink-0 shadow-sm border border-coffee-200/50" />
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-coffee-900 text-xs sm:text-sm font-serif line-clamp-1">{item.name}</h4>
-                          <span className="inline-block text-[10px] bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-medium mt-1">{item.spec}</span>
-                          <div className="text-[10px] text-coffee-600 mt-0.5">{item.grindLabel}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-xs sm:text-sm font-extrabold text-coffee-900">{(item.price * item.quantity).toLocaleString()} VND</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2 border-t border-coffee-200/40">
-                        <div className="flex items-center rounded-xl border border-coffee-300 bg-white p-1">
-                          <button onClick={() => updateQuantity(item.cartKey, -1)} className="p-1 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Minus className="h-3.5 w-3.5" /></button>
-                          <span className="w-7 text-center text-xs font-bold">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.cartKey, 1)} className="p-1 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Plus className="h-3.5 w-3.5" /></button>
-                        </div>
-                        <button onClick={() => updateQuantity(item.cartKey, -item.quantity)} className="text-red-600 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-colors"><Icons.X className="h-4 w-4" /></button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {cart.length > 0 && (
-                <div className="p-5 sm:p-6 bg-coffee-50 border-t border-coffee-200 space-y-3.5">
-                  <div className="space-y-2 text-xs sm:text-sm text-coffee-800">
-                    <div className="flex justify-between"><span>{t.subtotal}</span><span>{subtotal.toLocaleString()} VND</span></div>
-                    <div className="flex justify-between">
-                      <span>{t.shippingFee}</span>
-                      <span>{shippingFee === 0 ? <strong className="text-green-700">{t.free}</strong> : `${shippingFee.toLocaleString()} VND`}</span>
-                    </div>
-                    <div className="flex justify-between font-extrabold text-base sm:text-lg text-coffee-900 pt-2 border-t border-coffee-200">
-                      <span>{t.total}</span>
-                      <span className="text-amber-800">{grandTotal.toLocaleString()} VND</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={onOpenCheckout}
-                    className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
-                  >
-                    <span>{t.checkout}</span>
-                  </button>
-                </div>
-              )}
+              <button
+                onClick={() => {
+                  onAddToCart({
+                    ...product,
+                    name: productName,
+                    spec: specText,
+                    grind: selectedGrind,
+                    grindLabel: t.grindOptions[selectedGrind].label,
+                    quantity
+                  });
+                  onClose();
+                }}
+                className="w-full bg-coffee-900 hover:bg-coffee-800 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm mt-4"
+              >
+                <Icons.ShoppingBag className="h-4 w-4" /> {t.addToCart}
+              </button>
             </div>
           </div>
         </div>
       );
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    ReactDOM.render(<App />, document.getElementById('root'));
   </script>
 </body>
 </html>
