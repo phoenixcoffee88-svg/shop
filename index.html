@@ -614,7 +614,7 @@
                 <button @click="searchOpen = false" class="text-aura-900"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
             <div class="mt-4 max-h-60 overflow-y-auto space-y-2">
-                <template x-for="product in products.filter(p => p.name.includes(searchQuery))" :key="product.id">
+                <template x-for="product in products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))" :key="product.id">
                     <div @click="openProductDetail(product); searchOpen = false" class="flex items-center space-x-3 p-2 hover:bg-aura-50 cursor-pointer rounded-sm">
                         <img :src="product.image" class="w-10 h-10 object-cover rounded-sm">
                         <div>
@@ -696,7 +696,7 @@
                 searchQuery: '',
                 selectedGrind: '原豆（不研磨）',
                 quantity: 1,
-                isSubmitting: false, // 控制送出按鈕狀態
+                isSubmitting: false,
 
                 selectedProduct: { 
                     id: 1, 
@@ -967,21 +967,20 @@
 
                     this.isSubmitting = true;
 
-                    // 1. 組裝品項明細字串 (例如：100% 精品阿拉比卡 (手沖中粗) x 2, ...)
                     const itemsString = this.cart.map(i => `${i.name} (${i.grind}) x ${i.quantity}`).join('；');
                     
-                    // 2. 產生訂單編號與時間
                     const orderId = 'AURA-' + Math.floor(100000 + Math.random() * 900000);
                     const now = new Date();
+                    
+                    // 修正處：已補上 getDate() 的括號
                     const orderDate = now.getFullYear() + '-' + 
                                       String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-                                      String(now.getDate).padStart(2, '0') + ' ' + 
+                                      String(now.getDate()).padStart(2, '0') + ' ' + 
                                       String(now.getHours()).padStart(2, '0') + ':' + 
                                       String(now.getMinutes()).padStart(2, '0');
 
                     const shippingFee = this.cartSubtotal >= 800000 ? 0 : 50000;
 
-                    // 3. 準備送往 Google Apps Script 的資料 Payload
                     const payload = {
                         orderId: orderId,
                         orderDate: now.toLocaleString(),
@@ -995,14 +994,12 @@
                         grandTotal: this.cartSubtotal + shippingFee
                     };
 
-                    // ⚠️【重要提醒】請將下方引號內的網址替換為您的 Google Apps Script「部屬網路應用程式 (Web App)」網址
                     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec';
 
                     try {
-                        // 透過 fetch 將資料 POST 到 Google 試算表
                         const response = await fetch(SCRIPT_URL, {
                             method: 'POST',
-                            mode: 'no-cors', // 避免 Google Apps Script 跨域限制 (CORS)
+                            mode: 'no-cors',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
@@ -1011,7 +1008,6 @@
 
                         alert(`訂單已成功建立！\n訂單編號：${orderId}\n感謝您的選購，我們將盡快為您安排新鮮烘焙與配送。`);
                         
-                        // 清空購物車並回到首頁
                         this.cart = [];
                         this.currentView = 'home';
                         window.scrollTo({ top: 0, behavior: 'smooth' });
