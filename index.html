@@ -1,1528 +1,822 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="vi" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Phoenix Coffee - 精品手作咖啡館</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            coffee: {
-              50: '#fbf9f5',
-              100: '#f3efe6',
-              200: '#e5dbcc',
-              300: '#cbb393',
-              600: '#79553d',
-              700: '#5c402d',
-              800: '#3d291c',
-              900: '#22160e',
-              accent: '#d97706'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenix Coffee 精品手作咖啡館</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter & Playfair Display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        amber: { 850: '#78350f', 950: '#451a03' },
+                        coffee: { 50: '#fdf8f6', 100: '#f2e8e5', 600: '#8b5a2b', 700: '#6f441c', 800: '#583414', 900: '#3c220d' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
-  <!-- React & Babel CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <style>
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    input, select, textarea {
-      font-size: 16px !important;
-    }
-    @media (min-width: 640px) {
-      input, select, textarea {
-        font-size: 0.875rem !important;
-      }
-    }
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printable-receipt, #printable-receipt * {
-        visibility: visible;
-      }
-      #printable-receipt {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        background: white !important;
-        color: black !important;
-        box-shadow: none !important;
-      }
-    }
-  </style>
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .animate-pulse-slow { animation: pulse-slow 3s infinite ease-in-out; }
+    </style>
 </head>
-<body class="bg-coffee-50 text-coffee-900 font-sans selection:bg-amber-100 min-h-screen flex flex-col antialiased">
-  <div id="root" class="flex-grow flex flex-col w-full"></div>
-
-  <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
-
-    const Icons = {
-      Coffee: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-      ),
-      Search: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      ),
-      ShoppingBag: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-      ),
-      Clock: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-      ),
-      Plus: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      ),
-      Minus: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      ),
-      X: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      ),
-      Menu: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-      ),
-      Globe: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-      ),
-      Truck: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-      ),
-      Send: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-      ),
-      CheckCircle: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-      ),
-      Package: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-      ),
-      Trash: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-      ),
-      Lock: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-      ),
-      Printer: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-      ),
-      FileText: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      ),
-      Settings: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-      ),
-      ShieldCheck: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
-      ),
-      Sparkles: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
-      ),
-      Heart: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.04 3 5.5l7 7Z"/></svg>
-      ),
-      Badge: (props) => (
-        <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><polyline points="9 12 11 14 15 10"/></svg>
-      )
-    };
-
-    const CART_STORAGE_KEY = 'phoenix_cafe_cart_v3';
-    const PRODUCTS_STORAGE_KEY = 'phoenix_cafe_products_v7';
-    const ORDER_HISTORY_STORAGE_KEY = 'phoenix_cafe_order_history_v3';
-    const ADMIN_PASSWORD = '0348246669';
-    const SHIPPING_CONFIG = { FREE_THRESHOLD: 500000, FLAT_RATE: 25000 };
-
-    const TRANSLATIONS = {
-      'zh-TW': {
-        searchPlaceholder: '搜尋精選咖啡、風味、產地...',
-        history: '歷史訂單',
-        cart: '購物車',
-        categories: '產品分類',
-        price: '售價',
-        selectAndBuy: '選擇規格',
-        soldOut: '已售完',
-        grindSize: '選擇研磨度 / 規格',
-        coldbrewNotice: '本商品為冷萃浸泡包：強調單一豆種，3種不同烘焙度混合。',
-        safetyInfoTitle: '產品安全與食品標示資訊',
-        safetyStorage: '保存方式：請置於陰涼乾燥處，避免陽光直射，開封後請盡速飲用完畢。',
-        safetyCert: '品質保證：100% 天然烘焙，通過嚴格食品安全檢驗，不含人工添加物。',
-        safetyUsage: '食用建議：孕婦、心血管疾病患者或對咖啡因敏感者，請斟酌個人體質適量飲用。',
-        coffeeDetailTitle: '咖啡豆詳細規格與風味',
-        origin: '產地來源',
-        altitude: '海拔高度',
-        process: '處理法',
-        grade: '咖啡等級',
-        flavor: '風味敘述',
-        coldbrewDetailTitle: '冷萃咖啡包特色說明',
-        coldbrewFeature1: '單一豆種（Single Origin）堅持：嚴選單一產區純粹豆種，不使用雜豆混搭，完整保留風土。',
-        coldbrewFeature2: '黃金三焙混調工藝：大膽結合淺焙、中焙、深焙三種不同烘焙度，交織出前所未有的立體層次。',
-        quantity: '數量',
-        addToCart: '加入購物車',
-        freeShippingGoal: '滿 500,000 VND 免運費',
-        freeShippingReached: '已達免運門檻！',
-        freeShippingShort: '還差 ',
-        emptyCart: '購物車目前是空的',
-        subtotal: '商品小計',
-        shippingFee: '運費',
-        free: '免費',
-        total: '總計金額',
-        checkout: '前往填寫收件資訊結帳',
-        customerInfo: '收件人資訊',
-        fullName: '收件人姓名 *',
-        phone: '聯絡電話 *',
-        address: '收件地址 *',
-        notes: '備註事項 (可選)',
-        payable: '應付金額:',
-        submitOrder: '確認發送訂單',
-        submitting: '正在傳送訂單...',
-        orderSuccess: '訂單已成功送出！',
-        orderSuccessDesc: '訂單已記錄至歷史訂單，並可列印或儲存正式收據。',
-        orderHistoryTitle: '歷史訂單紀錄',
-        noHistory: '尚無歷史訂單紀錄',
-        clearHistory: '清除歷史',
-        orderId: '訂單編號',
-        confirmClear: '確定要清除所有歷史訂單紀錄？',
-        historyPasswordTitle: '歷史訂單驗證',
-        historyPasswordDesc: '請輸入管理密碼以檢視歷史訂單',
-        printReceipt: '列印/儲存單據',
-        viewReceipt: '檢視單據',
-        receiptTitle: 'phoenix CAFE 正式訂單明細',
-        close: '關閉',
-        passwordPlaceholder: '請輸入管理密碼',
-        passwordError: '密碼錯誤，請重新輸入',
-        passwordSubmit: '確認送出',
-        brandStoryTitle: '品牌故事與經營理念',
-        brandStorySubtitle: '源自對風土的敬意，淬鍊每一杯極致的手作咖啡',
-        story1Title: '探索莊園純粹風土',
-        story1Desc: 'phoenix 堅信每一顆咖啡豆都承載著大自然的餽贈。我們親自尋訪高海拔優選產區與小農莊園，嚴選 100% 純粹豆種，確保從土壤、栽種到採收的每一個環節都無懈可擊。',
-        story2Title: '黃金三焙職人工藝',
-        story2Desc: '我們大膽融合淺焙的明亮果香、中焙的焦糖甜感與深焙的醇厚尾韻。透過獨家精準的混調工藝，讓咖啡層次在口中完美立體交織，為您帶來無與倫比的豐富體驗。',
-        story3Title: '用心堅持品質承諾',
-        story3Desc: '從咖啡豆到冷萃浸泡包，我們堅持 100% 天然烘焙，通過嚴格食安檢驗。不只是販售咖啡，更是傳遞一份對生活美學與溫暖手作的極致堅持。',
-        grindOptions: {
-          beans: { label: '保留原豆', detail: 'Whole Beans' },
-          phin: { label: '越南滴漏', detail: 'Phin Filter' },
-          espresso: { label: '義式濃縮', detail: 'Espresso' },
-          pour_over: { label: '手沖', detail: 'Pour-over' },
-          coldbrew: { label: '冷萃包', detail: 'Cold Brew' }
-        },
-        cats: {
-          all: '全部商品',
-          arabica: '阿拉比卡',
-          robusta: '羅布斯塔',
-          blend: '特調商業咖啡',
-          coldbrew: '冷萃包'
-        }
-      },
-      'vi': {
-        searchPlaceholder: 'Tìm kiếm sản phẩm, hương vị...',
-        history: 'Lịch sử đơn hàng',
-        cart: 'Giỏ hàng',
-        categories: 'Danh mục',
-        price: 'Giá',
-        selectAndBuy: 'Chọn mua',
-        soldOut: 'Hết hàng',
-        grindSize: 'Mức độ xay / Quy cách',
-        coldbrewNotice: 'Sản phẩm túi lọc Cold Brew: Nhấn mạnh đơn nguồn gốc, kết hợp 3 mức độ rang khác nhau.',
-        safetyInfoTitle: 'Thông tin an toàn & Tiêu chuẩn sản phẩm',
-        safetyStorage: 'Bảo quản: Nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp. Đóng kín sau khi mở.',
-        safetyCert: 'Cam kết chất lượng: 100% rang mộc tự nhiên, đạt tiêu chuẩn an toàn thực phẩm, không hóa chất.',
-        safetyUsage: 'Khuyến cáo: Phụ nữ mang thai, người bệnh tim mạch hoặc nhạy cảm với caffeine nên cân nhắc khi sử dụng.',
-        coffeeDetailTitle: 'Thông tin chi tiết & Hương vị cà phê hạt',
-        origin: 'Xuất xứ',
-        altitude: 'Độ cao',
-        process: 'Phương pháp chế biến',
-        grade: 'Cấp độ cà phê',
-        flavor: 'Hương vị',
-        coldbrewDetailTitle: 'Đặc điểm túi lọc Cold Brew',
-        coldbrewFeature1: 'Đơn nguồn gốc (Single Origin): Lựa chọn tinh tế từ một vùng trồng duy nhất, bảo tồn trọn vẹn hương vị bản địa.',
-        coldbrewFeature2: 'Công nghệ phối trộn 3 cấp độ rang: Kết hợp hoàn hảo giữa rang nhạt, rang vừa và rang đậm, mang đến tầng hương phong phú.',
-        quantity: 'Số lượng',
-        addToCart: 'Thêm vào giỏ hàng',
-        freeShippingGoal: 'Freeship đơn từ 500,000 VND',
-        freeShippingReached: 'Đã đạt mức Freeship!',
-        freeShippingShort: 'Còn thiếu ',
-        emptyCart: 'Giỏ hàng đang trống',
-        subtotal: 'Tạm tính',
-        shippingFee: 'Phí vận chuyển',
-        free: 'Miễn phí',
-        total: 'Tổng cộng',
-        checkout: 'Thanh toán đơn hàng',
-        customerInfo: 'Thông tin người nhận',
-        fullName: 'Họ và tên *',
-        phone: 'Số điện thoại *',
-        address: 'Địa chỉ nhận hàng *',
-        notes: 'Ghi chú (Không bắt buộc)',
-        payable: 'Thành tiền:',
-        submitOrder: 'Xác nhận đặt hàng',
-        submitting: 'Đang gửi đơn hàng...',
-        orderSuccess: 'Đặt hàng thành công!',
-        orderSuccessDesc: 'Đơn hàng đã được ghi lại, bạn có thể in hoặc lưu hóa đơn.',
-        orderHistoryTitle: 'Lịch sử đơn hàng',
-        noHistory: 'Chưa có lịch sử đơn hàng',
-        clearHistory: 'Xóa lịch sử',
-        orderId: 'Mã đơn hàng',
-        confirmClear: 'Bạn có chắc muốn xóa lịch sử đơn hàng?',
-        historyPasswordTitle: 'Xác thực lịch sử đơn hàng',
-        historyPasswordDesc: 'Vui lòng nhập mật khẩu để xem lịch sử',
-        printReceipt: 'In / Lưu hóa đơn',
-        viewReceipt: 'Xem hóa đơn',
-        receiptTitle: 'HÓA ĐƠN BÁN HÀNG phoenix CAFE',
-        close: 'Đóng',
-        passwordPlaceholder: 'Nhập mật khẩu quản trị',
-        passwordError: 'Mật khẩu sai, vui lòng thử lại',
-        passwordSubmit: 'Xác nhận',
-        brandStoryTitle: 'Câu chuyện thương hiệu & Triết lý kinh doanh',
-        brandStorySubtitle: 'Xuất phát từ sự tôn trọng thổ nhưỡng, chắt chiu từng giọt cà phê thủ công hoàn hảo nhất',
-        story1Title: 'Khám phá hương vị nguyên bản',
-        story1Desc: 'phoenix tin rằng mỗi hạt cà phê đều mang trong mình món quà của thiên nhiên. Chúng tôi trực tiếp chọn lọc từ các vùng cao nguyên chất lượng cao và các nông hộ uy tín, cam kết hạt cà phê thuần khiết 100%.',
-        story2Title: 'Nghệ thuật rang 3 cấp độ',
-        story2Desc: 'Chúng tôi kết hợp táo bạo giữa vị trái cây thanh mát của rang nhạt, vị caramel ngọt ngào của rang vừa và hậu vị đậm đà của rang đậm. Mang đến tầng hương phong phú và trải nghiệm độc đáo.',
-        story3Title: 'Cam kết chất lượng từ tâm',
-        story3Desc: 'Từ cà phê hạt đến túi lọc cold brew, chúng tôi luôn duy trì tiêu chuẩn rang mộc tự nhiên và kiểm định an toàn nghiêm ngặt. Không chỉ bán cà phê, chúng tôi lan tỏa lối sống tinh tế.',
-        grindOptions: {
-          beans: { label: 'Nguyên hạt', detail: 'Whole Beans' },
-          phin: { label: 'Pha Phin', detail: 'Phin Filter' },
-          espresso: { label: 'Pha Máy', detail: 'Espresso' },
-          pour_over: { label: 'Pha Giấy Lọc', detail: 'Pour-over' },
-          coldbrew: { label: 'Cold Brew', detail: 'Cold Brew' }
-        },
-        cats: {
-          all: 'Tất cả sản phẩm',
-          arabica: 'Arabica',
-          robusta: 'Robusta',
-          blend: 'Cà phê Phối Trộn',
-          coldbrew: 'Túi Lọc Cold Brew'
-        }
-      }
-    };
-
-    const INITIAL_PRODUCTS = [
-      { 
-        id: 'arabica-100-250g', 
-        nameZh: '100% 精品阿拉比卡咖啡豆', 
-        nameVi: 'Cà phê đặc sản Arabica 100%', 
-        category: 'arabica', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 145000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P1.jpg',
-        origin: '嚴選特定產區與小農莊園，追溯咖啡果實生長環境與風土條件',
-        altitude: '約 1,200 至 2,000 公尺（高海拔山區）',
-        process: '精準對應水洗、日曬或蜜處理法',
-        grade: 'Grade 1 / Specialty Grade 精品級',
-        flavor: '前段明亮果香或花香，中段堅果與焦糖甜感，尾韻乾淨綿長'
-      },
-      { 
-        id: 'arabica-100-500g', 
-        nameZh: '100% 精品阿拉比卡咖啡豆', 
-        nameVi: 'Cà phê đặc sản Arabica 100%', 
-        category: 'arabica', 
-        specZh: '500公克', 
-        specVi: '500g', 
-        price: 280000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P1.jpg',
-        origin: '嚴選特定產區與小農莊園，追溯咖啡果實生長環境與風土條件',
-        altitude: '約 1,200 至 2,000 公尺（高海拔山區）',
-        process: '精準對應水洗、日曬或蜜處理法',
-        grade: 'Grade 1 / Specialty Grade 精品級',
-        flavor: '前段明亮果香或花香，中段堅果與焦糖甜感，尾韻乾淨綿長'
-      },
-      { 
-        id: 'arabica-coldbrew-10', 
-        nameZh: '100% 精品阿拉比卡冷萃咖啡包', 
-        nameVi: 'Cà phê ủ lạnh Arabica 100%', 
-        category: 'coldbrew', 
-        specZh: '10包/袋', 
-        specVi: '10 Gói /Túi', 
-        price: 125000, 
-        type: 'coldbrew', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
-        origin: '嚴選單一產區阿拉比卡豆種（Single Origin）',
-        altitude: '高海拔特選產區',
-        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
-        grade: '精品冷萃浸泡包規格',
-        flavor: '淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富'
-      },
-      { 
-        id: 'arabica-coldbrew-30', 
-        nameZh: '100% 精品阿拉比卡冷萃咖啡包', 
-        nameVi: 'Cà phê ủ lạnh Arabica 100%', 
-        category: 'coldbrew', 
-        specZh: '30包/袋', 
-        specVi: '30 Gói /Túi', 
-        price: 350000, 
-        type: 'coldbrew', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
-        origin: '嚴選單一產區阿拉比卡豆種（Single Origin）',
-        altitude: '高海拔特選產區',
-        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
-        grade: '精品冷萃浸泡包規格',
-        flavor: '淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富'
-      },
-      { 
-        id: 'robusta-100-250g', 
-        nameZh: '100% 精品羅布斯塔咖啡豆', 
-        nameVi: 'Cà phê đặc sản Robusta 100%', 
-        category: 'robusta', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 91000, 
-        type: 'beans', 
-        stock: 25, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P2.jpg',
-        origin: '精選頂級羅布斯塔莊園，濃郁風土與扎實口感',
-        altitude: '約 800 至 1,200 公尺',
-        process: '傳統日曬與水洗精製',
-        grade: 'Premium Grade 精選級',
-        flavor: '醇厚濃郁、帶有黑可可與麥香的獨特風味'
-      },
-      { 
-        id: 'robusta-100-500g', 
-        nameZh: '100% 精品羅布斯塔咖啡豆', 
-        nameVi: 'Cà phê đặc sản Robusta 100%', 
-        category: 'robusta', 
-        specZh: '500公克', 
-        specVi: '500g', 
-        price: 172000, 
-        type: 'beans', 
-        stock: 25, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P2.jpg',
-        origin: '精選頂級羅布斯塔莊園，濃郁風土與扎實口感',
-        altitude: '約 800 至 1,200 公尺',
-        process: '傳統日曬與水洗精製',
-        grade: 'Premium Grade 精選級',
-        flavor: '醇厚濃郁、帶有黑可可與麥香的獨特風味'
-      },
-      { 
-        id: 'robusta-coldbrew-10', 
-        nameZh: '100% 精品羅布斯塔冷萃咖啡包', 
-        nameVi: 'Cà phê ủ lạnh Robusta 100%', 
-        category: 'coldbrew', 
-        specZh: '10包/袋', 
-        specVi: '10 Gói /Túi', 
-        price: 100000, 
-        type: 'coldbrew', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
-        origin: '嚴選單一產區羅布斯塔豆種（Single Origin）',
-        altitude: '精選優質產區',
-        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
-        grade: '冷萃浸泡包規格',
-        flavor: '口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻'
-      },
-      { 
-        id: 'robusta-coldbrew-30', 
-        nameZh: '100% 精品羅布斯塔冷萃咖啡包', 
-        nameVi: 'Cà phê ủ lạnh Robusta 100%', 
-        category: 'coldbrew', 
-        specZh: '30包/袋', 
-        specVi: '30 Gói /Túi', 
-        price: 250000, 
-        type: 'coldbrew', 
-        stock: 20, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P4.jpg',
-        origin: '嚴選單一產區羅布斯塔豆種（Single Origin）',
-        altitude: '精選優質產區',
-        process: '黃金三焙混調工藝（淺焙、中焙、深焙綜合浸泡）',
-        grade: '冷萃浸泡包規格',
-        flavor: '口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻'
-      },
-      { 
-        id: 'blend-8020-250g', 
-        nameZh: '80/20 義式特調咖啡豆', 
-        nameVi: 'Cà phê phối trộn Blend 80/20 Espresso', 
-        category: 'blend', 
-        specZh: '250公克', 
-        specVi: '250g', 
-        price: 135000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P5.jpg',
-        origin: '精選阿拉比卡（80%）與羅布斯塔（20%）黃金比例拼配',
-        altitude: '綜合高海拔與優質莊園產區',
-        process: '水洗與日曬融合處理法',
-        grade: 'Espresso Blend 義式精選級',
-        flavor: '兼具阿拉比卡的優雅香氣與羅布斯塔的豐富油脂、濃厚Crema'
-      },
-      { 
-        id: 'blend-8020-500g', 
-        nameZh: '80/20 義式特調咖啡豆', 
-        nameVi: 'Cà phê phối trộn Blend 80/20 Espresso', 
-        category: 'blend', 
-        specZh: '500公克', 
-        specVi: '500g', 
-        price: 260000, 
-        type: 'beans', 
-        stock: 15, 
-        threshold: 5, 
-        image: 'https://cdn.jsdelivr.net/gh/phoenixcoffee88-svg/shop/P5.jpg',
-        origin: '精選阿拉比卡（80%）與羅布斯塔（20%）黃金比例拼配',
-        altitude: '綜合高海拔與優質莊園產區',
-        process: '水洗與日曬融合處理法',
-        grade: 'Espresso Blend 義式精選級',
-        flavor: '兼具阿拉比卡的優雅香氣與羅布斯塔的豐富油脂、濃厚Crema'
-      }
-    ];
-
-    function App() {
-      const [lang, setLang] = useState('zh-TW');
-      const [products, setProducts] = useState(() => {
-        try {
-          const saved = localStorage.getItem(PRODUCTS_STORAGE_KEY);
-          return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
-        } catch (e) { return INITIAL_PRODUCTS; }
-      });
-      const [cart, setCart] = useState(() => {
-        try {
-          const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-          return savedCart ? JSON.parse(savedCart) : [];
-        } catch (e) { return []; }
-      });
-      const [searchQuery, setSearchQuery] = useState('');
-      const [selectedCategory, setSelectedCategory] = useState('all');
-      const [selectedProduct, setSelectedProduct] = useState(null);
-      const [isCartOpen, setIsCartOpen] = useState(false);
-      const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-      const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-      const [isHistoryPasswordModalOpen, setIsHistoryPasswordModalOpen] = useState(false);
-      const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-      const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-      const [activeReceiptOrder, setActiveReceiptOrder] = useState(null);
-
-      const t = TRANSLATIONS[lang];
-
-      useEffect(() => {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-      }, [cart]);
-
-      useEffect(() => {
-        localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
-      }, [products]);
-
-      const toggleLanguage = () => {
-        setLang(prev => prev === 'zh-TW' ? 'vi' : 'zh-TW');
-      };
-
-      const filteredProducts = useMemo(() => {
-        return products.filter(product => {
-          const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-          const name = lang === 'zh-TW' ? product.nameZh : product.nameVi;
-          const matchesSearch = name.toLowerCase().includes(searchQuery.toLowerCase());
-          return matchesCategory && matchesSearch;
-        });
-      }, [products, selectedCategory, searchQuery, lang]);
-
-      const handleAddToCart = (productToAdd) => {
-        setCart(prev => {
-          const cartKey = `${productToAdd.id}-${productToAdd.grind || 'default'}`;
-          const existing = prev.find(item => item.cartKey === cartKey);
-          if (existing) {
-            return prev.map(item => item.cartKey === cartKey ? { ...item, quantity: item.quantity + productToAdd.quantity } : item);
-          }
-          return [...prev, { ...productToAdd, cartKey }];
-        });
-      };
-
-      const updateQuantity = (cartKey, delta) => {
-        setCart(prev => prev.map(item => {
-          if (item.cartKey === cartKey) {
-            const product = products.find(p => p.id === item.id);
-            const maxStock = product ? product.stock : 99;
-            const newQty = item.quantity + delta;
-            if (newQty > maxStock) return item;
-            return newQty > 0 ? { ...item, quantity: newQty } : null;
-          }
-          return item;
-        }).filter(Boolean));
-      };
-
-      const deductStock = (cartItems) => {
-        setProducts(prevProducts => prevProducts.map(prod => {
-          const itemsPurchased = cartItems.filter(item => item.id === prod.id);
-          const totalDeduction = itemsPurchased.reduce((sum, item) => sum + item.quantity, 0);
-          return totalDeduction > 0 ? { ...prod, stock: Math.max(0, prod.stock - totalDeduction) } : prod;
-        }));
-      };
-
-      const clearCart = () => {
-        setCart([]);
-        localStorage.removeItem(CART_STORAGE_KEY);
-      };
-
-      const totalCartItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-      return (
-        <div className="w-full flex-grow flex flex-col bg-gradient-to-b from-[#fdfbf7] via-[#f7f2ea] to-[#f3efe6]">
-          {/* Header Nav */}
-          <nav className="sticky top-0 z-40 bg-coffee-900/95 text-coffee-100 shadow-xl backdrop-blur-md border-b border-coffee-800/80">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 sm:hidden rounded-xl text-coffee-200 hover:bg-coffee-800 transition-colors">
-                  <Icons.Menu className="h-6 w-6" />
-                </button>
-                <div className="flex items-center gap-3 cursor-pointer group" onClick={() => { setSelectedCategory('all'); setSearchQuery(''); }}>
-                  <div className="bg-gradient-to-br from-amber-600 to-coffee-800 p-2.5 rounded-2xl shadow-lg border border-amber-500/30 group-hover:scale-105 transition-transform">
-                    <Icons.Coffee className="h-6 w-6 sm:h-7 sm:w-7 text-amber-200" />
-                  </div>
-                  <div>
-                    <span className="text-lg sm:text-2xl font-black tracking-wider font-serif bg-gradient-to-r from-amber-100 via-amber-200 to-white bg-clip-text text-transparent">PHOENIX</span>
-                    <span className="hidden sm:block text-[10px] tracking-[0.25em] text-amber-400/90 uppercase font-semibold">Artisan Roastery</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Desktop Search Bar */}
-              <div className="relative flex-1 max-w-lg hidden md:block">
-                <input
-                  type="text"
-                  placeholder={t.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-coffee-800/90 text-coffee-100 placeholder-amber-200/40 rounded-full py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500/80 border border-coffee-700/80 text-sm shadow-inner transition-all hover:border-amber-500/50"
-                />
-                <Icons.Search className="absolute left-4 top-3.5 h-4 w-4 text-amber-300/70" />
-              </div>
-
-              {/* Language Switcher & Controls */}
-              <div className="flex items-center gap-2.5 sm:gap-3.5">
-                <button
-                  onClick={toggleLanguage}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-coffee-800/90 hover:bg-coffee-700 text-xs font-semibold text-amber-200 border border-coffee-700 shadow-sm transition-all hover:scale-105"
-                >
-                  <Icons.Globe className="h-3.5 w-3.5 text-amber-400" />
-                  <span>{lang === 'zh-TW' ? '繁中' : 'VN'}</span>
-                </button>
-
-                <button onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} className="p-2.5 md:hidden rounded-full bg-coffee-800 text-amber-200 hover:text-white transition-colors shadow-sm">
-                  <Icons.Search className="h-5 w-5" />
-                </button>
-
-                <button onClick={() => setIsHistoryPasswordModalOpen(true)} className="hidden sm:flex p-2.5 bg-coffee-800/90 hover:bg-coffee-700 rounded-full text-amber-200 hover:text-white transition-all shadow-sm hover:scale-105" title={t.history}>
-                  <Icons.Clock className="h-5 w-5" />
-                </button>
-
-                <button onClick={() => setIsCartOpen(true)} className="relative p-2.5 sm:px-4 sm:py-2.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 rounded-full text-white transition-all shadow-lg hover:shadow-amber-600/30 flex items-center gap-2">
-                  <Icons.ShoppingBag className="h-5 w-5" />
-                  <span className="hidden sm:inline text-xs font-bold">{t.cart}</span>
-                  {totalCartItems > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] sm:text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-md animate-bounce">
-                      {totalCartItems}
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Mobile Search Bar */}
-            {isMobileSearchOpen && (
-              <div className="md:hidden px-4 pb-4 pt-2 border-t border-coffee-800 bg-coffee-900">
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder={t.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    autoFocus
-                    className="w-full bg-coffee-800 text-coffee-100 placeholder-amber-200/40 rounded-full py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500 border border-coffee-700 text-sm shadow-inner"
-                  />
-                  <Icons.Search className="absolute left-4 top-3.5 h-4 w-4 text-amber-300" />
-                </div>
-              </div>
-            )}
-          </nav>
-
-          {/* Main Content Area */}
-          <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-            
-            {/* 品牌故事與經營理念精緻專區 */}
-            <section className="mb-14 sm:mb-20 bg-gradient-to-br from-white via-[#fcfaf7] to-amber-50/50 rounded-[2.5rem] p-8 sm:p-12 border border-amber-900/10 shadow-xl shadow-amber-950/5 relative overflow-hidden">
-              <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-amber-200/20 rounded-full blur-3xl pointer-events-none"></div>
-              <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-64 h-64 bg-coffee-200/20 rounded-full blur-3xl pointer-events-none"></div>
-
-              <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 relative z-10">
-                <div className="inline-flex items-center gap-2 bg-coffee-900 text-amber-200 px-5 py-2 rounded-full text-xs font-semibold tracking-[0.2em] uppercase mb-4 shadow-md border border-amber-500/20">
-                  <Icons.Sparkles className="h-3.5 w-3.5 text-amber-300 animate-pulse" /> PHOENIX HERITAGE
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold font-serif text-coffee-900 tracking-tight">{t.brandStoryTitle}</h2>
-                <p className="text-sm sm:text-base text-coffee-700/80 mt-3 leading-relaxed font-normal">{t.brandStorySubtitle}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 relative z-10">
-                <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-coffee-200/60 flex flex-col justify-between group hover:-translate-y-1">
-                  <div>
-                    <div className="w-12 h-12 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mb-5 font-bold font-serif text-lg shadow-inner group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                      01
-                    </div>
-                    <h3 className="text-lg font-bold font-serif text-coffee-900 mb-2.5">{t.story1Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700/90 leading-relaxed">{t.story1Desc}</p>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-coffee-100 flex items-center gap-2 text-xs text-amber-800 font-bold">
-                    <Icons.Coffee className="h-4 w-4 text-amber-600" /> Single Origin
-                  </div>
-                </div>
-
-                <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-coffee-200/60 flex flex-col justify-between group hover:-translate-y-1">
-                  <div>
-                    <div className="w-12 h-12 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mb-5 font-bold font-serif text-lg shadow-inner group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                      02
-                    </div>
-                    <h3 className="text-lg font-bold font-serif text-coffee-900 mb-2.5">{t.story2Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700/90 leading-relaxed">{t.story2Desc}</p>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-coffee-100 flex items-center gap-2 text-xs text-amber-800 font-bold">
-                    <Icons.Sparkles className="h-4 w-4 text-amber-600" /> Golden Blend
-                  </div>
-                </div>
-
-                <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 border border-coffee-200/60 flex flex-col justify-between group hover:-translate-y-1">
-                  <div>
-                    <div className="w-12 h-12 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mb-5 font-bold font-serif text-lg shadow-inner group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                      03
-                    </div>
-                    <h3 className="text-lg font-bold font-serif text-coffee-900 mb-2.5">{t.story3Title}</h3>
-                    <p className="text-xs sm:text-sm text-coffee-700/90 leading-relaxed">{t.story3Desc}</p>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-coffee-100 flex items-center gap-2 text-xs text-amber-800 font-bold">
-                    <Icons.Heart className="h-4 w-4 text-rose-600" /> Artisan Quality
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Category Tabs */}
-            <div className="overflow-x-auto no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0 mb-8 sm:mb-12">
-              <div className="flex gap-3 sm:gap-4 min-w-max pb-2">
-                {Object.keys(t.cats).map(catKey => (
-                  <button
-                    key={catKey}
-                    onClick={() => setSelectedCategory(catKey)}
-                    className={`px-6 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 whitespace-nowrap shadow-sm border ${
-                      selectedCategory === catKey 
-                        ? 'bg-coffee-900 text-amber-100 border-coffee-900 shadow-lg shadow-coffee-950/20 transform -translate-y-0.5' 
-                        : 'bg-white/80 text-coffee-800 hover:bg-white hover:border-amber-500/50 border-coffee-200/80'
-                    }`}
-                  >
-                    {t.cats[catKey]}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Product Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-              {filteredProducts.map(product => {
-                const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
-                const productSubName = lang === 'zh-TW' ? product.nameVi : product.nameZh;
-                const specText = lang === 'zh-TW' ? product.specZh : product.specVi;
-                const isOut = product.stock <= 0;
-
-                return (
-                  <div key={product.id} className="bg-white rounded-[2rem] overflow-hidden shadow-lg shadow-coffee-950/5 hover:shadow-2xl hover:shadow-amber-950/10 transition-all duration-500 border border-coffee-200/70 flex flex-col justify-between group">
-                    <div>
-                      <div className="h-60 sm:h-68 overflow-hidden relative bg-coffee-100">
-                        <img src={product.image} alt={productName} className={`w-full h-full object-cover transition-transform duration-700 ease-out ${isOut ? 'grayscale opacity-60' : 'group-hover:scale-105'}`} />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-70 pointer-events-none" />
-                        
-                        <div className="absolute top-4 right-4">
-                          <span className="text-xs bg-coffee-900/90 text-amber-200 px-3.5 py-1.5 rounded-full backdrop-blur-md font-bold shadow-lg border border-amber-500/30 tracking-wide">
-                            {specText}
-                          </span>
-                        </div>
-
-                        <div className="absolute top-4 left-4">
-                          {isOut ? (
-                            <span className="bg-red-600 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-full shadow-lg tracking-wider">{t.soldOut}</span>
-                          ) : (
-                            <span className="bg-amber-500/90 text-coffee-950 text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md shadow-md flex items-center gap-1">
-                              <Icons.Badge className="h-3.5 w-3.5" /> 100% Premium
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="p-6 sm:p-7">
-                        <h3 className="text-lg sm:text-xl font-extrabold text-coffee-900 font-serif line-clamp-1 group-hover:text-amber-700 transition-colors">{productName}</h3>
-                        <p className="text-xs text-coffee-600/80 italic mt-1.5 line-clamp-1">{productSubName}</p>
-                        <p className="text-xs text-coffee-700/70 mt-3 line-clamp-2 leading-relaxed">{product.flavor}</p>
-                      </div>
-                    </div>
-
-                    <div className="p-6 sm:p-7 pt-0">
-                      <div className="pt-5 border-t border-coffee-100 flex items-center justify-between gap-4">
-                        <div>
-                          <div className="text-[10px] sm:text-xs text-coffee-500 font-bold uppercase tracking-wider">{t.price}</div>
-                          <div className="text-lg sm:text-xl font-black text-coffee-900 tracking-tight mt-0.5">{product.price.toLocaleString()} VND</div>
-                        </div>
-
-                        <button
-                          disabled={isOut}
-                          onClick={() => setSelectedProduct(product)}
-                          className={`px-5 py-3.5 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
-                            isOut 
-                              ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
-                              : 'bg-coffee-900 hover:bg-amber-600 text-amber-50 shadow-coffee-950/20 hover:shadow-amber-600/30 transform hover:-translate-y-0.5'
-                          }`}
-                        >
-                          <Icons.Plus className="h-4 w-4" /> {isOut ? t.soldOut : t.selectAndBuy}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </main>
-
-          {/* Footer */}
-          <footer className="bg-coffee-900 text-coffee-300 py-12 border-t border-coffee-800 mt-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-              <div className="flex items-center justify-center gap-2">
-                <div className="bg-amber-600 p-2 rounded-xl text-white">
-                  <Icons.Coffee className="h-5 w-5" />
-                </div>
-                <span className="text-lg font-bold font-serif text-white tracking-wider">PHOENIX CAFE</span>
-              </div>
-              <p className="text-xs text-coffee-400">© 2026 Phoenix Coffee Roastery. All Rights Reserved.</p>
-            </div>
-          </footer>
-
-          {/* Mobile Drawer Navigation */}
-          {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-50 sm:hidden">
-              <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)} />
-              <div className="fixed inset-y-0 left-0 w-4/5 max-w-xs bg-coffee-900 text-coffee-100 shadow-2xl flex flex-col justify-between p-6 z-10 border-r border-coffee-800">
-                <div>
-                  <div className="flex items-center justify-between pb-6 border-b border-coffee-800">
-                    <div className="flex items-center gap-3">
-                      <div className="bg-coffee-800 p-2.5 rounded-2xl border border-coffee-700">
-                        <Icons.Coffee className="h-6 w-6 text-amber-300" />
-                      </div>
-                      <span className="text-base font-bold tracking-wider font-serif">PHOENIX</span>
-                    </div>
-                    <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded-full text-coffee-200 hover:bg-coffee-800 transition-colors">
-                      <Icons.X className="h-6 w-6" />
-                    </button>
-                  </div>
-
-                  <div className="mt-6 space-y-4">
-                    <button onClick={toggleLanguage} className="w-full flex items-center justify-between px-4 py-3.5 rounded-2xl bg-coffee-800 text-amber-200 font-semibold text-sm border border-coffee-700 shadow-inner">
-                      <span className="flex items-center gap-3"><Icons.Globe className="h-5 w-5 text-amber-400" /> 語言 / Ngôn ngữ</span>
-                      <span className="font-bold">{lang === 'zh-TW' ? '繁體中文' : 'Tiếng Việt'}</span>
-                    </button>
-
-                    <button onClick={() => { setIsMobileMenuOpen(false); setIsHistoryPasswordModalOpen(true); }} className="w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl hover:bg-coffee-800 text-coffee-200 hover:text-white font-semibold text-sm transition-colors">
-                      <Icons.Clock className="h-5 w-5 text-amber-400" /> {t.history}
-                    </button>
-
-                    <div className="pt-6 border-t border-coffee-800">
-                      <p className="text-xs font-bold text-amber-400 uppercase tracking-widest mb-3 px-2">{t.categories}</p>
-                      <div className="space-y-1.5">
-                        {Object.keys(t.cats).map(catKey => (
-                          <button
-                            key={catKey}
-                            onClick={() => { setSelectedCategory(catKey); setIsMobileMenuOpen(false); }}
-                            className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${selectedCategory === catKey ? 'bg-coffee-800 text-amber-300 font-bold border border-coffee-700' : 'text-coffee-300 hover:text-white'}`}
-                          >
-                            {t.cats[catKey]}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Modals & Drawers */}
-          {selectedProduct && (
-            <ProductDetailModal
-              product={selectedProduct}
-              lang={lang}
-              t={t}
-              onClose={() => setSelectedProduct(null)}
-              onAddToCart={handleAddToCart}
-            />
-          )}
-
-          {isCartOpen && (
-            <CartDrawer
-              isOpen={isCartOpen}
-              lang={lang}
-              t={t}
-              onClose={() => setIsCartOpen(false)}
-              cart={cart}
-              updateQuantity={updateQuantity}
-              onOpenCheckout={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }}
-            />
-          )}
-
-          {isCheckoutOpen && (
-            <CheckoutModal
-              isOpen={isCheckoutOpen}
-              lang={lang}
-              t={t}
-              products={products}
-              deductStock={deductStock}
-              onClose={() => setIsCheckoutOpen(false)}
-              cart={cart}
-              clearCart={clearCart}
-              onOpenReceipt={(order) => setActiveReceiptOrder(order)}
-            />
-          )}
-
-          {isHistoryOpen && (
-            <OrderHistoryModal
-              isOpen={isHistoryOpen}
-              lang={lang}
-              t={t}
-              onClose={() => setIsHistoryOpen(false)}
-              onViewReceipt={(order) => setActiveReceiptOrder(order)}
-            />
-          )}
-
-          {isHistoryPasswordModalOpen && (
-            <PasswordPromptModal
-              isOpen={isHistoryPasswordModalOpen}
-              title={t.historyPasswordTitle}
-              desc={t.historyPasswordDesc}
-              t={t}
-              onClose={() => setIsHistoryPasswordModalOpen(false)}
-              onSuccess={() => {
-                setIsHistoryPasswordModalOpen(false);
-                setIsHistoryOpen(true);
-              }}
-            />
-          )}
-
-          {activeReceiptOrder && (
-            <ReceiptModal
-              order={activeReceiptOrder}
-              t={t}
-              onClose={() => setActiveReceiptOrder(null)}
-            />
-          )}
-        </div>
-      );
-    }
-
-    function ReceiptModal({ order, t, onClose }) {
-      const handlePrint = () => {
-        window.print();
-      };
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10 flex flex-col">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="bg-coffee-900 p-2.5 rounded-2xl text-amber-200 shadow">
-                  <Icons.Coffee className="h-5 w-5" />
-                </div>
-                <h3 className="text-base sm:text-lg font-bold font-serif text-coffee-900">PHOENIX Cafe</h3>
-              </div>
-              <button onClick={onClose} className="p-2.5 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
-            </div>
-
-            {/* Printable Area */}
-            <div id="printable-receipt" className="space-y-5 text-xs sm:text-sm text-gray-800 flex-1">
-              <div className="text-center space-y-2">
-                <h2 className="text-lg sm:text-xl font-bold font-serif text-coffee-900">{t.receiptTitle}</h2>
-                <p className="text-gray-500 text-xs">{order.date}</p>
-                <p className="font-bold text-amber-800 text-xs inline-block bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">{t.orderId}: #{order.id}</p>
-              </div>
-
-              <div className="bg-amber-50/50 rounded-2xl p-4 border border-amber-200/50 space-y-1.5 text-xs">
-                <p><strong>收件人 / Người nhận:</strong> {order.customerName}</p>
-                <p><strong>電話 / Điện thoại:</strong> {order.phone}</p>
-                <p><strong>地址 / Địa chỉ:</strong> {order.address}</p>
-                {order.notes && <p><strong>備註 / Ghi chú:</strong> {order.notes}</p>}
-              </div>
-
-              <div className="space-y-3 pt-2">
-                <div className="font-bold border-b border-gray-200 pb-2 text-xs text-gray-500 flex justify-between uppercase tracking-wider">
-                  <span>品項 / Sản phẩm</span>
-                  <span>小計 / Thành tiền</span>
-                </div>
-                {order.items.map((prod, idx) => (
-                  <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-dashed border-gray-200/60">
-                    <div>
-                      <div className="font-bold text-gray-900">{prod.name} ({prod.spec})</div>
-                      <div className="text-[10px] text-gray-500 mt-0.5">{prod.grindLabel} × {prod.quantity}</div>
-                    </div>
-                    <div className="font-bold whitespace-nowrap text-gray-900">{(prod.unitPrice * prod.quantity).toLocaleString()} VND</div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="space-y-2 pt-3 border-t border-gray-200 text-xs bg-gray-50 p-4 rounded-2xl">
-                <div className="flex justify-between text-gray-600"><span>商品小計:</span><span>{order.subtotal.toLocaleString()} VND</span></div>
-                <div className="flex justify-between text-gray-600"><span>運費:</span><span>{order.shippingFee === 0 ? '免費 / Miễn phí' : `${order.shippingFee.toLocaleString()} VND`}</span></div>
-                <div className="flex justify-between font-bold text-sm sm:text-base text-coffee-900 pt-3 border-t border-gray-200">
-                  <span>總計金額:</span>
-                  <span className="text-amber-700">{order.grandTotal.toLocaleString()} VND</span>
-                </div>
-              </div>
-
-              <div className="text-center pt-4 text-[10px] text-gray-400 font-serif tracking-widest uppercase">
-                感謝您的選購！Xin cảm ơn quý khách! • PHOENIX CAFE
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-gray-100 mt-6 flex gap-3">
-              <button
-                onClick={handlePrint}
-                className="flex-1 bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-xs sm:text-sm transition-all"
-              >
-                <Icons.Printer className="h-4 w-4" /> {t.printReceipt}
-              </button>
-              <button
-                onClick={onClose}
-                className="px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-4 rounded-2xl text-xs sm:text-sm transition-colors"
-              >
-                {t.close}
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function PasswordPromptModal({ isOpen, title, desc, t, onClose, onSuccess }) {
-      const [password, setPassword] = useState('');
-      const [error, setError] = useState(false);
-
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        if (password === ADMIN_PASSWORD) {
-          setError(false);
-          setPassword('');
-          onSuccess();
-        } else {
-          setError(true);
-        }
-      };
-
-      if (!isOpen) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-          <div className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl border border-coffee-200 p-6 sm:p-8 space-y-5 z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2.5 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
-
-            <div className="text-center space-y-2">
-              <div className="w-14 h-14 bg-amber-100 text-amber-900 rounded-2xl flex items-center justify-center mx-auto mb-2 shadow-inner border border-amber-200">
-                <Icons.Lock className="h-6 w-6" />
-              </div>
-              <h3 className="text-lg font-bold font-serif text-coffee-900">{title}</h3>
-              <p className="text-xs text-coffee-600 leading-relaxed">{desc}</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="password"
-                placeholder={t.passwordPlaceholder}
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); setError(false); }}
-                autoFocus
-                className="w-full bg-gray-50 border border-coffee-200/80 rounded-2xl p-4 text-sm text-center font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner"
-              />
-
-              {error && (
-                <p className="text-xs text-red-600 text-center font-bold animate-shake">{t.passwordError}</p>
-              )}
-
-              <button
-                type="submit"
-                className="w-full bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-lg text-xs sm:text-sm transition-all"
-              >
-                {t.passwordSubmit}
-              </button>
-            </form>
-          </div>
-        </div>
-      );
-    }
-
-    function ProductDetailModal({ product, lang, t, onClose, onAddToCart }) {
-      const [quantity, setQuantity] = useState(1);
-      const [selectedGrind, setSelectedGrind] = useState(product.type === 'beans' ? 'beans' : product.type);
-
-      const isBeanProduct = product.type === 'beans';
-      const maxStock = product.stock;
-      const currentUnitPrice = product.price;
-      const productName = lang === 'zh-TW' ? product.nameZh : product.nameVi;
-      const productSubName = lang === 'zh-TW' ? product.nameVi : product.nameZh;
-      const specText = lang === 'zh-TW' ? product.specZh : product.specVi;
-
-      const handleAdd = () => {
-        const grindObj = t.grindOptions[selectedGrind] || t.grindOptions.beans;
-        onAddToCart({
-          ...product,
-          quantity,
-          name: productName,
-          spec: specText,
-          grind: selectedGrind,
-          grindLabel: grindObj.label
-        });
-        onClose();
-      };
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-coffee-200 p-6 sm:p-8 space-y-6 max-h-[92vh] overflow-y-auto z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
-
-            <div>
-              <span className="text-xs font-bold text-amber-800 bg-amber-100/70 px-3.5 py-1.5 rounded-full border border-amber-200 uppercase tracking-wider">{specText}</span>
-              <h2 className="text-xl sm:text-2xl font-bold font-serif text-coffee-900 mt-2.5">{productName}</h2>
-              <p className="text-xs text-coffee-600/80 italic mt-0.5">{productSubName}</p>
-            </div>
-
-            <div className="flex items-baseline justify-between bg-amber-50/60 p-4.5 rounded-2xl border border-amber-200/50">
-              <div className="flex items-baseline gap-2.5 flex-wrap">
-                <span className="text-xl sm:text-2xl font-black text-coffee-900">{currentUnitPrice.toLocaleString()} VND</span>
-              </div>
-            </div>
-
-            {/* 詳細規格與說明區塊 */}
-            {isBeanProduct ? (
-              <div className="bg-coffee-50 border border-coffee-200/60 rounded-2xl p-4.5 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-coffee-900 font-serif">
-                  <Icons.Coffee className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                  <span>{t.coffeeDetailTitle}</span>
-                </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• <strong className="font-semibold text-coffee-900">{t.origin}：</strong>{product.origin}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.altitude}：</strong>{product.altitude}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.process}：</strong>{product.process}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.grade}：</strong>{product.grade}</p>
-                  <p>• <strong className="font-semibold text-coffee-900">{t.flavor}：</strong>{product.flavor}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-amber-50/80 border border-amber-200/70 rounded-2xl p-4.5 space-y-2.5">
-                <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900 font-serif">
-                  <Icons.Package className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                  <span>{t.coldbrewDetailTitle}</span>
-                </div>
-                <div className="space-y-1.5 text-xs text-coffee-800 leading-relaxed">
-                  <p>• {t.coldbrewFeature1}</p>
-                  <p>• {t.coldbrewFeature2}</p>
-                  <p className="pt-1 text-amber-900 font-semibold">• <strong className="font-semibold">{t.flavor}：</strong>{product.flavor}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Product Safety & Food Information Section */}
-            <div className="bg-amber-50/40 border border-amber-200/60 rounded-2xl p-4.5 space-y-2">
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-amber-900">
-                <Icons.ShieldCheck className="h-4 w-4 text-amber-700 flex-shrink-0" />
-                <span>{t.safetyInfoTitle}</span>
-              </div>
-              <div className="space-y-1 text-xs text-coffee-800/90 leading-relaxed">
-                <p>• {t.safetyStorage}</p>
-                <p>• {t.safetyCert}</p>
-                <p>• {t.safetyUsage}</p>
-              </div>
-            </div>
-
-            {/* Grind Size Selection only for coffee beans */}
-            {isBeanProduct ? (
-              <div className="space-y-3">
-                <label className="text-xs font-bold uppercase text-coffee-800 flex items-center gap-2 tracking-wider"><Icons.Settings className="h-4 w-4 text-amber-700" /> {t.grindSize}</label>
-                <div className="grid grid-cols-2 gap-3">
-                  {['beans', 'phin', 'espresso', 'pour_over'].map(key => (
-                    <button
-                      key={key}
-                      onClick={() => setSelectedGrind(key)}
-                      className={`p-3.5 rounded-2xl text-left border transition-all ${
-                        selectedGrind === key 
-                          ? 'bg-coffee-900 text-white border-coffee-900 shadow-lg ring-2 ring-coffee-900/20' 
-                          : 'bg-white text-coffee-800 border-coffee-200 hover:bg-coffee-50'
-                      }`}
-                    >
-                      <div className="text-xs font-bold">{t.grindOptions[key].label}</div>
-                      <div className="text-[10px] opacity-75 mt-0.5">{t.grindOptions[key].detail}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="p-4 bg-coffee-50 rounded-2xl text-xs text-coffee-800 border border-coffee-200/60 font-medium leading-relaxed">
-                {t.coldbrewNotice}
-              </div>
-            )}
-
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-xs sm:text-sm font-bold text-coffee-900">{t.quantity}</span>
-              <div className="flex items-center rounded-2xl border border-coffee-300 bg-white p-1.5 shadow-sm">
-                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-2 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Minus className="h-4 w-4" /></button>
-                <span className="w-10 text-center text-sm font-bold">{quantity}</span>
-                <button onClick={() => setQuantity(q => Math.min(maxStock, q + 1))} className="p-2 hover:bg-coffee-100 rounded-xl transition-colors"><Icons.Plus className="h-4 w-4" /></button>
-              </div>
-            </div>
-
-            <button onClick={handleAdd} className="w-full bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-coffee-950/20 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
-              <Icons.ShoppingBag className="h-4 w-4" /> {t.addToCart} • {(currentUnitPrice * quantity).toLocaleString()} VND
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    function CartDrawer({ isOpen, onClose, cart, updateQuantity, onOpenCheckout, t }) {
-      const getUnitPrice = (item) => item.price;
-      const subtotal = cart.reduce((sum, item) => sum + getUnitPrice(item) * item.quantity, 0);
-      const isFreeShipping = subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || subtotal === 0;
-      const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
-      const grandTotal = subtotal + shippingFee;
-      const amountNeeded = Math.max(0, SHIPPING_CONFIG.FREE_THRESHOLD - subtotal);
-      const progress = Math.min(100, (subtotal / SHIPPING_CONFIG.FREE_THRESHOLD) * 100);
-
-      if (!isOpen) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 overflow-hidden">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="absolute inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-md bg-white text-coffee-900 shadow-2xl flex flex-col border-l border-coffee-200">
-              <div className="p-6 bg-coffee-900 text-coffee-100 flex items-center justify-between border-b border-coffee-800">
-                <h2 className="text-base sm:text-xl font-bold flex items-center gap-2.5 font-serif"><Icons.ShoppingBag className="h-5 w-5 text-amber-300" /> {t.cart}</h2>
-                <button onClick={onClose} className="p-2.5 hover:bg-coffee-800 rounded-full transition-colors text-coffee-200 hover:text-white"><Icons.X className="h-6 w-6" /></button>
-              </div>
-
-              <div className="bg-amber-50 p-4 border-b border-amber-200/60">
-                <div className="flex items-center justify-between text-xs font-bold text-amber-900 mb-2">
-                  <span className="flex items-center gap-1.5"><Icons.Truck className="h-4 w-4 text-amber-700" /> {t.freeShippingGoal}</span>
-                  <span className="text-amber-800">{isFreeShipping ? t.freeShippingReached : `${t.freeShippingShort}${amountNeeded.toLocaleString()} VND`}</span>
-                </div>
-                <div className="w-full bg-amber-200/60 rounded-full h-2.5 overflow-hidden shadow-inner">
-                  <div className="bg-amber-600 h-full transition-all duration-500 rounded-full" style={{ width: `${progress}%` }} />
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-                {cart.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-coffee-600 space-y-3">
-                    <div className="bg-coffee-100 p-5 rounded-full text-coffee-400 shadow-inner">
-                      <Icons.ShoppingBag className="h-8 w-8" />
-                    </div>
-                    <p className="text-sm font-semibold">{t.emptyCart}</p>
-                  </div>
-                ) : (
-                  cart.map(item => {
-                    const unitPrice = getUnitPrice(item);
-                    return (
-                      <div key={item.cartKey} className="p-4 bg-coffee-50/70 rounded-2xl shadow-sm border border-coffee-200/60 space-y-3">
-                        <div className="flex items-start gap-3.5">
-                          <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-2xl flex-shrink-0 shadow-sm border border-coffee-200/50" />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-bold text-coffee-900 text-xs sm:text-sm truncate">{item.name}</h4>
-                            <p className="text-[11px] text-coffee-600 truncate mt-0.5">{item.spec} | {item.grindLabel}</p>
-                            <div className="mt-1 flex items-center gap-2">
-                              <span className="text-xs font-bold text-coffee-800">{unitPrice.toLocaleString()} VND</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2.5 border-t border-coffee-200/40">
-                          <div className="flex items-center gap-2 bg-white rounded-xl border border-coffee-200 p-1 shadow-sm">
-                            <button onClick={() => updateQuantity(item.cartKey, -1)} className="p-1.5 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Minus className="h-3.5 w-3.5" /></button>
-                            <span className="text-xs font-bold w-6 text-center">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.cartKey, 1)} className="p-1.5 hover:bg-coffee-100 rounded-lg transition-colors"><Icons.Plus className="h-3.5 w-3.5" /></button>
-                          </div>
-                          <div className="text-right font-bold text-xs text-coffee-900">{(unitPrice * item.quantity).toLocaleString()} VND</div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              {cart.length > 0 && (
-                <div className="p-6 bg-coffee-50 border-t border-coffee-200 space-y-4">
-                  <div className="space-y-1.5 text-xs sm:text-sm text-coffee-700">
-                    <div className="flex justify-between"><span>{t.subtotal}</span><span>{subtotal.toLocaleString()} VND</span></div>
-                    <div className="flex justify-between"><span>{t.shippingFee}</span><span>{isFreeShipping ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
-                    <div className="flex justify-between font-bold text-base text-coffee-900 pt-3 border-t border-coffee-200">
-                      <span>{t.total}</span><span className="text-lg text-amber-700">{grandTotal.toLocaleString()} VND</span>
-                    </div>
-                  </div>
-
-                  <button onClick={onOpenCheckout} className="w-full bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-coffee-950/20 flex items-center justify-center gap-2 text-xs sm:text-sm transition-all">
-                    <Icons.Send className="h-4 w-4" /> {t.checkout}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function CheckoutModal({ isOpen, onClose, cart, clearCart, products, deductStock, t, lang, onOpenReceipt }) {
-      const [formData, setFormData] = useState({ fullName: '', phone: '', address: '', notes: '' });
-      const [isSubmitting, setIsSubmitting] = useState(false);
-      const [isSuccess, setIsSuccess] = useState(false);
-      const [lastCreatedOrder, setLastCreatedOrder] = useState(null);
-
-      const getUnitPrice = (item) => item.price;
-      const subtotal = cart.reduce((sum, item) => sum + getUnitPrice(item) * item.quantity, 0);
-      const isFreeShipping = subtotal >= SHIPPING_CONFIG.FREE_THRESHOLD || subtotal === 0;
-      const shippingFee = isFreeShipping ? 0 : SHIPPING_CONFIG.FLAT_RATE;
-      const grandTotal = subtotal + shippingFee;
-
-      const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-      const handleSubmitOrder = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        const orderId = Date.now().toString().slice(-6);
-        const orderDate = new Date().toLocaleString();
-
-        const itemsSummary = cart.map(item => 
-          `- ${item.name} (${item.spec}) [${item.grindLabel}] x ${item.quantity} ＝ ${(getUnitPrice(item) * item.quantity).toLocaleString()} VND`
-        ).join('\n');
-
-        const orderRecord = {
-          id: orderId,
-          date: orderDate,
-          customerName: formData.fullName,
-          phone: formData.phone,
-          address: formData.address,
-          notes: formData.notes,
-          items: cart.map(item => ({
-            name: item.name,
-            spec: item.spec,
-            grindLabel: item.grindLabel,
-            quantity: item.quantity,
-            unitPrice: getUnitPrice(item)
-          })),
-          subtotal,
-          shippingFee,
-          grandTotal
+<body class="bg-coffee-50 text-stone-800 antialiased selection:bg-amber-700 selection:text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- 翻譯字典 (Multi-language Dictionary) ---
+        const translations = {
+            vi: {
+                brandName: "Phoenix Coffee",
+                brandSub: "Cà phê thủ công cao cấp",
+                navHome: "Trang chủ",
+                navMenu: "Sản phẩm",
+                navStory: "Câu chuyện",
+                navOrders: "Đơn hàng",
+                cart: "Giỏ hàng",
+                heroTitle: "Hương vị cà phê nguyên bản từ cao nguyên",
+                heroSub: "Trải nghiệm từng hạt cà phê tuyển chọn kỹ lưỡng, rang mộc thủ công mang lại tách cà phê đậm đà khó quên.",
+                exploreMenu: "Khám phá thực đơn",
+                ourProducts: "Bộ sưu tập sản phẩm",
+                all: "Tất cả",
+                beans: "Hạt cà phê",
+                drip: "Phin / Drip",
+                coldbrew: "Cold Brew",
+                addToCart: "Thêm vào giỏ",
+                cartTitle: "Giỏ hàng của bạn",
+                emptyCart: "Giỏ hàng đang trống",
+                total: "Tổng cộng",
+                checkout: "Thanh toán ngay",
+                clearCart: "Xóa giỏ hàng",
+                checkoutTitle: "Thông tin giao hàng",
+                fullName: "Họ và tên",
+                phone: "Số điện thoại",
+                address: "Địa chỉ nhận hàng",
+                note: "Ghi chú đơn hàng",
+                submitOrder: "Xác nhận đặt hàng",
+                orderSuccess: "Đặt hàng thành công!",
+                orderSuccessSub: "Cảm ơn bạn đã ủng hộ Phoenix Coffee. Đơn hàng của bạn đã được ghi nhận.",
+                close: "Đóng",
+                historyTitle: "Lịch sử đơn hàng của bạn",
+                noHistory: "Chưa có lịch sử đơn hàng nào.",
+                orderCode: "Mã đơn",
+                status: "Trạng thái",
+                printReceipt: "In hóa đơn",
+                shippingFree: "Miễn phí vận chuyển cho đơn trên 500.000 ₫",
+                shippingFee: "Phí vận chuyển",
+                discount: "Giảm giá",
+                promoCode: "Mã giảm giá (ví dụ: PHOENIX99)",
+                applyPromo: "Áp dụng",
+                promoApplied: "Đã áp dụng mã giảm giá thành công (-10%)!",
+                promoInvalid: "Mã giảm giá không hợp lệ.",
+                statusPreparing: "Đang chuẩn bị",
+                statusShipping: "Đang giao hàng",
+                statusCompleted: "Hoàn thành",
+                quickChatZalo: "Chat qua Zalo",
+                quickChatMessenger: "Chat qua Messenger"
+            },
+            en: {
+                brandName: "Phoenix Coffee",
+                brandSub: "Artisanal Specialty Coffee",
+                navHome: "Home",
+                navMenu: "Menu",
+                navStory: "Our Story",
+                navOrders: "Orders",
+                cart: "Cart",
+                heroTitle: "Authentic Highlands Coffee Experience",
+                heroSub: "Hand-selected beans, expertly roasted to bring you an unforgettable cup of specialty coffee.",
+                exploreMenu: "Explore Menu",
+                ourProducts: "Our Product Collection",
+                all: "All",
+                beans: "Coffee Beans",
+                drip: "Drip Bags",
+                coldbrew: "Cold Brew",
+                addToCart: "Add to Cart",
+                cartTitle: "Your Shopping Cart",
+                emptyCart: "Your cart is empty",
+                total: "Total",
+                checkout: "Proceed to Checkout",
+                clearCart: "Clear Cart",
+                checkoutTitle: "Shipping Information",
+                fullName: "Full Name",
+                phone: "Phone Number",
+                address: "Delivery Address",
+                note: "Order Notes",
+                submitOrder: "Confirm Order",
+                orderSuccess: "Order Placed Successfully!",
+                orderSuccessSub: "Thank you for choosing Phoenix Coffee. Your order has been recorded.",
+                close: "Close",
+                historyTitle: "Your Order History",
+                noHistory: "No order history found.",
+                orderCode: "Order ID",
+                status: "Status",
+                printReceipt: "Print Receipt",
+                shippingFree: "Free shipping on orders over 500,000 ₫",
+                shippingFee: "Shipping Fee",
+                discount: "Discount",
+                promoCode: "Promo Code (e.g., PHOENIX99)",
+                applyPromo: "Apply",
+                promoApplied: "Promo code applied successfully (-10%)!",
+                promoInvalid: "Invalid promo code.",
+                statusPreparing: "Preparing",
+                statusShipping: "Shipping",
+                statusCompleted: "Completed",
+                quickChatZalo: "Chat via Zalo",
+                quickChatMessenger: "Chat via Messenger"
+            },
+            zh: {
+                brandName: "Phoenix Coffee",
+                brandSub: "精品手作咖啡館",
+                navHome: "首頁",
+                navMenu: "精選商品",
+                navStory: "品牌故事",
+                navOrders: "訂單查詢",
+                cart: "購物車",
+                heroTitle: "來自高原的純正咖啡風味",
+                heroSub: "精心挑選每一粒咖啡豆，手工烘焙為您呈現難忘的精品好咖啡。",
+                exploreMenu: "探索菜單",
+                ourProducts: "商品系列",
+                all: "全部",
+                beans: "咖啡豆",
+                drip: "濾掛咖啡",
+                coldbrew: "冷萃咖啡",
+                addToCart: "加入購物車",
+                cartTitle: "您的購物車",
+                emptyCart: "購物車是空的",
+                total: "總計",
+                checkout: "前往結帳",
+                clearCart: "清空購物車",
+                checkoutTitle: "收件資訊",
+                fullName: "真實姓名",
+                phone: "聯絡電話",
+                address: "收件地址",
+                note: "訂單備註",
+                submitOrder: "確認送出訂單",
+                orderSuccess: "訂單建立成功！",
+                orderSuccessSub: "感謝您支持 Phoenix Coffee，您的訂單已成功記錄。",
+                close: "關閉",
+                historyTitle: "您的歷史訂單",
+                noHistory: "目前沒有歷史訂單紀錄。",
+                orderCode: "訂單編號",
+                status: "狀態",
+                printReceipt: "列印收據",
+                shippingFree: "訂單滿 500,000 ₫ 免運費",
+                shippingFee: "運費",
+                discount: "折扣",
+                promoCode: "優惠代碼 (例如: PHOENIX99)",
+                applyPromo: "套用",
+                promoApplied: "優惠代碼已成功套用 (-10%)！",
+                promoInvalid: "無效的優惠代碼。",
+                statusPreparing: "備貨中",
+                statusShipping: "配送中",
+                statusCompleted: "已完成",
+                quickChatZalo: "透過 Zalo 諮詢",
+                quickChatMessenger: "透過 Messenger 諮詢"
+            }
         };
 
-        try {
-          const scriptURL = 'https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec';
-          
-          await fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderId,
-              orderDate,
-              fullName: formData.fullName,
-              phone: formData.phone,
-              address: formData.address,
-              notes: formData.notes || '無',
-              orderItems: itemsSummary,
-              subtotal,
-              shippingFee,
-              grandTotal,
-              restockNotice: '庫存顯示已關閉'
-            })
-          });
+        // --- 產品資料 ---
+        const productsData = [
+            {
+                id: 1,
+                category: "beans",
+                nameVi: "Cà phê Robusta Honey Đăk Lăk",
+                nameEn: "Dak Lak Honey Robusta",
+                nameZh: "多樂省蜜處理羅布斯塔",
+                descVi: "Hương vị đậm đà, hậu vị ngọt caramen tự nhiên, ít chua, phù hợp pha phin truyền thống.",
+                descEn: "Bold body with natural caramel sweetness, low acidity, perfect for traditional filter.",
+                descZh: "口感濃郁，帶有天然焦糖甜香，酸度低，適合傳統滴漏或義式咖啡。",
+                price: 180000,
+                unit: "250g",
+                image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                category: "beans",
+                nameVi: "Arabica Cầu Đất Đặc Biệt",
+                nameEn: "Cau Dat Specialty Arabica",
+                nameZh: "越南大叻梂茶精品阿拉比卡",
+                descVi: "Hương thơm hoa quả, vị chua thanh nhẹ, hậu vị ngọt sâu lắng trồng ở độ cao 1.650m.",
+                descEn: "Floral notes, bright citrus acidity, deep sweet finish grown at 1,650m altitude.",
+                descZh: "帶有花香與明亮果酸，餘韻甘甜持久，海拔1650米嚴選栽種。",
+                price: 250000,
+                unit: "250g",
+                image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                category: "drip",
+                nameVi: "Hộp Quà Cà Phê Phin Giấy Tiện Lợi",
+                nameEn: "Drip Bag Coffee Gift Box",
+                nameZh: "隨身濾掛咖啡禮盒",
+                descVi: "Hộp 10 gói tiện lợi mang theo du lịch, văn phòng, giữ nguyên hương vị rang tươi mới.",
+                descEn: "Box of 10 convenient drip bags for travel or office, preserving freshly roasted flavor.",
+                descZh: "內含10包隨身濾掛包，方便攜帶至辦公室或旅行，完整保留新鮮烘焙風味。",
+                price: 150000,
+                unit: "10 gói / box",
+                image: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                category: "coldbrew",
+                nameVi: "Cold Brew Đậm Đà Ủ Lạnh 24h",
+                nameEn: "24-Hour Steeped Cold Brew",
+                nameZh: "24小時低溫慢萃冷萃咖啡",
+                descVi: "Ủ lạnh thủ công trong 24 giờ, giảm vị đắng gắt, mượt mà và thơm mát sảng khoái.",
+                descEn: "Craft-steeped for 24 hours, smooth, low bitterness, refreshingly crisp.",
+                descZh: "手工低溫慢萃24小時，降低苦澀感，口感絲滑清涼消暑。",
+                price: 65000,
+                unit: "Chai 300ml",
+                image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
 
-          deductStock(cart);
-          const history = JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
-          localStorage.setItem(ORDER_HISTORY_STORAGE_KEY, JSON.stringify([orderRecord, ...history]));
+        function App() {
+            const [lang, setLang] = useState('vi');
+            const [activeTab, setActiveTab] = useState('home');
+            const [selectedCategory, setSelectedCategory] = useState('all');
+            const [cart, setCart] = useState([]);
+            const [isCartOpen, setIsCartOpen] = useState(false);
+            const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+            const [orders, setOrders] = useState([]);
+            const [successModal, setSuccessModal] = useState(null);
+            const [receiptModal, setReceiptModal] = useState(null);
 
-          setLastCreatedOrder(orderRecord);
-          setIsSubmitting(false);
-          setIsSuccess(true);
-          clearCart();
+            // 優惠代碼相關狀態
+            const [promoCodeInput, setPromoCodeInput] = useState('');
+            const [appliedDiscount, setAppliedDiscount] = useState(0); // 0.1 表示 9折
+            const [promoMessage, setPromoMessage] = useState('');
 
-        } catch (error) {
-          console.error('送出訂單失敗:', error);
-          alert('發送失敗，請稍後再試。');
-          setIsSubmitting(false);
+            // 結表單與 localStorage 記憶狀態
+            const [formData, setFormData] = useState({
+                name: '',
+                phone: '',
+                address: '',
+                note: ''
+            });
+
+            // 懸浮客服選單狀態
+            const [isChatMenuOpen, setIsChatMenuOpen] = useState(false);
+
+            t = translations[lang];
+
+            // 載入 localStorage 歷史訂單與上次填寫的表單
+            useEffect(() => {
+                const savedOrders = localStorage.getItem('phoenix_orders');
+                if (savedOrders) {
+                    try { setOrders(JSON.parse(savedOrders)); } catch(e) {}
+                }
+                const savedForm = localStorage.getItem('phoenix_user_form');
+                if (savedForm) {
+                    try { setFormData(JSON.parse(savedForm)); } catch(e) {}
+                }
+            }, []);
+
+            // 儲存表單至 localStorage
+            const handleFormChange = (e) => {
+                const updated = { ...formData, [e.target.name]: e.target.value };
+                setFormData(updated);
+                localStorage.setItem('phoenix_user_form', JSON.stringify(updated));
+            };
+
+            // 購物車操作
+            const addToCart = (product) => {
+                setCart(prev => {
+                    const existing = prev.find(item => item.id === product.id);
+                    if (existing) {
+                        return prev.map(item => item.id === product.id ? { ...item, qty: item.qty + 1 } : item);
+                    }
+                    return [...prev, { ...product, qty: 1 }];
+                });
+                setIsCartOpen(true);
+            };
+
+            const updateQty = (id, delta) => {
+                setCart(prev => prev.map(item => {
+                    if (item.id === id) {
+                        const newQty = item.qty + delta;
+                        return newQty > 0 ? { ...item, qty: newQty } : null;
+                    }
+                    return item;
+                }).filter(Boolean));
+            };
+
+            const cartTotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const shippingFee = cartTotal >= 500000 || cartTotal === 0 ? 0 : 30000;
+            const discountAmount = cartTotal * appliedDiscount;
+            const finalTotal = cartTotal + shippingFee - discountAmount;
+
+            // 優惠代碼套用
+            const handleApplyPromo = () => {
+                if (promoCodeInput.trim().toUpperCase() === 'PHOENIX99') {
+                    setAppliedDiscount(0.1);
+                    setPromoMessage(t.promoApplied);
+                } else {
+                    setAppliedDiscount(0);
+                    setPromoMessage(t.promoInvalid);
+                }
+            };
+
+            // 送出訂單與 Google Sheets 串接模擬
+            const handleCheckoutSubmit = (e) => {
+                e.preventDefault();
+                if (cart.length === 0) return;
+
+                const newOrder = {
+                    id: 'PX-' + Math.floor(100000 + Math.random() * 900000),
+                    date: new Date().toLocaleString('vi-VN'),
+                    items: [...cart],
+                    total: finalTotal,
+                    shippingFee,
+                    discount: discountAmount,
+                    customer: { ...formData },
+                    status: 'statusPreparing' // 初始狀態：備貨中
+                };
+
+                const updatedOrders = [newOrder, ...orders];
+                setOrders(updatedOrders);
+                localStorage.setItem('phoenix_orders', JSON.stringify(updatedOrders));
+
+                // Google Sheets Web App 串接模擬 (如果未來填入真實 Endpoint 可直接運作)
+                const googleSheetUrl = ""; // 填入 Google Apps Script URL
+                if (googleSheetUrl) {
+                    fetch(googleSheetUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newOrder)
+                    }).catch(err => console.log('Sheet sync note:', err));
+                }
+
+                setSuccessModal(newOrder);
+                setCart([]);
+                setIsCheckoutOpen(false);
+                setIsCartOpen(false);
+            };
+
+            // 列印收據功能
+            const handlePrintReceipt = (order) => {
+                setReceiptModal(order);
+                setTimeout(() => {
+                    window.print();
+                }, 300);
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col bg-coffee-50">
+                    {}
+                    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                            <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('home')}>
+                                <div className="w-11 h-11 bg-amber-800 text-white rounded-full flex items-center justify-center font-serif text-2xl font-bold shadow-md">
+                                    P
+                                </div>
+                                <div>
+                                    <h1 className="font-serif text-xl font-bold text-amber-950 tracking-wide">{t.brandName}</h1>
+                                    <p className="text-xs text-amber-800 tracking-wider font-medium">{t.brandSub}</p>
+                                </div>
+                            </div>
+
+                            <nav className="hidden md:flex items-center space-x-8">
+                                <button onClick={() => setActiveTab('home')} className={`font-medium transition-colors ${activeTab === 'home' ? 'text-amber-800 font-semibold' : 'text-stone-600 hover:text-amber-800'}`}>{t.navHome}</button>
+                                <button onClick={() => setActiveTab('menu')} className={`font-medium transition-colors ${activeTab === 'menu' ? 'text-amber-800 font-semibold' : 'text-stone-600 hover:text-amber-800'}`}>{t.navMenu}</button>
+                                <button onClick={() => setActiveTab('story')} className={`font-medium transition-colors ${activeTab === 'story' ? 'text-amber-800 font-semibold' : 'text-stone-600 hover:text-amber-800'}`}>{t.navStory}</button>
+                                <button onClick={() => setActiveTab('orders')} className={`font-medium transition-colors relative ${activeTab === 'orders' ? 'text-amber-800 font-semibold' : 'text-stone-600 hover:text-amber-800'}`}>
+                                    {t.navOrders}
+                                    {orders.length > 0 && <span className="absolute -top-2 -right-4 bg-amber-700 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">{orders.length}</span>}
+                                </button>
+                            </nav>
+
+                            <div className="flex items-center space-x-4">
+                                {/* Language Switcher */}
+                                <div className="flex bg-stone-100 p-1 rounded-full text-xs font-semibold border border-stone-200">
+                                    <button onClick={() => setLang('vi')} className={`px-2.5 py-1 rounded-full transition-all ${lang === 'vi' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>VI</button>
+                                    <button onClick={() => setLang('en')} className={`px-2.5 py-1 rounded-full transition-all ${lang === 'en' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>EN</button>
+                                    <button onClick={() => setLang('zh')} className={`px-2.5 py-1 rounded-full transition-all ${lang === 'zh' ? 'bg-amber-800 text-white shadow-sm' : 'text-stone-600'}`}>中</button>
+                                </div>
+
+                                {/* Cart Button */}
+                                <button onClick={() => setIsCartOpen(true)} className="relative p-2.5 bg-amber-100 text-amber-900 rounded-full hover:bg-amber-200 transition-colors shadow-sm">
+                                    <i className="fa-solid fa-shopping-bag text-lg"></i>
+                                    {cart.length > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-amber-700 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold animate-pulse">
+                                            {cart.reduce((sum, item) => sum + item.qty, 0)}
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    {}
+                    <main className="flex-grow">
+                        {activeTab === 'home' && (
+                            <div>
+                                {/* Hero Section */}
+                                <section className="relative bg-amber-950 text-white py-24 lg:py-32 overflow-hidden">
+                                    <div className="absolute inset-0 opacity-35 bg-cover bg-center" style={{ backgroundImage: `url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1920&q=80')` }}></div>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-amber-950 via-amber-950/80 to-transparent"></div>
+                                    <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-start">
+                                        <span className="bg-amber-700/80 text-amber-100 text-xs font-semibold px-3 py-1 rounded-full mb-4 uppercase tracking-widest backdrop-blur-sm">Artisanal Roast</span>
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold max-w-2xl leading-tight mb-6">{t.heroTitle}</h2>
+                                        <p className="text-stone-300 text-lg max-w-xl mb-8 leading-relaxed font-light">{t.heroSub}</p>
+                                        <button onClick={() => setActiveTab('menu')} className="bg-amber-700 hover:bg-amber-600 text-white px-8 py-4 rounded-xl font-semibold shadow-xl transition-all flex items-center space-x-3 group">
+                                            <span>{t.exploreMenu}</span>
+                                            <i className="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                        </button>
+                                    </div>
+                                </section>
+
+                                {/* Featured Products Section */}
+                                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                                    <div className="text-center mb-12">
+                                        <h3 className="font-serif text-3xl font-bold text-amber-950 mb-3">{t.ourProducts}</h3>
+                                        <div className="w-20 h-1 bg-amber-700 mx-auto rounded-full"></div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                        {productsData.map(product => (
+                                            <div key={product.id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-stone-200 flex flex-col hover:shadow-xl transition-all group">
+                                                <div className="relative h-60 overflow-hidden bg-stone-100">
+                                                    <img src={product.image} alt={product.nameVi} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e)=>{e.target.src='https://placehold.co/600x400/f2e8e5/78350f?text=Phoenix+Coffee'}} />
+                                                    <span className="absolute top-3 left-3 bg-amber-900/80 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{product.unit}</span>
+                                                </div>
+                                                <div className="p-6 flex flex-col flex-grow">
+                                                    <h4 className="font-serif font-bold text-lg text-amber-950 mb-2 line-clamp-1">{lang === 'vi' ? product.nameVi : lang === 'en' ? product.nameEn : product.nameZh}</h4>
+                                                    <p className="text-stone-600 text-sm mb-4 line-clamp-2 flex-grow">{lang === 'vi' ? product.descVi : lang === 'en' ? product.descEn : product.descZh}</p>
+                                                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-stone-100">
+                                                        <span className="text-amber-800 font-bold text-lg">{product.price.toLocaleString('vi-VN')} ₫</span>
+                                                        <button onClick={() => addToCart(product)} className="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                                                            <i className="fa-solid fa-cart-plus"></i>
+                                                            <span>{t.addToCart}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </section>
+                            </div>
+                        )}
+
+                        {activeTab === 'menu' && (
+                            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                                <div className="text-center mb-10">
+                                    <h3 className="font-serif text-3xl font-bold text-amber-950 mb-3">{t.navMenu}</h3>
+                                    <div className="w-20 h-1 bg-amber-700 mx-auto rounded-full mb-8"></div>
+                                    {/* Category Filter */}
+                                    <div className="flex flex-wrap justify-center gap-3">
+                                        {['all', 'beans', 'drip', 'coldbrew'].map(cat => (
+                                            <button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-5 py-2.5 rounded-xl font-medium text-sm transition-all shadow-sm ${selectedCategory === cat ? 'bg-amber-800 text-white' : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'}`}>
+                                                {cat === 'all' ? t.all : cat === 'beans' ? t.beans : cat === 'drip' ? t.drip : t.coldbrew}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                                    {productsData.filter(p => selectedCategory === 'all' || p.category === selectedCategory).map(product => (
+                                        <div key={product.id} className="bg-white rounded-2xl shadow-md overflow-hidden border border-stone-200 flex flex-col hover:shadow-xl transition-all group">
+                                            <div className="relative h-60 overflow-hidden bg-stone-100">
+                                                <img src={product.image} alt={product.nameVi} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e)=>{e.target.src='https://placehold.co/600x400/f2e8e5/78350f?text=Phoenix+Coffee'}} />
+                                                <span className="absolute top-3 left-3 bg-amber-900/80 text-white text-xs px-2.5 py-1 rounded-full backdrop-blur-sm">{product.unit}</span>
+                                            </div>
+                                            <div className="p-6 flex flex-col flex-grow">
+                                                <h4 className="font-serif font-bold text-lg text-amber-950 mb-2 line-clamp-1">{lang === 'vi' ? product.nameVi : lang === 'en' ? product.nameEn : product.nameZh}</h4>
+                                                <p className="text-stone-600 text-sm mb-4 line-clamp-2 flex-grow">{lang === 'vi' ? product.descVi : lang === 'en' ? product.descEn : product.descZh}</p>
+                                                <div className="flex items-center justify-between mt-auto pt-4 border-t border-stone-100">
+                                                    <span className="text-amber-800 font-bold text-lg">{product.price.toLocaleString('vi-VN')} ₫</span>
+                                                    <button onClick={() => addToCart(product)} className="bg-amber-800 hover:bg-amber-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                                                        <i className="fa-solid fa-cart-plus"></i>
+                                                        <span>{t.addToCart}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+                        {activeTab === 'story' && (
+                            <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                                <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-stone-200">
+                                    <div className="text-center mb-10">
+                                        <h3 className="font-serif text-3xl font-bold text-amber-950 mb-3">{t.navStory}</h3>
+                                        <div className="w-20 h-1 bg-amber-700 mx-auto rounded-full"></div>
+                                    </div>
+                                    <div className="space-y-6 text-stone-700 leading-relaxed text-lg">
+                                        <p>Được thành lập với niềm đam mê bất tận dành cho hạt cà phê cao nguyên Việt Nam, <strong>Phoenix Coffee</strong> ra đời nhằm kết nối những nông trại cà phê đặc sản (Specialty Coffee) trứ danh tại Cầu Đất, Đăk Lăk trực tiếp đến tay người yêu cà phê.</p>
+                                        <p>Chúng tôi tuân thủ quy trình rang mộc thủ công (Artisanal Roasting), kiểm soát nghiêm ngặt từng mẻ rang để giữ lại trọn vẹn hương vị hoa quả, nốt hương sô-côla và vị ngọt hậu tự nhiên nguyên bản nhất.</p>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6">
+                                            <div className="bg-amber-50 p-6 rounded-2xl text-center border border-amber-100">
+                                                <i className="fa-solid fa-seedling text-3xl text-amber-800 mb-3"></i>
+                                                <h5 className="font-bold text-amber-950 mb-1">100% Hạt tuyển chọn</h5>
+                                                <p className="text-sm text-stone-600">Thu hái thủ công chín mọng</p>
+                                            </div>
+                                            <div className="bg-amber-50 p-6 rounded-2xl text-center border border-amber-100">
+                                                <i className="fa-solid fa-fire-burner text-3xl text-amber-800 mb-3"></i>
+                                                <h5 className="font-bold text-amber-950 mb-1">Rang mộc chuẩn vị</h5>
+                                                <p className="text-sm text-stone-600">Không tẩm ướp hương liệu</p>
+                                            </div>
+                                            <div className="bg-amber-50 p-6 rounded-2xl text-center border border-amber-100">
+                                                <i className="fa-solid fa-heart text-3xl text-amber-800 mb-3"></i>
+                                                <h5 className="font-bold text-amber-950 mb-1">Phục vụ tận tâm</h5>
+                                                <p className="text-sm text-stone-600">Giao hàng tươi mới mỗi ngày</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        )}
+
+                        {activeTab === 'orders' && (
+                            <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                                <div className="text-center mb-12">
+                                    <h3 className="font-serif text-3xl font-bold text-amber-950 mb-3">{t.historyTitle}</h3>
+                                    <div className="w-20 h-1 bg-amber-700 mx-auto rounded-full"></div>
+                                </div>
+
+                                {orders.length === 0 ? (
+                                    <div className="bg-white rounded-2xl p-12 text-center shadow-md border border-stone-200">
+                                        <i className="fa-solid fa-receipt text-5xl text-stone-300 mb-4"></i>
+                                        <p className="text-stone-500 text-lg">{t.noHistory}</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-6">
+                                        {orders.map(order => (
+                                            <div key={order.id} className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-stone-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center space-x-3">
+                                                        <span className="font-bold text-amber-950 text-lg">{order.id}</span>
+                                                        <span className="text-xs bg-amber-100 text-amber-900 px-3 py-1 rounded-full font-medium">{order.date}</span>
+                                                        {/* 動態物流狀態標籤 */}
+                                                        <span className="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-semibold flex items-center space-x-1">
+                                                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                                            <span>{t[order.status] || t.statusPreparing}</span>
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-sm text-stone-600"><span className="font-medium text-stone-800">Khách hàng:</span> {order.customer.name} ({order.customer.phone})</p>
+                                                    <p className="text-sm text-stone-600"><span className="font-medium text-stone-800">Địa chỉ:</span> {order.customer.address}</p>
+                                                    <div className="pt-2 flex flex-wrap gap-2">
+                                                        {order.items.map((item, idx) => (
+                                                            <span key={idx} className="text-xs bg-stone-100 text-stone-700 px-2.5 py-1 rounded-lg border border-stone-200">
+                                                                {lang === 'vi' ? item.nameVi : item.nameEn} x {item.qty}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-col items-end gap-3 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 border-stone-100">
+                                                    <span className="text-xl font-bold text-amber-900">{order.total.toLocaleString('vi-VN')} ₫</span>
+                                                    <button onClick={() => handlePrintReceipt(order)} className="bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+                                                        <i className="fa-solid fa-print"></i>
+                                                        <span>{t.printReceipt}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </section>
+                        )}
+                    </main>
+
+                    {}
+                    {/* Cart Slide-over Drawer */}
+                    {isCartOpen && (
+                        <div className="fixed inset-0 z-50 overflow-hidden">
+                            <div className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm transition-opacity" onClick={() => setIsCartOpen(false)}></div>
+                            <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
+                                <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+                                    <div className="p-6 bg-amber-950 text-white flex items-center justify-between">
+                                        <h3 className="font-serif font-bold text-xl flex items-center space-x-2">
+                                            <i className="fa-solid fa-shopping-cart"></i>
+                                            <span>{t.cartTitle}</span>
+                                        </h3>
+                                        <button onClick={() => setIsCartOpen(false)} className="text-stone-300 hover:text-white p-2">
+                                            <i className="fa-solid fa-xmark text-xl"></i>
+                                        </button>
+                                    </div>
+
+                                    <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                        {cart.length === 0 ? (
+                                            <div className="text-center py-20 text-stone-500">
+                                                <i className="fa-solid fa-basket-shopping text-5xl mb-4 text-stone-300"></i>
+                                                <p>{t.emptyCart}</p>
+                                            </div>
+                                        ) : (
+                                            cart.map(item => (
+                                                <div key={item.id} className="flex items-center justify-between bg-stone-50 p-4 rounded-2xl border border-stone-200">
+                                                    <div className="flex items-center space-x-4">
+                                                        <img src={item.image} alt={item.nameVi} className="w-16 h-16 object-cover rounded-xl border border-stone-200" />
+                                                        <div>
+                                                            <h5 className="font-bold text-amber-950 text-sm line-clamp-1">{lang === 'vi' ? item.nameVi : item.nameEn}</h5>
+                                                            <p className="text-amber-800 font-semibold text-sm">{item.price.toLocaleString('vi-VN')} ₫</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center space-x-3 bg-white px-3 py-1.5 rounded-xl border border-stone-200 shadow-sm">
+                                                        <button onClick={() => updateQty(item.id, -1)} className="text-stone-600 hover:text-amber-800"><i className="fa-solid fa-minus text-xs"></i></button>
+                                                        <span className="font-bold text-sm w-4 text-center">{item.qty}</span>
+                                                        <button onClick={() => updateQty(item.id, 1)} className="text-stone-600 hover:text-amber-800"><i className="fa-solid fa-plus text-xs"></i></button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+
+                                    {cart.length > 0 && (
+                                        <div className="p-6 bg-stone-50 border-t border-stone-200 space-y-4">
+                                            {/* Promo Code Input */}
+                                            <div className="flex space-x-2">
+                                                <input 
+                                                    type="text" 
+                                                    placeholder={t.promoCode} 
+                                                    value={promoCodeInput}
+                                                    onChange={(e) => setPromoCodeInput(e.target.value)}
+                                                    className="flex-1 px-4 py-2 bg-white border border-stone-300 rounded-xl text-sm focus:outline-none focus:border-amber-700"
+                                                />
+                                                <button onClick={handleApplyPromo} className="bg-stone-800 hover:bg-stone-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
+                                                    {t.applyPromo}
+                                                </button>
+                                            </div>
+                                            {promoMessage && <p className={`text-xs ${appliedDiscount > 0 ? 'text-emerald-600 font-semibold' : 'text-rose-600'}`}>{promoMessage}</p>}
+
+                                            <div className="space-y-2 text-sm text-stone-600">
+                                                <div className="flex justify-between">
+                                                    <span>Tạm tính</span>
+                                                    <span>{cartTotal.toLocaleString('vi-VN')} ₫</span>
+                                                </div>
+                                                {appliedDiscount > 0 && (
+                                                    <div className="flex justify-between text-emerald-600 font-medium">
+                                                        <span>Giảm giá (10%)</span>
+                                                        <span>-{discountAmount.toLocaleString('vi-VN')} ₫</span>
+                                                    </div>
+                                                )}
+                                                <div className="flex justify-between">
+                                                    <span>{t.shippingFee}</span>
+                                                    <span>{shippingFee === 0 ? 'Miễn phí' : shippingFee.toLocaleString('vi-VN') + ' ₫'}</span>
+                                                </div>
+                                                <div className="flex justify-between text-lg font-bold text-amber-950 pt-2 border-t border-stone-200">
+                                                    <span>{t.total}</span>
+                                                    <span className="text-amber-800">{finalTotal.toLocaleString('vi-VN')} ₫</span>
+                                                </div>
+                                            </div>
+                                            <p className="text-xs text-stone-500 text-center">{t.shippingFree}</p>
+                                            <button onClick={() => { setIsCartOpen(false); setIsCheckoutOpen(true); }} className="w-full bg-amber-800 hover:bg-amber-900 text-white py-3.5 rounded-xl font-semibold shadow-lg transition-all text-center">
+                                                {t.checkout}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Checkout Modal with localStorage Auto-fill */}
+                    {isCheckoutOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50 backdrop-blur-sm">
+                            <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-stone-200 max-h-[90vh] overflow-y-auto">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="font-serif font-bold text-2xl text-amber-950">{t.checkoutTitle}</h3>
+                                    <button onClick={() => setIsCheckoutOpen(false)} className="text-stone-400 hover:text-stone-700 p-2">
+                                        <i className="fa-solid fa-xmark text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleCheckoutSubmit} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-1">{t.fullName} *</label>
+                                        <input type="text" name="name" required value={formData.name} onChange={handleFormChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl focus:outline-none focus:border-amber-700 font-medium" placeholder="Nguyen Van A" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-1">{t.phone} *</label>
+                                        <input type="tel" name="phone" required value={formData.phone} onChange={handleFormChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl focus:outline-none focus:border-amber-700 font-medium" placeholder="0901234567" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-1">{t.address} *</label>
+                                        <textarea name="address" required rows="3" value={formData.address} onChange={handleFormChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl focus:outline-none focus:border-amber-700 font-medium" placeholder="Số 123, Đường Nguyễn Huệ, Q.1, TP.HCM"></textarea>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-stone-700 mb-1">{t.note}</label>
+                                        <input type="text" name="note" value={formData.note} onChange={handleFormChange} className="w-full px-4 py-3 bg-stone-50 border border-stone-300 rounded-xl focus:outline-none focus:border-amber-700 font-medium" placeholder="Giao hàng giờ hành chính..." />
+                                    </div>
+
+                                    <div className="pt-4 border-t border-stone-200 flex items-center justify-between mb-6">
+                                        <span className="font-medium text-stone-600">Tổng thanh toán:</span>
+                                        <span className="text-xl font-bold text-amber-800">{finalTotal.toLocaleString('vi-VN')} ₫</span>
+                                    </div>
+
+                                    <button type="submit" className="w-full bg-amber-800 hover:bg-amber-900 text-white py-4 rounded-xl font-bold shadow-lg transition-all text-center">
+                                        {t.submitOrder}
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Success Modal */}
+                    {successModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50 backdrop-blur-sm">
+                            <div className="bg-white rounded-3xl max-w-md w-full p-8 text-center shadow-2xl border border-stone-200">
+                                <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                                    <i className="fa-solid fa-check"></i>
+                                </div>
+                                <h3 className="font-serif font-bold text-2xl text-amber-950 mb-2">{t.orderSuccess}</h3>
+                                <p className="text-stone-600 mb-6">{t.orderSuccessSub}</p>
+                                <div className="bg-stone-50 p-4 rounded-2xl mb-6 text-left border border-stone-200 space-y-1">
+                                    <p className="text-xs text-stone-500"><span className="font-bold">Mã đơn hàng:</span> {successModal.id}</p>
+                                    <p className="text-xs text-stone-500"><span className="font-bold">Người nhận:</span> {successModal.customer.name}</p>
+                                    <p className="text-xs text-stone-500"><span className="font-bold">Tổng tiền:</span> {successModal.total.toLocaleString('vi-VN')} ₫</p>
+                                </div>
+                                <div className="flex space-x-3">
+                                    <button onClick={() => { setSuccessModal(null); setActiveTab('orders'); }} className="flex-1 bg-stone-800 hover:bg-stone-900 text-white py-3 rounded-xl font-semibold transition-colors">
+                                        Xem đơn hàng
+                                    </button>
+                                    <button onClick={() => setSuccessModal(null)} className="flex-1 bg-amber-800 hover:bg-amber-900 text-white py-3 rounded-xl font-semibold transition-colors">
+                                        {t.close}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {}
+                    {/* 右下角懸浮快速聯絡按鈕 (Zalo / Messenger) */}
+                    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3">
+                        {isChatMenuOpen && (
+                            <div className="bg-white rounded-2xl shadow-2xl border border-stone-200 p-3 flex flex-col space-y-2 w-52 animate-fadeIn">
+                                <a href="https://zalo.me" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-blue-50 text-blue-600 font-medium transition-colors">
+                                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs">Zalo</div>
+                                    <span className="text-sm">{t.quickChatZalo}</span>
+                                </a>
+                                <a href="https://m.me" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-3 p-2.5 rounded-xl hover:bg-indigo-50 text-indigo-600 font-medium transition-colors">
+                                    <div className="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs"><i className="fa-brands fa-facebook-messenger"></i></div>
+                                    <span className="text-sm">{t.quickChatMessenger}</span>
+                                </a>
+                            </div>
+                        )}
+                        <button onClick={() => setIsChatMenuOpen(!isChatMenuOpen)} className="w-14 h-14 bg-amber-800 hover:bg-amber-900 text-white rounded-full shadow-2xl flex items-center justify-center text-xl transition-all animate-pulse-slow">
+                            <i className={`fa-solid ${isChatMenuOpen ? 'fa-xmark' : 'fa-headset'}`}></i>
+                        </button>
+                    </div>
+
+                    {/* Footer */}
+                    <footer className="bg-amber-950 text-stone-300 py-12 mt-auto border-t border-amber-900">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div>
+                                <h4 className="font-serif text-xl font-bold text-white mb-3">Phoenix Coffee</h4>
+                                <p className="text-sm text-stone-400">Thương hiệu cà phê thủ công cao cấp hàng đầu, mang hương vị nguyên bản từ cao nguyên đến từng tách cà phê của bạn.</p>
+                            </div>
+                            <div>
+                                <h5 className="font-bold text-white mb-3 text-sm tracking-wider uppercase">Liên hệ</h5>
+                                <p className="text-sm text-stone-400 mb-2"><i className="fa-solid fa-location-dot mr-2 text-amber-600"></i> Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                                <p className="text-sm text-stone-400 mb-2"><i className="fa-solid fa-phone mr-2 text-amber-600"></i> +84 90 123 4567</p>
+                                <p className="text-sm text-stone-400"><i className="fa-solid fa-envelope mr-2 text-amber-600"></i> contact@phoenixcoffee.vn</p>
+                            </div>
+                            <div>
+                                <h5 className="font-bold text-white mb-3 text-sm tracking-wider uppercase">Giờ mở cửa</h5>
+                                <p className="text-sm text-stone-400 mb-2">Thứ Hai - Chủ Nhật: 7:00 - 22:00</p>
+                                <div className="flex space-x-4 mt-4 text-lg">
+                                    <a href="#" className="text-stone-400 hover:text-white transition-colors"><i className="fa-brands fa-facebook"></i></a>
+                                    <a href="#" className="text-stone-400 hover:text-white transition-colors"><i className="fa-brands fa-instagram"></i></a>
+                                    <a href="#" className="text-stone-400 hover:text-white transition-colors"><i className="fa-brands fa-tiktok"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-amber-900/50 text-center text-xs text-stone-500">
+                            &copy; 2026 Phoenix Coffee. All rights reserved.
+                        </div>
+                    </footer>
+                </div>
+            );
         }
-      };
 
-      if (!isOpen) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[95vh] overflow-y-auto z-10">
-            <button onClick={onClose} className="absolute right-4 top-4 p-2.5 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors z-10"><Icons.X className="h-5 w-5" /></button>
-
-            {isSuccess ? (
-              <div className="py-8 text-center space-y-4">
-                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner border border-green-200">
-                  <Icons.CheckCircle className="h-10 w-10 animate-bounce" />
-                </div>
-                <h3 className="text-xl sm:text-2xl font-bold font-serif text-coffee-900">{t.orderSuccess}</h3>
-                <p className="text-xs sm:text-sm text-coffee-600 leading-relaxed">{t.orderSuccessDesc}</p>
-                {lastCreatedOrder && (
-                  <button
-                    onClick={() => { onClose(); onOpenReceipt(lastCreatedOrder); }}
-                    className="w-full bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-sm mt-4 transition-all"
-                  >
-                    <Icons.FileText className="h-5 w-5" /> {t.printReceipt}
-                  </button>
-                )}
-              </div>
-            ) : (
-              <form onSubmit={handleSubmitOrder} className="space-y-4">
-                <h2 className="text-lg sm:text-2xl font-bold font-serif text-coffee-900 border-b border-gray-100 pb-3">{t.customerInfo}</h2>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.fullName}</label>
-                  <input type="text" name="fullName" required value={formData.fullName} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.phone}</label>
-                  <input type="tel" name="phone" required value={formData.phone} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.address}</label>
-                  <textarea name="address" required rows="2" value={formData.address} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner" />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block text-xs font-bold text-coffee-800">{t.notes}</label>
-                  <input type="text" name="notes" value={formData.notes} onChange={handleInputChange} className="w-full bg-gray-50 border border-coffee-200 rounded-2xl p-3.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-inner" />
-                </div>
-
-                <div className="bg-coffee-50 p-4.5 rounded-2xl border border-coffee-200/60 space-y-2 text-xs">
-                  <div className="flex justify-between"><span>{t.subtotal}：</span><span>{subtotal.toLocaleString()} VND</span></div>
-                  <div className="flex justify-between"><span>{t.shippingFee}：</span><span>{isFreeShipping ? t.free : `${shippingFee.toLocaleString()} VND`}</span></div>
-                  <div className="flex justify-between font-bold text-sm sm:text-base text-coffee-900 pt-2.5 border-t border-coffee-200">
-                    <span>{t.payable}</span><span className="text-amber-700">{grandTotal.toLocaleString()} VND</span>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-coffee-900 hover:bg-amber-600 text-white font-bold py-4 rounded-2xl shadow-xl shadow-coffee-950/20 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
-                >
-                  {isSubmitting ? t.submitting : t.submitOrder}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    function OrderHistoryModal({ isOpen, onClose, t, onViewReceipt }) {
-      const [history, setHistory] = useState(() => {
-        try {
-          return JSON.parse(localStorage.getItem(ORDER_HISTORY_STORAGE_KEY) || '[]');
-        } catch (e) { return []; }
-      });
-
-      const handleClear = () => {
-        if (confirm(t.confirmClear)) {
-          localStorage.removeItem(ORDER_HISTORY_STORAGE_KEY);
-          setHistory([]);
-        }
-      };
-
-      if (!isOpen) return null;
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity" onClick={onClose} />
-          <div className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-coffee-200 p-6 sm:p-8 max-h-[90vh] overflow-y-auto z-10 flex flex-col">
-            <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
-              <h2 className="text-base sm:text-xl font-bold font-serif text-coffee-900 flex items-center gap-2"><Icons.Clock className="h-5 w-5 text-amber-700" /> {t.orderHistoryTitle}</h2>
-              <button onClick={onClose} className="p-2.5 rounded-full hover:bg-gray-100 transition-colors"><Icons.X className="h-5 w-5" /></button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto space-y-4 pr-1">
-              {history.length === 0 ? (
-                <div className="py-12 text-center text-gray-400 space-y-2">
-                  <Icons.Clock className="h-10 w-10 mx-auto opacity-40" />
-                  <p className="text-sm">{t.noHistory}</p>
-                </div>
-              ) : (
-                history.map((order) => (
-                  <div key={order.id} className="bg-coffee-50/70 p-5 rounded-2xl border border-coffee-200/60 space-y-3 shadow-sm">
-                    <div className="flex flex-wrap justify-between items-center gap-2 pb-3 border-b border-coffee-200/50 text-xs">
-                      <div>
-                        <span className="font-bold text-coffee-900">{t.orderId}: #{order.id}</span>
-                        <span className="text-gray-500 ml-3">{order.date}</span>
-                      </div>
-                      <span className="font-extrabold text-amber-700 text-sm">{order.grandTotal.toLocaleString()} VND</span>
-                    </div>
-
-                    <div className="text-xs space-y-1 text-gray-700">
-                      <p><strong>收件人:</strong> {order.customerName} ({order.phone})</p>
-                      <p><strong>地址:</strong> {order.address}</p>
-                    </div>
-
-                    <div className="flex justify-end pt-2">
-                      <button
-                        onClick={() => { onClose(); onViewReceipt(order); }}
-                        className="px-4.5 py-2.5 bg-coffee-900 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-                      >
-                        <Icons.FileText className="h-3.5 w-3.5" /> {t.viewReceipt}
-                      </button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {history.length > 0 && (
-              <div className="pt-4 border-t border-gray-100 mt-4 flex justify-between items-center">
-                <button onClick={handleClear} className="text-xs text-red-600 hover:text-red-700 font-bold flex items-center gap-1">
-                  <Icons.Trash className="h-4 w-4" /> {t.clearHistory}
-                </button>
-                <button onClick={onClose} className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors">
-                  {t.close}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
