@@ -1204,12 +1204,11 @@
                     return 'VND ' + price.toLocaleString();
                 },
 
-                // 新增：觸發 Google Apps Script 發送訂單通知
+                // 修正後：使用 text/plain 繞過 CORS 預檢限制，確保 GAS 能正確讀取 body 資料
                 async sendOrderToGAS(orderData) {
-                    // 請替換為您的 Google Apps Script 部署網址 (Web App URL)
                     const GAS_URL = "https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec";
                     
-                    if (GAS_URL === "https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec") {
+                    if (!GAS_URL) {
                         console.warn("尚未設定 Google Apps Script 網址");
                         return;
                     }
@@ -1217,9 +1216,8 @@
                     try {
                         await fetch(GAS_URL, {
                             method: "POST",
-                            mode: "no-cors", // 避免跨域阻擋
                             headers: {
-                                "Content-Type": "application/json"
+                                "Content-Type": "text/plain;charset=utf-8"
                             },
                             body: JSON.stringify(orderData)
                         });
