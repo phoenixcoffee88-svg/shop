@@ -394,6 +394,10 @@
                                 <label class="block text-xs uppercase tracking-wider text-aura-800 mb-1">收件地址</label>
                                 <input type="text" x-model="checkoutForm.address" placeholder="胡志明市第一郡..." class="w-full border border-aura-200 p-3 text-xs rounded-sm focus:outline-none focus:border-coffee">
                             </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs uppercase tracking-wider text-aura-800 mb-1">訂單備註 (選填)</label>
+                                <input type="text" x-model="checkoutForm.notes" placeholder="例如：管理室代收、下午配送等" class="w-full border border-aura-200 p-3 text-xs rounded-sm focus:outline-none focus:border-coffee">
+                            </div>
                         </div>
                     </div>
 
@@ -461,8 +465,8 @@
                         </div>
                     </div>
 
-                    <button @click="completeOrder()" class="w-full mt-6 bg-aura-900 text-white py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors shadow-md">
-                        確認送出訂單
+                    <button @click="completeOrder()" :disabled="isSubmitting" class="w-full mt-6 bg-aura-900 text-white py-3.5 text-xs uppercase tracking-widest font-semibold rounded-sm hover:bg-coffee transition-colors shadow-md disabled:opacity-50">
+                        <span x-text="isSubmitting ? '訂單處理中...' : '確認送出訂單'"></span>
                     </button>
                 </div>
             </div>
@@ -692,6 +696,7 @@
                 searchQuery: '',
                 selectedGrind: '原豆（不研磨）',
                 quantity: 1,
+                isSubmitting: false, // 控制送出按鈕狀態
 
                 selectedProduct: { 
                     id: 1, 
@@ -855,6 +860,7 @@
                     name: '',
                     phone: '',
                     address: '',
+                    notes: '',
                     payment: 'credit'
                 },
 
@@ -948,15 +954,74 @@
                     this.cart.splice(index, 1);
                 },
 
-                completeOrder() {
+                async completeOrder() {
                     if (!this.checkoutForm.name || !this.checkoutForm.phone || !this.checkoutForm.address) {
                         alert('請完整填寫收件人姓名、手機號碼與收件地址');
                         return;
                     }
-                    alert('訂單已成功建立！感謝您選購 VIEBUCKS / AURA COFFEE 職人咖啡。');
-                    this.cart = [];
-                    this.currentView = 'home';
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    if (this.cart.length === 0) {
+                        alert('您的購物車目前是空的');
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+
+                    // 1. 組裝品項明細字串 (例如：100% 精品阿拉比卡 (手沖中粗) x 2, ...)
+                    const itemsString = this.cart.map(i => `${i.name} (${i.grind}) x ${i.quantity}`).join('；');
+                    
+                    // 2. 產生訂單編號與時間
+                    const orderId = 'AURA-' + Math.floor(100000 + Math.random() * 900000);
+                    const now = new Date();
+                    const orderDate = now.getFullYear() + '-' + 
+                                      String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                                      String(now.getDate).padStart(2, '0') + ' ' + 
+                                      String(now.getHours()).padStart(2, '0') + ':' + 
+                                      String(now.getMinutes()).padStart(2, '0');
+
+                    const shippingFee = this.cartSubtotal >= 800000 ? 0 : 50000;
+
+                    // 3. 準備送往 Google Apps Script 的資料 Payload
+                    const payload = {
+                        orderId: orderId,
+                        orderDate: now.toLocaleString(),
+                        fullName: this.checkoutForm.name,
+                        phone: this.checkoutForm.phone,
+                        address: this.checkoutForm.address,
+                        notes: this.checkoutForm.notes || '無',
+                        orderItems: itemsString,
+                        subtotal: this.cartSubtotal,
+                        shippingFee: shippingFee,
+                        grandTotal: this.cartSubtotal + shippingFee
+                    };
+
+                    // ⚠️【重要提醒】請將下方引號內的網址替換為您的 Google Apps Script「部屬網路應用程式 (Web App)」網址
+                    const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+                    try {
+                        // 透過 fetch 將資料 POST 到 Google 試算表
+                        const response = await fetch(SCRIPT_URL, {
+                            method: 'POST',
+                            mode: 'no-cors', // 避免 Google Apps Script 跨域限制 (CORS)
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        alert(`訂單已成功建立！\n訂單編號：${orderId}\n感謝您的選購，我們將盡快為您安排新鮮烘焙與配送。`);
+                        
+                        // 清空購物車並回到首頁
+                        this.cart = [];
+                        this.currentView = 'home';
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                    } catch (error) {
+                        console.error('送出訂單失敗:', error);
+                        alert('訂單傳送發生錯誤，請稍後再試或與客服聯繫。');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
                 }
             }
         }
