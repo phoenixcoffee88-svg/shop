@@ -101,7 +101,7 @@
                     <img src="https://placehold.co/1920x1080/e5ddd3/221e1a?text=PHOENIX+COFFEE+ROASTERS" alt="Hero Image" class="w-full h-full object-cover object-center opacity-85">
                     <div class="absolute inset-0 bg-gradient-to-r from-aura-900/60 via-aura-900/20 to-transparent"></div>
                 </div>
-                <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 w-full text-white">
+                <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-6 lg:px-12 w-full text-white">
                     <span class="text-xs uppercase tracking-[0.25em] bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full mb-6 inline-block font-medium" x-text="t.heroSubtitle"></span>
                     <h1 class="text-4xl sm:text-6xl font-light tracking-wide mb-6 leading-tight font-serif" x-html="t.heroTitle"></h1>
                     <p class="text-sm sm:text-base text-aura-100 max-w-lg mb-8 font-light leading-relaxed" x-text="t.heroDesc"></p>
@@ -161,7 +161,7 @@
                         </div>
                     </div>
                     <div @click="currentView = 'shop'; filterCategory = 'drip'" class="group relative h-96 overflow-hidden rounded-sm cursor-pointer shadow-sm">
-                        <img src="https://placehold.co/600x800/bfae9e/221e1a?text=Drip+Coffee+Bags" alt="Drip" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        <img src="https://placehold.co/600x800/bfae9e/221e1a?text=Immersion+Coffee+Bags" alt="Drip" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-aura-900/80 via-transparent to-transparent flex flex-col justify-end p-8 text-white">
                             <h3 class="text-xl font-medium tracking-wide font-serif" x-text="t.catDripName"></h3>
                             <p class="text-xs text-aura-200 mt-2 uppercase tracking-wider"><span x-text="t.explore"></span> <i class="fa-solid fa-arrow-right ml-1"></i></p>
@@ -297,8 +297,8 @@
 
                     <p class="text-sm text-gray-600 leading-relaxed font-light" x-text="getProductDesc(selectedProduct)"></p>
 
-                    <!-- 研磨粗細選擇 -->
-                    <div class="mt-8" x-show="selectedProduct.category === 'beans' || selectedProduct.category === 'drip'">
+                    <!-- 研磨粗細選擇 (針對豆子) -->
+                    <div class="mt-8" x-show="selectedProduct.category === 'beans'">
                         <label class="block text-xs uppercase tracking-widest text-aura-800 font-medium mb-3">
                             <span x-text="t.grindLabel"></span>：<span class="font-semibold text-coffee" x-text="selectedGrind"></span>
                         </label>
@@ -307,6 +307,23 @@
                             <button @click="selectedGrind = t.grindOptions[1]" :class="selectedGrind === t.grindOptions[1] ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium" x-text="t.grindOptions[1]"></button>
                             <button @click="selectedGrind = t.grindOptions[2]" :class="selectedGrind === t.grindOptions[2] ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium" x-text="t.grindOptions[2]"></button>
                             <button @click="selectedGrind = t.grindOptions[3]" :class="selectedGrind === t.grindOptions[3] ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-3 py-2.5 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium" x-text="t.grindOptions[3]"></button>
+                        </div>
+                    </div>
+
+                    <!-- 包裝風格選擇 (針對浸泡式咖啡袋/濾袋，融入牛皮紙與鋁箔袋質感選物) -->
+                    <div class="mt-8" x-show="selectedProduct.category === 'drip'">
+                        <label class="block text-xs uppercase tracking-widest text-aura-800 font-medium mb-3">
+                            <span x-text="t.pouchLabel"></span>：<span class="font-semibold text-coffee" x-text="selectedPouch"></span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button @click="selectedPouch = t.pouchOptions[0]" :class="selectedPouch === t.pouchOptions[0] ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-4 py-3 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-box-archive"></i>
+                                <span x-text="t.pouchOptions[0]"></span>
+                            </button>
+                            <button @click="selectedPouch = t.pouchOptions[1]" :class="selectedPouch === t.pouchOptions[1] ? 'border-coffee bg-coffee text-white' : 'border-aura-200 text-aura-800'" class="px-4 py-3 border text-xs uppercase tracking-wider rounded-sm transition-all font-medium flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span x-text="t.pouchOptions[1]"></span>
+                            </button>
                         </div>
                     </div>
 
@@ -421,13 +438,13 @@
                 <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm h-fit">
                     <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 pb-3 border-b border-aura-200 font-serif" x-text="t.orderSummary"></h2>
                     <div class="space-y-4 max-h-60 overflow-y-auto mb-6 pr-1">
-                        <template x-for="item in cart" :key="item.id + item.grind">
+                        <template x-for="item in cart" :key="item.id + (item.grind || item.pouch)">
                             <div class="flex justify-between items-center text-xs">
                                 <div class="flex items-center space-x-3">
                                     <img :src="item.image" class="w-12 h-12 object-cover rounded-sm">
                                     <div>
                                         <p class="font-medium text-aura-900" x-text="getCartItemName(item)"></p>
-                                        <p class="text-gray-500 text-[10px]" x-text="`${item.grind} / ${t.qtyLabel}: ${item.quantity}`"></p>
+                                        <p class="text-gray-500 text-[10px]" x-text="`${item.grind || item.pouch} / ${t.qtyLabel}: ${item.quantity}`"></p>
                                     </div>
                                 </div>
                                 <span class="font-semibold" x-text="formatPrice(item.price * item.quantity)"></span>
@@ -543,12 +560,12 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-6 space-y-4">
-                    <template x-for="(item, index) in cart" :key="item.id + item.grind">
+                    <template x-for="(item, index) in cart" :key="item.id + (item.grind || item.pouch)">
                         <div class="flex items-center space-x-4 border-b border-aura-100 pb-4">
                             <img :src="item.image" :alt="getCartItemName(item)" class="w-16 h-16 object-cover rounded-sm flex-shrink-0">
                             <div class="flex-1">
                                 <h3 class="text-xs font-medium text-aura-900" x-text="getCartItemName(item)"></h3>
-                                <p class="text-[10px] text-gray-500 mt-0.5" x-text="item.grind"></p>
+                                <p class="text-[10px] text-gray-500 mt-0.5" x-text="item.grind || item.pouch"></p>
                                 <p class="text-xs font-semibold text-aura-900 mt-1" x-text="formatPrice(item.price)"></p>
                                 <div class="flex items-center space-x-3 mt-2">
                                     <div class="flex items-center border border-aura-200 rounded-sm">
@@ -673,7 +690,7 @@
                 navHome: "首頁",
                 navShop: "所有商品",
                 navBeans: "單品莊園豆",
-                navDrip: "浸泡式濾袋",
+                navDrip: "浸泡式咖啡袋",
                 navEquipment: "器具周邊",
                 searchTitle: "搜尋咖啡",
                 accountTitle: "會員中心",
@@ -694,7 +711,7 @@
                 catSub: "Curated Collections",
                 catTitle: "品味分類推薦",
                 catBeansName: "嚴選單品咖啡豆",
-                catDripName: "浸泡式咖啡濾袋",
+                catDripName: "職人浸泡式咖啡包",
                 catEquipName: "烘焙設備與周邊",
                 explore: "探索目錄",
                 featuredSub: "Featured Bestsellers",
@@ -707,7 +724,7 @@
                 itemsCount: "件商品",
                 catAll: "所有分類",
                 catBeans: "單品莊園豆",
-                catDrip: "浸泡式濾袋",
+                catDrip: "浸泡式咖啡袋",
                 catEquip: "器具周邊",
                 sortFeatured: "精選排序",
                 sortLow: "價格：由低到高",
@@ -717,6 +734,8 @@
                 buyNow: "立即結帳",
                 grindLabel: "研磨粗細選擇",
                 grindOptions: ["原豆（不研磨）", "手沖中粗研磨", "義式細研磨", "法壓壺粗研磨"],
+                pouchLabel: "包裝風格選物",
+                pouchOptions: ["環保牛皮紙袋包裝", "頂級鋁箔保鮮夾鏈袋"],
                 qtyLabel: "訂購數量",
                 roastLevel: "焙度",
                 process: "處理法",
@@ -760,7 +779,7 @@
                 delete: "刪除",
                 cartEmpty: "您的購物車內目前沒有商品",
                 proceedCheckout: "前往安全結帳",
-                searchPlaceholder: "搜尋阿拉比卡、羅布斯塔、冷萃咖啡包...",
+                searchPlaceholder: "搜尋阿拉比卡、羅布斯塔、浸泡式咖啡包...",
                 footerDesc: "追求純粹風土與極致職人烘焙工藝，為懂咖啡的您帶來無與倫比的感官體驗。",
                 footerCol1Title: "嚴選分類",
                 footerCol2Title: "客戶服務",
@@ -776,47 +795,7 @@
                 navHome: "Trang chủ",
                 navShop: "Tất cả sản phẩm",
                 navBeans: "Cà phê hạt",
-                navDrip: "Túi lọc ngâm lạnh",
-                navEquipment: "Dụng cụ pha chế",
-                searchTitle: "Tìm kiếm cà phê",
-                accountTitle: "Tài khoản",
-                cartTitle: "Giỏ hàng",
-                heroSubtitle: "Crafting Moments, One Sip at a Time",
-                heroTitle: "Khám phá hương vị<br><span class=\"font-semibold italic\">Cà phê thuần túy</span>",
-                heroDesc: "Tuyển chọn hạt cà phê từ các nông trại vi mô trên toàn thế giới, được rang với đường cong chính xác để đánh thức hương vị độc đáo.",
-                btnShopNow: "Mua sắm ngay",
-                btnExploreDrip: "Khám phá túi lọc",
-                feat1Title: "100% Vùng trồng chọn lọc",
-                feat1Desc: "Khám phá các trang trại vi mô xuất sắc toàn cầu, kiểm soát nghiêm ngặt chất lượng hạt.",
-                feat2Title: "Rang bởi nghệ nhân",
-                feat2Desc: "Đường cong rang tùy chỉnh cho từng loại hạt, hoàn hảo giải phóng hương hoa quả.",
-                feat3Title: "Cam kết hương vị",
-                feat3Desc: "Được đánh giá nghiêm ngặt bởi chuyên gia Q-Grader, đảm bảo chất lượng tuyệt đỉnh.",
-                feat4Title: "Giao hàng siêu tốc",
-                feat4Desc: "Xay và đóng gói tươi sau khi đặt hàng. Miễn phí vận chuyển từ VND 800,000.",
-                catSub: "Curated Collections",
-                catTitle: "Danh mục tuyển chọn",
-                catBeansName: "Cà phê hạt tuyển chọn",
-                catDripName: "Túi cà phê ngâm lạnh",
-                catEquipName: "Dụng cụ & Thiết bị",
-                explore: "Khám phá",
-                featuredSub: "Featured Bestsellers",
-                featuredTitle: "Sản phẩm bán chạy",
-                viewAll: "Xem tất cả",
-                quickAdd: "Thêm nhanh",
-                home: "Trang chủ",
-                catalog: "Danh mục sản phẩm",
-                catalogTitle: "Danh mục cà phê",
-                itemsCount: "sản phẩm",
-                catAll: "Tất cả",
-                catBeans: "Cà phê hạt",
-            },
-            vi: {
-                topBanner: "Miễn phí vận chuyển cho đơn hàng từ VND 800,000 · Cà phê hạt rang tươi mới mỗi ngày",
-                navHome: "Trang chủ",
-                navShop: "Tất cả sản phẩm",
-                navBeans: "Cà phê hạt",
-                navDrip: "Túi lọc ngâm",
+                navDrip: "Túi cà phê ngâm",
                 navEquipment: "Dụng cụ pha chế",
                 searchTitle: "Tìm kiếm cà phê",
                 accountTitle: "Tài khoản",
@@ -825,7 +804,7 @@
                 heroTitle: "Khám phá hương vị<br><span class=\"font-semibold italic\">Cà phê thuần túy</span>",
                 heroDesc: "Tuyển chọn hạt cà phê từ các nông trại vi mô trên toàn thế giới, được rang với đường cong chính xác.",
                 btnShopNow: "Mua sắm ngay",
-                btnExploreDrip: "Khám phá túi lọc",
+                btnExploreDrip: "Khám phá túi ngâm",
                 feat1Title: "100% Vùng trồng chọn lọc",
                 feat1Desc: "Khám phá các trang trại vi mô xuất sắc toàn cầu, kiểm soát nghiêm ngặt chất lượng hạt.",
                 feat2Title: "Rang bởi nghệ nhân",
@@ -837,7 +816,7 @@
                 catSub: "Curated Collections",
                 catTitle: "Danh mục tuyển chọn",
                 catBeansName: "Cà phê hạt tuyển chọn",
-                catDripName: "Túi cà phê ngâm",
+                catDripName: "Túi cà phê ngâm chuyên dụng",
                 catEquipName: "Dụng cụ & Thiết bị",
                 explore: "Khám phá",
                 featuredSub: "Featured Bestsellers",
@@ -850,7 +829,7 @@
                 itemsCount: "sản phẩm",
                 catAll: "Tất cả",
                 catBeans: "Cà phê hạt",
-                catDrip: "Túi lọc ngâm",
+                catDrip: "Túi cà phê ngâm",
                 catEquip: "Dụng cụ",
                 sortFeatured: "Mặc định",
                 sortLow: "Giá: Thấp đến cao",
@@ -860,6 +839,8 @@
                 buyNow: "Thanh toán ngay",
                 grindLabel: "Độ mịn khi xay",
                 grindOptions: ["Hạt nguyên (Không xay)", "Pha thủ công (Thô vừa)", "Pha máy Espresso (Mịn)", "Bình French Press (Thô)"],
+                pouchLabel: "Tùy chọn bao bì",
+                pouchOptions: ["Túi giấy Kraft thân thiện môi trường", "Túi nhôm màng ghép giữ hương vị cao cấp"],
                 qtyLabel: "Số lượng",
                 roastLevel: "Mức độ rang",
                 process: "Phương pháp sơ chế",
@@ -903,7 +884,7 @@
                 delete: "Xóa",
                 cartEmpty: "Giỏ hàng của bạn đang trống",
                 proceedCheckout: "Tiến hành thanh toán",
-                searchPlaceholder: "Tìm kiếm Arabica, Robusta, Cold Brew...",
+                searchPlaceholder: "Tìm kiếm Arabica, Robusta, Túi ngâm...",
                 footerDesc: "Theo đuổi hương vị nguyên bản và nghệ thuật rang thủ công đỉnh cao, mang lại trải nghiệm vị giác tuyệt vời nhất.",
                 footerCol1Title: "Danh mục",
                 footerCol2Title: "Dịch vụ khách hàng",
@@ -927,6 +908,7 @@
                 sortBy: 'featured',
                 searchQuery: '',
                 selectedGrind: '原豆（不研磨）',
+                selectedPouch: '環保牛皮紙袋包裝',
                 quantity: 1,
                 isSubmitting: false,
                 lang: localStorage.getItem('phoenix_lang') || 'zh',
@@ -938,8 +920,8 @@
                 toggleLang() {
                     this.lang = this.lang === 'zh' ? 'vi' : 'zh';
                     localStorage.setItem('phoenix_lang', this.lang);
-                    // 更新預設研磨選項文字
                     this.selectedGrind = this.t.grindOptions[0];
+                    this.selectedPouch = this.t.pouchOptions[0];
                 },
 
                 selectedProduct: { 
@@ -1003,38 +985,38 @@
                     },
                     {
                         id: 3,
-                        name: '100% 精品阿拉比卡冷萃咖啡包 (10包/袋)',
-                        nameVi: 'Túi cà phê ngâm lạnh Arabica 100% (10 gói/túi)',
+                        name: '100% 精品阿拉比卡浸泡式咖啡包 (10包/袋)',
+                        nameVi: 'Túi cà phê ngâm Arabica 100% (10 gói/túi)',
                         category: 'drip',
                         price: 125000,
-                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Arabica+Cold+Brew+10p',
+                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Arabica+Immersion+10p',
                         description: '黃金三焙混調工藝。淺焙果酸花香、中焙焦糖甜感、深焙黑巧克力尾韻，層次立體豐富。',
                         descriptionVi: 'Công nghệ pha trộn 3 cấp độ rang. Hương hoa quả, vị caramel và hậu vị sô-cô-la đen đậm đà.',
-                        flavorTags: ['果酸花香', '焦糖甜感', '黑巧克力', '冷萃浸泡'],
-                        flavorTagsVi: ['Hương hoa', 'Caramel', 'Sô-cô-la', 'Cold Brew'],
+                        flavorTags: ['果酸花香', '焦糖甜感', '黑巧克力', '浸泡式咖啡'],
+                        flavorTagsVi: ['Hương hoa', 'Caramel', 'Sô-cô-la', 'Immersion Pack'],
                         roastLevel: '黃金三焙混調',
                         roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式冷萃',
-                        processVi: 'Ngâm lạnh',
+                        process: '浸泡式萃取',
+                        processVi: 'Ngâm ủ',
                         origin: '單一產區阿拉比卡',
                         originVi: 'Arabica đơn dòng',
                         badge: 'NEW'
                     },
                     {
                         id: 4,
-                        name: '100% 精品阿拉比卡冷萃咖啡包 (30包/袋)',
-                        nameVi: 'Túi cà phê ngâm lạnh Arabica 100% (30 gói/túi)',
+                        name: '100% 精品阿拉比卡浸泡式咖啡包 (30包/袋)',
+                        nameVi: 'Túi cà phê ngâm Arabica 100% (30 gói/túi)',
                         category: 'drip',
                         price: 350000,
-                        image: 'https://placehold.co/600x800/e5ddd3/221e1a?text=Arabica+Cold+Brew+30p',
+                        image: 'https://placehold.co/600x800/e5ddd3/221e1a?text=Arabica+Immersion+30p',
                         description: '超值30包大袋裝。黃金三焙混調工藝，結合淺焙花香、中焙焦糖與深焙黑巧克力尾韻。',
                         descriptionVi: 'Gói lớn 30 túi tiện lợi. Công nghệ pha trộn 3 cấp độ rang, kết hợp hương hoa và sô-cô-la đen.',
-                        flavorTags: ['果酸花香', '焦糖甜感', '黑巧克力', '冷萃家庭號'],
+                        flavorTags: ['果酸花香', '焦糖甜感', '黑巧克力', '浸泡家庭號'],
                         flavorTagsVi: ['Hương hoa', 'Caramel', 'Sô-cô-la', 'Family Pack'],
                         roastLevel: '黃金三焙混調',
                         roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式冷萃',
-                        processVi: 'Ngâm lạnh',
+                        process: '浸泡式萃取',
+                        processVi: 'Ngâm ủ',
                         origin: '單一產區阿拉比卡',
                         originVi: 'Arabica đơn dòng',
                         badge: ''
@@ -1079,38 +1061,38 @@
                     },
                     {
                         id: 7,
-                        name: '100% 精品羅布斯塔冷萃咖啡包 (10包/袋)',
-                        nameVi: 'Túi cà phê ngâm lạnh Robusta 100% (10 gói/túi)',
+                        name: '100% 精品羅布斯塔浸泡式咖啡包 (10包/袋)',
+                        nameVi: 'Túi cà phê ngâm Robusta 100% (10 gói/túi)',
                         category: 'drip',
                         price: 100000,
-                        image: 'https://placehold.co/600x800/bfae9e/221e1a?text=Robusta+Cold+Brew+10p',
+                        image: 'https://placehold.co/600x800/bfae9e/221e1a?text=Robusta+Immersion+10p',
                         description: '黃金三焙混調工藝。口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻。',
                         descriptionVi: 'Hương vị đậm đà, ít axit, ngọt hậu sâu với hậu vị sô-cô-la đen mạnh mẽ.',
                         flavorTags: ['厚實濃郁', '低酸回甘', '黑巧克力尾韻'],
                         flavorTagsVi: ['Đậm đà', 'Ít axit', 'Hậu vị sô-cô-la'],
                         roastLevel: '黃金三焙混調',
                         roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式冷萃',
-                        processVi: 'Ngâm lạnh',
+                        process: '浸泡式萃取',
+                        processVi: 'Ngâm ủ',
                         origin: '單一產區羅布斯塔',
                         originVi: 'Robusta đơn dòng',
                         badge: ''
                     },
                     {
                         id: 8,
-                        name: '100% 精品羅布斯塔冷萃咖啡包 (30包/袋)',
-                        nameVi: 'Túi cà phê ngâm lạnh Robusta 100% (30 gói/túi)',
+                        name: '100% 精品羅布斯塔浸泡式咖啡包 (30包/袋)',
+                        nameVi: 'Túi cà phê ngâm Robusta 100% (30 gói/túi)',
                         category: 'drip',
                         price: 250000,
-                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Robusta+Cold+Brew+30p',
-                        description: '超值30包大袋裝。口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻的羅布斯塔冷萃包。',
+                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Robusta+Immersion+30p',
+                        description: '超值30包大袋裝。口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻的浸泡式咖啡包。',
                         descriptionVi: 'Gói lớn 30 túi tiết kiệm. Vị đậm đà, ít axit, hậu vị sô-cô-la đen mạnh mẽ.',
                         flavorTags: ['厚實濃郁', '低酸回甘', '黑巧克力尾韻'],
                         flavorTagsVi: ['Đậm đà', 'Ít axit', 'Hậu vị sô-cô-la'],
                         roastLevel: '黃金三焙混調',
                         roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式冷萃',
-                        processVi: 'Ngâm lạnh',
+                        process: '浸泡式萃取',
+                        processVi: 'Ngâm ủ',
                         origin: '單一產區羅布斯塔',
                         originVi: 'Robusta đơn dòng',
                         badge: ''
@@ -1222,43 +1204,51 @@
                     this.selectedProduct = product;
                     this.quantity = 1;
                     this.selectedGrind = this.t.grindOptions[0];
+                    this.selectedPouch = this.t.pouchOptions[0];
                     this.currentView = 'detail';
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
                 quickAddToCart(product) {
-                    let defaultGrind = this.t.grindOptions[0];
-                    let existing = this.cart.find(item => item.id === product.id && item.grind === defaultGrind);
+                    let defaultOption = product.category === 'beans' ? this.t.grindOptions[0] : this.t.pouchOptions[0];
+                    let optionKey = product.category === 'beans' ? 'grind' : 'pouch';
+                    
+                    let existing = this.cart.find(item => item.id === product.id && item[optionKey] === defaultOption);
                     if (existing) {
                         existing.quantity++;
                     } else {
-                        this.cart.push({
+                        let newItem = {
                             id: product.id,
                             name: product.name,
                             nameVi: product.nameVi,
                             price: product.price,
                             quantity: 1,
-                            grind: defaultGrind,
                             image: product.image
-                        });
+                        };
+                        newItem[optionKey] = defaultOption;
+                        this.cart.push(newItem);
                     }
                     this.cartOpen = true;
                 },
 
                 addToCartFromDetail() {
-                    let existing = this.cart.find(item => item.id === this.selectedProduct.id && item.grind === this.selectedGrind);
+                    let optionKey = this.selectedProduct.category === 'beans' ? 'grind' : 'pouch';
+                    let optionVal = this.selectedProduct.category === 'beans' ? this.selectedGrind : this.selectedPouch;
+
+                    let existing = this.cart.find(item => item.id === this.selectedProduct.id && item[optionKey] === optionVal);
                     if (existing) {
                         existing.quantity += this.quantity;
                     } else {
-                        this.cart.push({
+                        let newItem = {
                             id: this.selectedProduct.id,
                             name: this.selectedProduct.name,
                             nameVi: this.selectedProduct.nameVi,
                             price: this.selectedProduct.price,
                             quantity: this.quantity,
-                            grind: this.selectedGrind,
                             image: this.selectedProduct.image
-                        });
+                        };
+                        newItem[optionKey] = optionVal;
+                        this.cart.push(newItem);
                     }
                     this.cartOpen = true;
                 },
@@ -1294,7 +1284,7 @@
 
                     this.isSubmitting = true;
 
-                    const itemsString = this.cart.map(i => `${this.getCartItemName(i)} (${i.grind}) x ${i.quantity}`).join('；');
+                    const itemsString = this.cart.map(i => `${this.getCartItemName(i)} (${i.grind || i.pouch}) x ${i.quantity}`).join('；');
                     
                     const orderId = 'PHOENIX-' + Math.floor(100000 + Math.random() * 900000);
                     const now = new Date();
