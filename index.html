@@ -55,7 +55,6 @@
     <main class="min-h-screen pb-24">
         <!-- 1. 首頁 View -->
         <div x-show="currentView === 'home'" class="space-y-16">
-            <!-- Hero 區塊 -->
             <section class="relative bg-stone-900 text-white py-24 px-4 overflow-hidden">
                 <div class="absolute inset-0 opacity-45 bg-[url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center"></div>
                 <div class="relative max-w-4xl mx-auto text-center space-y-6">
@@ -68,7 +67,6 @@
                 </div>
             </section>
 
-            <!-- 精選商品 -->
             <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-end mb-8">
                     <div>
@@ -82,7 +80,7 @@
                     <template x-for="product in products" :key="product.id">
                         <div class="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col">
                             <div class="relative aspect-square overflow-hidden bg-stone-100 cursor-pointer" @click="openProductDetail(product)">
-                                <img :src="product.image" :alt="lang === 'zh' ? product.name : product.nameVi" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300">
+                                <img :src="product.image" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300">
                                 <span class="absolute top-3 left-3 bg-stone-900/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase" x-text="product.category"></span>
                             </div>
                             <div class="p-5 flex flex-col flex-grow">
@@ -127,11 +125,9 @@
                 &larr; <span x-text="t.back">返回</span>
             </button>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 bg-white p-8 rounded-2xl border border-stone-200 shadow-sm">
-                <!-- 圖片 -->
                 <div class="aspect-square bg-stone-100 rounded-xl overflow-hidden">
                     <img :src="selectedProduct?.image" class="w-full h-full object-cover">
                 </div>
-                <!-- 規格資訊 -->
                 <div class="flex flex-col justify-between">
                     <div class="space-y-4">
                         <span class="inline-block px-3 py-1 bg-amber-50 text-amber-900 text-xs font-bold rounded-full uppercase" x-text="selectedProduct?.category"></span>
@@ -139,7 +135,6 @@
                         <p class="text-2xl font-bold text-amber-900" x-text="formatPrice(selectedProduct?.price)"></p>
                         <p class="text-stone-600 text-sm leading-relaxed" x-text="lang === 'zh' ? selectedProduct?.desc : selectedProduct?.descVi"></p>
 
-                        <!-- 動態規格選擇 (咖啡豆磨粉選項) -->
                         <template x-if="selectedProduct?.type === 'bean'">
                             <div class="pt-4 space-y-2">
                                 <label class="block text-xs font-bold uppercase text-stone-500" x-text="t.grindLabel">研磨刻度選項</label>
@@ -154,7 +149,6 @@
                             </div>
                         </template>
 
-                        <!-- 濾掛包規格選擇 -->
                         <template x-if="selectedProduct?.type === 'drip'">
                             <div class="pt-4 space-y-2">
                                 <label class="block text-xs font-bold uppercase text-stone-500" x-text="t.pouchLabel">包裝規格選項</label>
@@ -169,7 +163,6 @@
                             </div>
                         </template>
 
-                        <!-- 數量選擇 -->
                         <div class="pt-4 space-y-2">
                             <label class="block text-xs font-bold uppercase text-stone-500" x-text="t.quantity">數量</label>
                             <div class="flex items-center space-x-3 w-32 border border-stone-300 rounded-lg p-1">
@@ -180,7 +173,6 @@
                         </div>
                     </div>
 
-                    <!-- 加入購物車按鈕 -->
                     <div class="pt-8">
                         <button @click="addToCartFromDetail()" class="w-full py-4 bg-amber-900 text-white font-bold rounded-xl shadow-lg hover:bg-amber-800 transition-colors" x-text="t.addToCart">加入購物車</button>
                     </div>
@@ -196,7 +188,6 @@
             <h1 class="text-3xl font-bold text-stone-900 mb-8" x-text="t.checkoutTitle">確認訂單與付款</h1>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- 收件人表單 -->
                 <div class="lg:col-span-2 bg-white p-8 rounded-2xl border border-stone-200 shadow-sm space-y-6">
                     <h2 class="text-lg font-bold text-stone-900 pb-2 border-b border-stone-100" x-text="t.shippingInfo">收件人資訊</h2>
                     <div class="space-y-4">
@@ -218,7 +209,6 @@
                         </div>
                     </div>
 
-                    <!-- 銀行轉帳 VietQR 顯示 (固定 memo 防止跳動) -->
                     <div class="pt-6 border-t border-stone-100 space-y-4">
                         <h3 class="font-bold text-stone-900" x-text="t.bankTransferTitle">VietQR 轉帳付款</h3>
                         <p class="text-xs text-stone-500" x-text="t.bankTransferDesc">請使用越南當地銀行 App 掃描下方 QR Code 進行轉帳。系統已自動帶入金額與轉帳備忘錄。</p>
@@ -235,14 +225,14 @@
                     <button @click="completeOrder()" :disabled="isSubmitting" class="w-full py-4 bg-amber-900 text-white font-bold rounded-xl shadow-lg hover:bg-amber-800 disabled:opacity-50 transition-colors" x-text="isSubmitting ? t.submitting : t.submitOrder">送出訂單</button>
                 </div>
 
-                <!-- 訂單摘要 -->
                 <div class="bg-stone-50 p-6 rounded-2xl border border-stone-200 space-y-6 h-fit">
                     <h2 class="text-lg font-bold text-stone-900 pb-2 border-b border-stone-200" x-text="t.orderSummary">訂單摘要</h2>
                     <div class="space-y-4 max-h-64 overflow-y-auto pr-1">
                         <template x-for="item in cart" :key="item.cartItemId">
                             <div class="flex items-center justify-between text-sm">
                                 <div class="pr-2">
-                                    <p class="font-bold text-stone-800" x-text="lang === 'zh' ? item.name : item.nameVi"></p>
+                                    <!-- 透過 productId 綁定商品以支援多語系動態切換 -->
+                                    <p class="font-bold text-stone-800" x-text="lang === 'zh' ? getProductById(item.id).name : getProductById(item.id).nameVi"></p>
                                     <p class="text-xs text-stone-500" x-text="(item.grind || item.pouch || '') + ' x ' + item.quantity"></p>
                                 </div>
                                 <span class="font-bold text-amber-900 whitespace-nowrap" x-text="formatPrice(item.price * item.quantity)"></span>
@@ -268,7 +258,7 @@
         </div>
     </main>
 
-    <!-- 購物車抽屜 (Slide-over Cart) -->
+    <!-- 購物車抽屜 -->
     <div x-show="cartOpen" class="fixed inset-0 z-50 overflow-hidden" x-cloak>
         <div class="absolute inset-0 bg-stone-900/50 backdrop-blur-sm transition-opacity" @click="cartOpen = false"></div>
         <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
@@ -280,9 +270,9 @@
                 <div class="flex-1 overflow-y-auto p-6 space-y-4">
                     <template x-for="(item, index) in cart" :key="item.cartItemId">
                         <div class="flex items-center space-x-4 bg-stone-50 p-4 rounded-xl border border-stone-100">
-                            <img :src="item.image" class="w-16 h-16 object-cover rounded-lg">
+                            <img :src="getProductById(item.id).image" class="w-16 h-16 object-cover rounded-lg">
                             <div class="flex-1">
-                                <h4 class="font-bold text-sm text-stone-900" x-text="lang === 'zh' ? item.name : item.nameVi"></h4>
+                                <h4 class="font-bold text-sm text-stone-900" x-text="lang === 'zh' ? getProductById(item.id).name : getProductById(item.id).nameVi"></h4>
                                 <p class="text-xs text-stone-500" x-text="item.grind || item.pouch || ''"></p>
                                 <p class="font-bold text-amber-900 text-sm mt-1" x-text="formatPrice(item.price)"></p>
                             </div>
@@ -303,7 +293,7 @@
                         <span x-text="t.subtotal">小計</span>
                         <span class="text-amber-900" x-text="formatPrice(cartSubtotal)"></span>
                     </div>
-                    <button @click="cartOpen = false; currentView = 'checkout'" class="w-full py-3.5 bg-amber-900 text-white font-bold rounded-xl shadow hover:bg-amber-800 transition-colors" x-text="t.proceedCheckout">前往結帳</button>
+                    <button @click="goToCheckout()" class="w-full py-3.5 bg-amber-900 text-white font-bold rounded-xl shadow hover:bg-amber-800 transition-colors" x-text="t.proceedCheckout">前往結帳</button>
                 </div>
             </div>
         </div>
@@ -378,6 +368,10 @@
                     }
                 ],
 
+                getProductById(id) {
+                    return this.products.find(p => p.id === id) || this.products[0];
+                },
+
                 get t() {
                     return this.lang === 'zh' ? {
                         siteTitle: 'Phoenix Coffee - 越南頂級精品咖啡',
@@ -395,7 +389,7 @@
                         back: '返回',
                         grindLabel: '研磨刻度選擇',
                         grindOptions: ['原豆（不研磨）', '手沖中粗研磨', '義式細研磨'],
-                        pouchLabel: '包裝規格選擇',
+                        pouchLabel: '包裝規格選項',
                         pouchOptions: ['經典盒裝 (10入)', '大容量裝 (30入)'],
                         quantity: '數量',
                         addToCart: '加入購物車',
@@ -464,10 +458,6 @@
 
                 toggleLang() {
                     this.lang = this.lang === 'zh' ? 'vi' : 'zh';
-                    if (this.selectedProduct) {
-                        this.selectedGrind = this.t.grindOptions[0];
-                        this.selectedPouch = this.t.pouchOptions[0];
-                    }
                 },
 
                 openProductDetail(product) {
@@ -492,10 +482,7 @@
                         this.cart.push({
                             cartItemId,
                             id: this.selectedProduct.id,
-                            name: this.selectedProduct.name,
-                            nameVi: this.selectedProduct.nameVi,
                             price: this.selectedProduct.price,
-                            image: this.selectedProduct.image,
                             grind: isBean ? variant : null,
                             pouch: isDrip ? variant : null,
                             quantity: this.selectedQuantity
@@ -531,6 +518,15 @@
                     return this.cartSubtotal + shipping;
                 },
 
+                goToCheckout() {
+                    this.cartOpen = false;
+                    // 初始化固定備忘錄（避免在 Getter 內產生副作用）
+                    if (!this.orderMemo) {
+                        this.orderMemo = "PHOENIX-" + Math.floor(100000 + Math.random() * 900000);
+                    }
+                    this.currentView = 'checkout';
+                },
+
                 get vietQrUrl() {
                     if (!this.orderMemo) {
                         this.orderMemo = "PHOENIX-" + Math.floor(100000 + Math.random() * 900000);
@@ -555,7 +551,7 @@
                 },
 
                 completeOrder() {
-                    if (this.isSubmitting) return; // 嚴格防重複點擊防護
+                    if (this.isSubmitting) return;
 
                     if (!this.checkoutForm.name || !this.checkoutForm.phone || !this.checkoutForm.address) {
                         alert(this.lang === 'zh' ? '請完整填寫收件人姓名、電話與地址！' : 'Vui lòng điền đầy đủ tên, số điện thoại và địa chỉ!');
@@ -569,18 +565,20 @@
                         timestamp: new Date().toLocaleString(),
                         customer: { ...this.checkoutForm },
                         memo: this.orderMemo,
-                        items: this.cart.map(item => ({
-                            name: this.lang === 'zh' ? item.name : item.nameVi,
-                            variant: item.grind || item.pouch || '無規格',
-                            quantity: item.quantity,
-                            price: item.price
-                        })),
+                        items: this.cart.map(item => {
+                            const p = this.getProductById(item.id);
+                            return {
+                                name: this.lang === 'zh' ? p.name : p.nameVi,
+                                variant: item.grind || item.pouch || '無規格',
+                                quantity: item.quantity,
+                                price: item.price
+                            };
+                        }),
                         subtotal: this.cartSubtotal,
                         shippingFee: this.cartSubtotal >= 800000 ? 0 : 50000,
                         total: this.cartTotal
                     };
 
-                    // 模擬送至後端 Google Apps Script
                     setTimeout(() => {
                         this.isSubmitting = false;
                         alert(this.lang === 'zh' ? '訂單已成功送出！感謝您的選購。' : 'Đặt hàng thành công! Cảm ơn quý khách.');
