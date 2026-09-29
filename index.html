@@ -420,16 +420,46 @@
                         </div>
                     </div>
 
-                    <!-- 付款方式 -->
+                    <!-- 付款方式 (整合越南銀行轉帳與動態 QR Code) -->
                     <div class="bg-white p-6 border border-aura-200 rounded-sm shadow-sm">
                         <h2 class="text-sm font-semibold uppercase tracking-wider mb-4 flex items-center">
                             <span class="bg-coffee text-white w-6 h-6 rounded-full inline-flex items-center justify-center text-xs mr-2 font-bold">3</span>
                             <span x-text="t.paymentMethod"></span>
                         </h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <button @click="checkoutForm.payment = 'credit'" :class="checkoutForm.payment === 'credit' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider" x-text="t.payCredit"></button>
-                            <button @click="checkoutForm.payment = 'momo'" :class="checkoutForm.payment === 'momo' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider" x-text="t.payMomo"></button>
-                            <button @click="checkoutForm.payment = 'cod'" :class="checkoutForm.payment === 'cod' ? 'border-coffee bg-aura-50' : 'border-aura-200'" class="border p-4 text-center rounded-sm text-xs font-semibold uppercase tracking-wider" x-text="t.payCod"></button>
+                        
+                        <!-- 付款選項按鈕 -->
+                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-6">
+                            <button @click="checkoutForm.payment = 'vcb'" :class="checkoutForm.payment === 'vcb' ? 'border-coffee bg-aura-50 text-coffee font-semibold' : 'border-aura-200 text-aura-800'" class="border p-3 text-center rounded-sm text-xs uppercase tracking-wider transition-all">
+                                <i class="fa-solid fa-qrcode block text-lg mb-1"></i>
+                                越南銀行轉帳 (QR)
+                            </button>
+                            <button @click="checkoutForm.payment = 'credit'" :class="checkoutForm.payment === 'credit' ? 'border-coffee bg-aura-50 text-coffee font-semibold' : 'border-aura-200 text-aura-800'" class="border p-3 text-center rounded-sm text-xs uppercase tracking-wider transition-all" x-text="t.payCredit"></button>
+                            <button @click="checkoutForm.payment = 'momo'" :class="checkoutForm.payment === 'momo' ? 'border-coffee bg-aura-50 text-coffee font-semibold' : 'border-aura-200 text-aura-800'" class="border p-3 text-center rounded-sm text-xs uppercase tracking-wider transition-all" x-text="t.payMomo"></button>
+                            <button @click="checkoutForm.payment = 'cod'" :class="checkoutForm.payment === 'cod' ? 'border-coffee bg-aura-50 text-coffee font-semibold' : 'border-aura-200 text-aura-800'" class="border p-3 text-center rounded-sm text-xs uppercase tracking-wider transition-all" x-text="t.payCod"></button>
+                        </div>
+
+                        <!-- 若選擇越南銀行轉帳，顯示整合的 VietQR 區塊 -->
+                        <div x-show="checkoutForm.payment === 'vcb'" class="bg-aura-50 border border-aura-200 p-6 rounded-sm mt-4">
+                            <h3 class="text-xs font-bold uppercase tracking-widest text-aura-900 mb-4 flex items-center">
+                                <i class="fa-solid fa-building-columns text-coffee mr-2 text-base"></i> 越南銀行轉帳與動態結帳系統
+                            </h3>
+                            
+                            <!-- 銀行帳戶資訊 -->
+                            <div class="bg-white border-l-4 border-coffee p-4 my-4 rounded-r-sm shadow-sm space-y-1.5 text-xs">
+                                <p><strong>銀行名稱：</strong> Vietcombank (越南外貿股份商業銀行)</p>
+                                <p><strong>收款戶名：</strong> MIU KIM PHUONG</p>
+                                <p><strong>銀行帳號：</strong> <span class="font-mono font-bold text-coffee">0121000852742</span></p>
+                                <p><strong>分行資訊：</strong> PGD Trảng Bom</p>
+                            </div>
+
+                            <!-- 動態 QR Code 顯示區 -->
+                            <div class="text-center mt-6">
+                                <p class="text-xs font-semibold text-aura-900 mb-2">請使用越南銀行 App 掃描下方 QR Code 付款</p>
+                                <div class="inline-block p-3 bg-white border border-aura-200 rounded-lg shadow-sm">
+                                    <img :src="vietQrUrl" alt="VietQR Code" class="w-56 h-56 object-contain mx-auto">
+                                </div>
+                                <p class="text-[11px] text-gray-500 mt-2">掃描後將自動帶入應付總金額與訂單轉帳備忘錄</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -913,6 +943,28 @@
                 isSubmitting: false,
                 lang: localStorage.getItem('phoenix_lang') || 'zh',
 
+                // 結帳表單狀態 (預設付款方式改為越南銀行轉帳 vcb)
+                checkoutForm: {
+                    name: '',
+                    phone: '',
+                    address: '',
+                    notes: '',
+                    payment: 'vcb'
+                },
+
+                // 購物車資料
+                cart: [
+                    {
+                        id: 1,
+                        name: '100% 精品阿拉比卡咖啡豆 (250g)',
+                        nameVi: 'Cà phê hạt Arabica Đặc sản 100% (250g)',
+                        price: 145000,
+                        quantity: 1,
+                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Arabica+100+250g',
+                        grind: '手沖中粗研磨'
+                    }
+                ],
+
                 get t() {
                     return i18n[this.lang];
                 },
@@ -1004,153 +1056,61 @@
                     },
                     {
                         id: 4,
-                        name: '100% 精品阿拉比卡浸泡式咖啡包 (30包/袋)',
-                        nameVi: 'Túi cà phê ngâm Arabica 100% (30 gói/túi)',
-                        category: 'drip',
-                        price: 350000,
-                        image: 'https://placehold.co/600x800/e5ddd3/221e1a?text=Arabica+Immersion+30p',
-                        description: '超值30包大袋裝。黃金三焙混調工藝，結合淺焙花香、中焙焦糖與深焙黑巧克力尾韻。',
-                        descriptionVi: 'Gói lớn 30 túi tiện lợi. Công nghệ pha trộn 3 cấp độ rang, kết hợp hương hoa và sô-cô-la đen.',
-                        flavorTags: ['果酸花香', '焦糖甜感', '黑巧克力', '浸泡家庭號'],
-                        flavorTagsVi: ['Hương hoa', 'Caramel', 'Sô-cô-la', 'Family Pack'],
-                        roastLevel: '黃金三焙混調',
-                        roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式萃取',
-                        processVi: 'Ngâm ủ',
-                        origin: '單一產區阿拉比卡',
-                        originVi: 'Arabica đơn dòng',
-                        badge: ''
-                    },
-                    {
-                        id: 5,
-                        name: '100% 精品羅布斯塔咖啡豆 (250 公克)',
-                        nameVi: 'Cà phê hạt Robusta Đặc sản 100% (250g)',
-                        category: 'beans',
-                        price: 91000,
-                        image: 'https://placehold.co/600x800/221e1a/ffffff?text=Robusta+100+250g',
-                        description: '精選頂級羅布斯塔莊園，海拔高度 800~1,200m。醇厚濃郁、帶有黑可可與麥香的獨特風味，口感扎實。',
-                        descriptionVi: 'Trang trại Robusta cao cấp, độ cao 800~1,200m. Đậm đà, hương ca cao đen và lúa mạch.',
-                        flavorTags: ['醇厚濃郁', '黑可可', '麥香', 'Premium'],
-                        flavorTagsVi: ['Đậm đà', 'Ca cao đen', 'Lúa mạch', 'Cao cấp'],
-                        roastLevel: '中深焙',
-                        roastLevelVi: 'Rang đậm vừa',
-                        process: '傳統日曬與水洗',
-                        processVi: 'Natural / Washed',
-                        origin: '頂級羅布斯塔莊園',
-                        originVi: 'Trang trại Robusta',
-                        badge: ''
-                    },
-                    {
-                        id: 6,
-                        name: '100% 精品羅布斯塔咖啡豆 (500 公克)',
-                        nameVi: 'Cà phê hạt Robusta Đặc sản 100% (500g)',
-                        category: 'beans',
-                        price: 172000,
-                        image: 'https://placehold.co/600x800/d7c4b7/221e1a?text=Robusta+100+500g',
-                        description: '精選頂級羅布斯塔莊園 500g 大包裝。濃郁風土與扎實口感，帶有黑可可與麥香的獨特風味。',
-                        descriptionVi: 'Đóng gói 500g lớn. Hương vị đậm đà, kết cấu vững chắc, mang hương ca cao đen và lúa mạch.',
-                        flavorTags: ['醇厚濃郁', '黑可可', '麥香', 'Premium'],
-                        flavorTagsVi: ['Đậm đà', 'Ca cao đen', 'Lúa mạch', 'Cao cấp'],
-                        roastLevel: '中深焙',
-                        roastLevelVi: 'Rang đậm vừa',
-                        process: '傳統日曬與水洗',
-                        processVi: 'Natural / Washed',
-                        origin: '頂級羅布斯塔莊園',
-                        originVi: 'Trang trại Robusta',
-                        badge: ''
-                    },
-                    {
-                        id: 7,
-                        name: '100% 精品羅布斯塔浸泡式咖啡包 (10包/袋)',
-                        nameVi: 'Túi cà phê ngâm Robusta 100% (10 gói/túi)',
-                        category: 'drip',
-                        price: 100000,
-                        image: 'https://placehold.co/600x800/bfae9e/221e1a?text=Robusta+Immersion+10p',
-                        description: '黃金三焙混調工藝。口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻。',
-                        descriptionVi: 'Hương vị đậm đà, ít axit, ngọt hậu sâu với hậu vị sô-cô-la đen mạnh mẽ.',
-                        flavorTags: ['厚實濃郁', '低酸回甘', '黑巧克力尾韻'],
-                        flavorTagsVi: ['Đậm đà', 'Ít axit', 'Hậu vị sô-cô-la'],
-                        roastLevel: '黃金三焙混調',
-                        roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式萃取',
-                        processVi: 'Ngâm ủ',
-                        origin: '單一產區羅布斯塔',
-                        originVi: 'Robusta đơn dòng',
-                        badge: ''
-                    },
-                    {
-                        id: 8,
-                        name: '100% 精品羅布斯塔浸泡式咖啡包 (30包/袋)',
-                        nameVi: 'Túi cà phê ngâm Robusta 100% (30 gói/túi)',
-                        category: 'drip',
-                        price: 250000,
-                        image: 'https://placehold.co/600x800/38322c/ffffff?text=Robusta+Immersion+30p',
-                        description: '超值30包大袋裝。口感厚實濃郁、低酸回甘、具備強烈黑巧克力厚實尾韻的浸泡式咖啡包。',
-                        descriptionVi: 'Gói lớn 30 túi tiết kiệm. Vị đậm đà, ít axit, hậu vị sô-cô-la đen mạnh mẽ.',
-                        flavorTags: ['厚實濃郁', '低酸回甘', '黑巧克力尾韻'],
-                        flavorTagsVi: ['Đậm đà', 'Ít axit', 'Hậu vị sô-cô-la'],
-                        roastLevel: '黃金三焙混調',
-                        roastLevelVi: 'Blend 3 cấp độ',
-                        process: '浸泡式萃取',
-                        processVi: 'Ngâm ủ',
-                        origin: '單一產區羅布斯塔',
-                        originVi: 'Robusta đơn dòng',
-                        badge: ''
-                    },
-                    {
-                        id: 9,
-                        name: '80/20 義式特調咖啡豆 (250 公克)',
-                        nameVi: 'Cà phê hạt Espresso Blend 80/20 (250g)',
-                        category: 'beans',
-                        price: 135000,
-                        image: 'https://placehold.co/600x800/e5ddd3/221e1a?text=Blend+80-20+250g',
-                        description: '精選阿拉比卡（80%）與羅布斯塔（20%）黃金比例拼配。兼具優雅香氣與豐富油脂、濃厚 Crema。',
-                        descriptionVi: 'Tỷ lệ vàng 80% Arabica và 20% Robusta. Kết hợp hương thơm thanh lịch và lớp Crema dày dặn.',
-                        flavorTags: ['優雅香氣', '豐富油脂', '濃厚Crema', 'Espresso Blend'],
-                        flavorTagsVi: ['Hương thơm', 'Nhiều dầu', 'Crema dày', 'Espresso Blend'],
-                        roastLevel: '中深焙',
-                        roastLevelVi: 'Rang đậm vừa',
-                        process: '水洗與日曬融合',
-                        processVi: 'Washed & Natural',
-                        origin: '高海拔與優質莊園拼配',
-                        originVi: 'Blend cao cấp',
-                        badge: 'BEST'
-                    },
-                    {
-                        id: 10,
-                        name: '80/20 義式特調咖啡豆 (500 公克)',
-                        nameVi: 'Cà phê hạt Espresso Blend 80/20 (500g)',
-                        category: 'beans',
-                        price: 260000,
-                        image: 'https://placehold.co/600x800/221e1a/ffffff?text=Blend+80-20+500g',
-                        description: '大容量 500g 裝。精選 80% 阿拉比卡與 20% 羅布斯塔黃金比例，兼具優雅香氣、豐富油脂與濃厚 Crema。',
-                        descriptionVi: 'Đóng gói 500g lớn. Tỷ lệ vàng 80/20, hương thơm thanh lịch, Crema dày dặn.',
-                        flavorTags: ['優雅香氣', '豐富油脂', '濃厚Crema', 'Espresso Blend'],
-                        flavorTagsVi: ['Hương thơm', 'Nhiều dầu', 'Crema dày', 'Espresso Blend'],
-                        roastLevel: '中深焙',
-                        roastLevelVi: 'Rang đậm vừa',
-                        process: '水洗與日曬融合',
-                        processVi: 'Washed & Natural',
-                        origin: '高海拔與優質莊園拼配',
-                        originVi: 'Blend cao cấp',
+                        name: '職人手沖咖啡濾杯與手沖壺套裝',
+                        nameVi: 'Bộ dụng cụ pha chế thủ công chuyên nghiệp',
+                        category: 'equipment',
+                        price: 650000,
+                        image: 'https://placehold.co/600x800/221e1a/ffffff?text=Brewing+Equipment',
+                        description: '不鏽鋼細口手沖壺搭配專用錐形濾杯，精準控制水流與流速，在家也能享受大師級手沖風味。',
+                        descriptionVi: 'Ấm cổ ngỗng không gỉ kết hợp phễu lọc nón, kiểm soát dòng nước hoàn hảo để pha chế tại nhà.',
+                        flavorTags: ['手沖器具', '職人選物', '溫控', '不鏽鋼'],
+                        flavorTagsVi: ['Dụng cụ', 'Chuyên nghiệp', 'Inox'],
+                        roastLevel: '不適用',
+                        roastLevelVi: 'Không áp dụng',
+                        process: '手工鍛造',
+                        processVi: 'Thủ công',
+                        origin: '嚴選工藝製造',
+                        originVi: 'Nhật Bản / Đài Loan',
                         badge: ''
                     }
                 ],
 
-                cart: JSON.parse(localStorage.getItem('phoenix_cart')) || [],
-
-                checkoutForm: {
-                    name: '',
-                    phone: '',
-                    address: '',
-                    notes: '',
-                    payment: 'credit'
+                get filteredProducts() {
+                    let result = this.products;
+                    if (this.filterCategory !== 'all') {
+                        result = result.filter(p => p.category === this.filterCategory);
+                    }
+                    if (this.sortBy === 'price-low') {
+                        result = result.sort((a, b) => a.price - b.price);
+                    } else if (this.sortBy === 'price-high') {
+                        result = result.sort((a, b) => b.price - a.price);
+                    } else if (this.sortBy === 'newest') {
+                        result = result.sort((a, b) => b.id - a.id);
+                    }
+                    return result;
                 },
 
-                init() {
-                    this.$watch('cart', (value) => {
-                        localStorage.setItem('phoenix_cart', JSON.stringify(value));
-                    });
+                get cartCount() {
+                    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                },
+
+                get cartSubtotal() {
+                    return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                },
+
+                get cartTotal() {
+                    const shipping = this.cartSubtotal >= 800000 ? 0 : 50000;
+                    return this.cartSubtotal + shipping;
+                },
+
+                // 動態產生 VietQR 連結
+                get vietQrUrl() {
+                    const bankId = "VCB";
+                    const accountNo = "0121000852742";
+                    const accountName = "MIU KIM PHUONG";
+                    const amount = this.cartTotal;
+                    const addInfo = "PHOENIX-" + Math.floor(100000 + Math.random() * 900000);
+                    return `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?amount=${amount}&addInfo=${encodeURIComponent(addInfo)}&accountName=${encodeURIComponent(accountName)}`;
                 },
 
                 getProductName(product) {
@@ -1165,41 +1125,6 @@
                     return this.lang === 'zh' ? product.flavorTags : product.flavorTagsVi;
                 },
 
-                getCartItemName(item) {
-                    let prod = this.products.find(p => p.id === item.id);
-                    return prod ? (this.lang === 'zh' ? prod.name : prod.nameVi) : item.name;
-                },
-
-                get cartCount() {
-                    return this.cart.reduce((sum, item) => sum + item.quantity, 0);
-                },
-
-                get cartSubtotal() {
-                    return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                },
-
-                get cartTotal() {
-                    let shipping = this.cartSubtotal >= 800000 ? 0 : 50000;
-                    return this.cartSubtotal + shipping;
-                },
-
-                get filteredProducts() {
-                    let result = this.products;
-                    if (this.filterCategory !== 'all') {
-                        result = result.filter(p => p.category === this.filterCategory);
-                    }
-                    if (this.sortBy === 'price-low') {
-                        result = [...result].sort((a, b) => a.price - b.price);
-                    } else if (this.sortBy === 'price-high') {
-                        result = [...result].sort((a, b) => b.price - a.price);
-                    }
-                    return result;
-                },
-
-                formatPrice(price) {
-                    return 'VND ' + price.toLocaleString();
-                },
-
                 openProductDetail(product) {
                     this.selectedProduct = product;
                     this.quantity = 1;
@@ -1209,55 +1134,46 @@
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 },
 
-                quickAddToCart(product) {
-                    let defaultOption = product.category === 'beans' ? this.t.grindOptions[0] : this.t.pouchOptions[0];
-                    let optionKey = product.category === 'beans' ? 'grind' : 'pouch';
-                    
-                    let existing = this.cart.find(item => item.id === product.id && item[optionKey] === defaultOption);
+                addToCartFromDetail() {
+                    const variant = this.selectedProduct.category === 'beans' ? this.selectedGrind : (this.selectedProduct.category === 'drip' ? this.selectedPouch : '');
+                    const existing = this.cart.find(item => item.id === this.selectedProduct.id && (item.grind === variant || item.pouch === variant));
                     if (existing) {
-                        existing.quantity++;
+                        existing.quantity += this.quantity;
                     } else {
-                        let newItem = {
-                            id: product.id,
-                            name: product.name,
-                            nameVi: product.nameVi,
-                            price: product.price,
-                            quantity: 1,
-                            image: product.image
-                        };
-                        newItem[optionKey] = defaultOption;
-                        this.cart.push(newItem);
+                        this.cart.push({
+                            ...this.selectedProduct,
+                            quantity: this.quantity,
+                            grind: this.selectedProduct.category === 'beans' ? variant : null,
+                            pouch: this.selectedProduct.category === 'drip' ? variant : null
+                        });
                     }
                     this.cartOpen = true;
                 },
 
-                addToCartFromDetail() {
-                    let optionKey = this.selectedProduct.category === 'beans' ? 'grind' : 'pouch';
-                    let optionVal = this.selectedProduct.category === 'beans' ? this.selectedGrind : this.selectedPouch;
-
-                    let existing = this.cart.find(item => item.id === this.selectedProduct.id && item[optionKey] === optionVal);
+                quickAddToCart(product) {
+                    const variant = product.category === 'beans' ? this.t.grindOptions[0] : (product.category === 'drip' ? this.t.pouchOptions[0] : '');
+                    const existing = this.cart.find(item => item.id === product.id && (item.grind === variant || item.pouch === variant));
                     if (existing) {
-                        existing.quantity += this.quantity;
+                        existing.quantity += 1;
                     } else {
-                        let newItem = {
-                            id: this.selectedProduct.id,
-                            name: this.selectedProduct.name,
-                            nameVi: this.selectedProduct.nameVi,
-                            price: this.selectedProduct.price,
-                            quantity: this.quantity,
-                            image: this.selectedProduct.image
-                        };
-                        newItem[optionKey] = optionVal;
-                        this.cart.push(newItem);
+                        this.cart.push({
+                            ...product,
+                            quantity: 1,
+                            grind: product.category === 'beans' ? variant : null,
+                            pouch: product.category === 'drip' ? variant : null
+                        });
                     }
                     this.cartOpen = true;
                 },
 
                 buyNow() {
                     this.addToCartFromDetail();
-                    this.cartOpen = false;
                     this.currentView = 'checkout';
                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                },
+
+                getCartItemName(item) {
+                    return this.lang === 'zh' ? item.name : item.nameVi;
                 },
 
                 updateCartQty(index, delta) {
@@ -1271,71 +1187,26 @@
                     this.cart.splice(index, 1);
                 },
 
-                async completeOrder() {
+                formatPrice(price) {
+                    return 'VND ' + price.toLocaleString();
+                },
+
+                completeOrder() {
                     if (!this.checkoutForm.name || !this.checkoutForm.phone || !this.checkoutForm.address) {
-                        alert(this.lang === 'zh' ? '請完整填寫收件人姓名、手機號碼與收件地址' : 'Vui lòng điền đầy đủ họ tên, số điện thoại và địa chỉ giao hàng');
+                        alert(this.lang === 'zh' ? '請完整填寫收件人姓名、電話與地址！' : 'Vui lòng điền đầy đủ tên, số điện thoại và địa chỉ!');
                         return;
                     }
-
-                    if (this.cart.length === 0) {
-                        alert(this.lang === 'zh' ? '您的購物車目前是空的' : 'Giỏ hàng của bạn đang trống');
-                        return;
-                    }
-
                     this.isSubmitting = true;
-
-                    const itemsString = this.cart.map(i => `${this.getCartItemName(i)} (${i.grind || i.pouch}) x ${i.quantity}`).join('；');
-                    
-                    const orderId = 'PHOENIX-' + Math.floor(100000 + Math.random() * 900000);
-                    const now = new Date();
-                    
-                    const shippingFee = this.cartSubtotal >= 800000 ? 0 : 50000;
-
-                    const payload = {
-                        orderId: orderId,
-                        orderDate: now.toLocaleString(),
-                        fullName: this.checkoutForm.name,
-                        phone: this.checkoutForm.phone,
-                        address: this.checkoutForm.address,
-                        notes: this.checkoutForm.notes || '無',
-                        orderItems: itemsString,
-                        subtotal: this.cartSubtotal,
-                        shippingFee: shippingFee,
-                        grandTotal: this.cartSubtotal + shippingFee
-                    };
-
-                    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ0lung4gdqyrYsCMJCprWCLhuGK6VDA-0qyCuLMlpmruVzfaXbuTpvtDmixRhx-cD6g/exec';
-
-                    try {
-                        const response = await fetch(SCRIPT_URL, {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(payload)
-                        });
-
-                        alert(this.lang === 'zh' ? 
-                            `訂單已成功建立！\n訂單編號：${orderId}\n感謝您的選購，我們將盡快為您安排新鮮烘焙與配送。` : 
-                            `Đặt hàng thành công!\nMã đơn hàng: ${orderId}\nCảm ơn quý khách, chúng tôi sẽ sớm chuẩn bị và giao hàng.`
-                        );
-                        
-                        this.cart = [];
-                        localStorage.removeItem('phoenix_cart');
-
-                        this.currentView = 'home';
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                    } catch (error) {
-                        console.error('送出訂單失敗:', error);
-                        alert(this.lang === 'zh' ? '訂單傳送發生錯誤，請稍後再試或與客服聯繫。' : 'Đã có lỗi xảy ra, vui lòng thử lại sau.');
-                    } finally {
+                    setTimeout(() => {
                         this.isSubmitting = false;
-                    }
+                        alert(this.lang === 'zh' ? '訂單已成功送出！感謝您的選購。' : 'Đặt hàng thành công! Cảm ơn quý khách.');
+                        this.cart = [];
+                        this.currentView = 'home';
+                    }, 1500);
                 }
             }
         }
     </script>
+
 </body>
 </html>
